@@ -3,10 +3,7 @@ name    := "cs4500"
 
 version := "0.1"
 
-organization := "Cool Project, Bro"
-
-// Ignore emacs backups
-defaultExcludes ~= (filter => filter || "*~")
+organization := "com.cpb"
 
 // set the main Scala source directory to be <base>/src
 scalaSource in Compile <<= baseDirectory(_ / "src")
