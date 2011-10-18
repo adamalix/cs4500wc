@@ -1,20 +1,23 @@
-class Spec(sigs:ADTSignatures, eqs:Equation) {}
+package com.cpb.cs4500.parsing {
 
-class ADTSignatures(sigs:List[ADTSignature]) {}
+  class Spec(sigs:ADTSignatures, eqs:Equation) {}
 
-class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {}
+  class ADTSignatures(sigs:List[ADTSignature]) {}
 
-class OperationSpecs(ops:List[OperationSpec]) {}
+  class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {}
 
-class OperationSpec(op:Operation, argTypes:ArgTypes, typeLit:TypeLiteral){}
+  class OperationSpecs(ops:List[OperationSpec]) {}
 
-class Operation(ident:String) {}
+  class OperationSpec(op:Operation, argTypes:ArgTypes, typeLit:TypeLiteral){}
 
-class ArgTypes(args:List[TypeLiteral]){}
+  class Operation(ident:String) {}
 
-class TypeLiteral(value:String) {}
+  class ArgTypes(args:List[TypeLiteral]){}
 
-class TypeName(value:String) {}
+  class TypeLiteral(value:String) {}
 
-class Equation(value:String) {}
+  class TypeName(value:String) {}
 
+  class Equation(value:String) {}
+
+}

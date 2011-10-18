@@ -1,22 +1,25 @@
-import scala.util.parsing.combinator._
+package com.cpb.cs4500.parsing {
 
-class ADTParser extends JavaTokenParsers {
-  override def skipWhitespace = true
+  import scala.util.parsing.combinator._
 
-  def spec: Parser[Any] = "Signatures:" ~ adtSignatures ~ "Equations:" ~ equations
+  class ADTParser extends JavaTokenParsers {
+    override def skipWhitespace = true
 
-  def adtSignatures: Parser[Any] = adtSignature | adtSignature ~ adtSignatures
+    def spec: Parser[Any] = "Signatures:" ~ adtSignatures ~ "Equations:" ~ equations
 
-  def adtSignature: Parser[Any] = "ADT:" ~ typeName ~ operationSpecs
+    def adtSignatures: Parser[Any] = adtSignature | adtSignature ~ adtSignatures
 
-  def operationSpecs: Parser[Any] = operationSpec | operationSpec ~ operationSpecs
+    def adtSignature: Parser[Any] = "ADT:" ~ typeName ~ operationSpecs
 
-  def operationSpec: Parser[Any] = (
+    def operationSpecs: Parser[Any] = operationSpec | operationSpec ~ operationSpecs
+
+    def operationSpec: Parser[Any] = (
       operation ~ ":" ~ "->" ~ typeLiteral
-    | operation ~ ":" ~ argTypes  ~ "->" ~ typeLiteral
-  )
+      | operation ~ ":" ~ argTypes  ~ "->" ~ typeLiteral
+    )
 
-  def operation: Parser[Any] = ident
+      def operation: Parser[Any] = ident
+
 
   def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral
 
@@ -26,5 +29,8 @@ class ADTParser extends JavaTokenParsers {
 											
   def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
 
-  def equations: Parser[Any] = ""
+    def equations: Parser[Any] = ""
+  }
+
+
 }
