@@ -20,16 +20,15 @@ package com.cpb.cs4500.parsing {
 
     def operation: Parser[Operation] = ident ^^ (new Operation(_))
 
-    def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral ^^ (new ArgTypes(_) :: List[TypeLiteral]())
+    def argTypes: Parser[ArgTypes] = rep(typeLiteral) ^^ (new ArgTypes(_)) 
 
     def typeLiteral: Parser[TypeLiteral] = (
       (("int" | "boolean" | "character" | "string" ) ^^ (new TypeLiteral(_)))
       | typeName)
 
-      def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
+    def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
 
     def equations: Parser[Any] = ""
   }
-
-
+  
 }
