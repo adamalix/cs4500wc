@@ -38,11 +38,8 @@ package com.cpb.cs4500.parsing {
     def operation: Parser[Operation] = ident ^^ { case op => Operation(op) }
 
     def argTypes: Parser[ArgTypes] = (
-        rep(typeLiteral <~ "*" ~> argTypes) ^^
-        { case argTypesList => ArgTypes(argTypesList) }
-
-      | typeLiteral ^^
-        { case literalType => ArgTypes(List(literalType)) }
+      repsep(typeLiteral, "*") ^^
+      { case argTypesList => ArgTypes(argTypesList) }
     )
 
     def typeLiteral: Parser[Terminal] = (
@@ -58,6 +55,5 @@ package com.cpb.cs4500.parsing {
       "Equations:" ^^ { case eqs => Equation(eqs) }
     )
   }
-
 
 }
