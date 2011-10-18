@@ -13,17 +13,12 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val testSpecEquations = Equation("")
+    val testSpecEquations = Equation("Equations:")
     val testSpec = Spec(testADTSignatureList, testSpecEquations)
 
-    val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
+    val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations: some crap"
     val parser = new ADTParser()
-    //val argTypes = List(ArgType("int"), ArgType("int"))
-    //    val adtSigs = 
-    test("testParse") {
 
-      expect ("") { parser.parseAll(parser.spec, thingy) }
-    }
     test("testIntType") {
       expect(intType) { parser.parseAll(parser.typeLiteral, "int").get }
     }
@@ -45,6 +40,40 @@ package com.cpb.cs4500.parsing {
     test("testMakeBoolOpSpec") {
       expect(makeBoolOpSpec) { 
         parser.parseAll(parser.operationSpec, "makeBool: int * int -> boolean").get 
+      }
+    }
+
+    test("testThisADTOperationSpecs") {
+      expect(thisADTOperationSpecs) {     
+        parser.parseAll(parser.operationSpecs, "makeBool: int * int -> boolean").get
+      }
+    }
+
+    test("testThisADT") {
+      expect(thisADT) { parser.parseAll(parser.typeName, "THISADT").get }
+    }
+
+    test("testThisADTSignature") {
+      expect(thisADTSignature) {
+        parser.parseAll(parser.adtSignature, "ADT: THISADT makeBool: int * int -> boolean").get
+      }
+    }
+
+    test("testTestADTSignatureList") {
+      expect(testADTSignatureList) {
+        parser.parseAll(parser.adtSignatures, "ADT: THISADT makeBool: int * int -> boolean").get
+      }
+    }
+
+    test("testTestSpecEquations") {
+      expect(testSpecEquations) {
+        parser.parseAll(parser.equations, "Equations: some crap").get
+      }
+    }
+
+    test("testTestSpec") {
+      expect(testSpec) {
+        parser.parseAll(parser.spec, thingy).get
       }
     }
 
