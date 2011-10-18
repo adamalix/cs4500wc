@@ -1,23 +1,25 @@
 package com.cpb.cs4500.parsing {
 
-  class Spec(sigs:ADTSignatures, eqs:Equation) {}
+  trait Terminal {}
 
-  class ADTSignatures(sigs:List[ADTSignature]) {}
+  case class Spec(sigs:ADTSignatures, eqs:Equation) {}
 
-  class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {}
+  case class ADTSignatures(sigs:List[ADTSignature]) {}
 
-  class OperationSpecs(ops:List[OperationSpec]) {}
+  case class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {}
 
-  class OperationSpec(op:Operation, argTypes:ArgTypes, typeLit:TypeLiteral){}
+  case class OperationSpecs(ops:List[OperationSpec]) {}
 
-  class Operation(ident:String) {}
+  case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal){}
 
-  class ArgTypes(args:List[TypeLiteral]){}
+  case class Operation(ident:String) extends Terminal {}
 
-  class TypeLiteral(value:String) {}
+  case class ArgTypes(args:List[Terminal]){}
 
-  class TypeName(value:String) {}
+  case class TypeLiteral(value:String) extends Terminal {}
 
-  class Equation(value:String) {}
+  case class TypeName(value:String) extends Terminal {}
+
+  case class Equation(value:String) {}
 
 }

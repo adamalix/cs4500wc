@@ -5,30 +5,58 @@ package com.cpb.cs4500.parsing {
   class ADTParser extends JavaTokenParsers {
     override def skipWhitespace = true
 
-    def spec: Parser[Any] = "Signatures:" ~ adtSignatures ~ "Equations:" ~ equations
+    val argTypeLiterals = List[TypeLiteral]()
 
-    def adtSignatures: Parser[Any] = adtSignature | adtSignature ~ adtSignatures
-
-    def adtSignature: Parser[Any] = "ADT:" ~ typeName ~ operationSpecs
-
-    def operationSpecs: Parser[Any] = operationSpec | operationSpec ~ operationSpecs
-
-    def operationSpec: Parser[Any] = (
-      operation ~ ":" ~ "->" ~ typeLiteral
-      | operation ~ ":" ~ argTypes  ~ "->" ~ typeLiteral
+    def spec: Parser[Spec] = (
+      "Signatures:" ~ adtSignatures ~ equations ^^
+      { case "Signatures:" ~ adtSigs ~ eqs => Spec(adtSigs, eqs) }
     )
 
-    def operation: Parser[Operation] = ident ^^ (new Operation(_))
+    def adtSignatures: Parser[ADTSignatures] = (
+      rep(adtSignature) ^^ { case adtSigList => ADTSignatures(adtSigList) }
+    )
 
-    def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral ^^ (new ArgTypes(_) :: List[TypeLiteral]())
+    def adtSignature: Parser[ADTSignature] = (
+      "ADT:" ~> typeName ~ operationSpecs ^^
+      { case namedType ~ opSpecs => ADTSignature(namedType, opSpecs) }
+    )
 
-    def typeLiteral: Parser[TypeLiteral] = (
-      (("int" | "boolean" | "character" | "string" ) ^^ (new TypeLiteral(_)))
-      | typeName)
+    def operationSpecs: Parser[OperationSpecs] = (
+      rep(operationSpec) ^^ { case opSpecList => OperationSpecs(opSpecList) }
+    )
 
-      def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
+    def operationSpec: Parser[OperationSpec] = (
+        operation ~ ":" ~ "->" ~ typeLiteral ^^
+        { case op ~ ":" ~ "->" ~ returnType =>
+          OperationSpec(op, null, returnType) }
 
-    def equations: Parser[Any] = ""
+      | operation ~ ":" ~ argTypes ~ "->" ~ typeLiteral ^^
+        { case op ~ ":" ~ args ~ "->" ~ returnType =>
+          OperationSpec(op, args, returnType) }
+    )
+
+    def operation: Parser[Operation] = ident ^^ { case op => Operation(op) }
+
+    def argTypes: Parser[ArgTypes] = (
+        rep(typeLiteral <~ "*" ~> argTypes) ^^
+        { case argTypesList => ArgTypes(argTypesList) }
+
+      | typeLiteral ^^
+        { case literalType => ArgTypes(List(literalType)) }
+    )
+
+    def typeLiteral: Parser[Terminal] = (
+        (("int" | "boolean" | "character" | "string" ) ^^
+         { case literalType => TypeLiteral(literalType) })
+      | typeName
+    )
+
+    def typeName: Parser[TypeName] = ident ^^
+      { case namedType => TypeName(namedType) }
+
+    def equations: Parser[Equation] = (
+      "Equations:" ^^ { case eqs => Equation(eqs) }
+    )
   }
 
 
