@@ -18,17 +18,13 @@ class ADTParser extends JavaTokenParsers {
 
   def operation: Parser[Any] = ident
 
-  def argTypes: Parser[Any] = typeLiteral ~ "*"  ~ argTypes | typeLiteral
+  def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral
 
-  def typeLiteral: Parser[Any] = (
-      "int"
-    | "boolean"
-    | "character"
-    | "string"
-    | typeName
-  )
-
-  def typeName: Parser[Any] = ident
+  def typeLiteral: Parser[TypeLiteral] = (
+		(("int" | "boolean" | "character" | "string" ) ^^ (new TypeLiteral(_)))
+		| typeName)
+											
+  def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
 
   def equations: Parser[Any] = ""
 }
