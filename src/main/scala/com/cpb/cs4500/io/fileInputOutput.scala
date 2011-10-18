@@ -14,6 +14,11 @@ package com.cpb.cs4500.io
         out.write(fileContent)
         out.close
       }
+      
+      def durp()
+      {
+        println("HEYEHYEYEHEY")
+      }
     }
     
 }
