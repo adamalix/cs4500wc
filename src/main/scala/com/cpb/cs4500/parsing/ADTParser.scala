@@ -18,10 +18,9 @@ package com.cpb.cs4500.parsing {
       | operation ~ ":" ~ argTypes  ~ "->" ~ typeLiteral
     )
 
-      def operation: Parser[Any] = ident
+    def operation: Parser[Operation] = ident ^^ (new Operation(_))
 
-
-    def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral
+    def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral ^^ (new ArgTypes(_) :: List[TypeLiteral]())
 
     def typeLiteral: Parser[TypeLiteral] = (
       (("int" | "boolean" | "character" | "string" ) ^^ (new TypeLiteral(_)))
