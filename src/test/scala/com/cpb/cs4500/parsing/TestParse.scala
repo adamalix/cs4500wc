@@ -1,6 +1,7 @@
 package com.cpb.cs4500.parsing {
 
   import org.scalatest.FunSuite
+  import com.cpb.cs4500.parsing._
 
   class TestParse extends FunSuite {
     val intType = TypeLiteral("int")

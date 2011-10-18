@@ -1,1 +1,91 @@
-FIXME: Add explanation of how to run software
+VERSION 0.1
+Date 10/18/11
+
+This is software written for the Fall seession of CS4500 taught by Will
+Clinger by:
+
+Adam Alix <adam.alix@gmail.com>
+Paul Murray <pawl_murray@gmail.com
+Phil Quinn <pquinn@ccs.neu.edu>
+
+---- BUILDING ----
+This software can be built by executing `make' in the project's base directory.
+
+EX:
+
+cd <project-base-dir>
+make
+
+---- TESTING ----
+Testing is not available on the CCIS Linux machines as of now.  To test the
+software, you must install Scala Build Tools on a machine that has maven
+version 2 or later installed:
+
+https://github.com/harrah/xsbt/wiki
+http://maven.apache.org/
+
+Once you have instaleld sbt, you can test by invoking the following commands:
+
+sbt compile
+sbt test
+
+---- RUNNING ----
+To run the software, you must first build it (make) and then use the cs4500
+script in the project's base directory to invoke it:
+
+cd <project-base-dir>
+./cs4500 file1 file2
+
+`file1' is the name of the input text file containing the specification for an
+ADT written in the grammar specified by the homework assignment.  For grammar
+details, see Gramma section below.  URL:
+
+http://www.ccs.neu.edu/course/cs4500wc/assignment4.txt
+
+`file2' is the name of the output file to which R6RS scheme expressions will be
+written.  The file will be created within the directory it is called from so
+long as the caller has write permissions.
+
+---- GRAMMAR ----
+Grammar for input files (file1):
+
+    <input>  ::=  "Signatures:" <signatures> "Equations:" <equations>
+
+    <signatures>  ::=  <signature>
+                    |  <signature> <signatures>
+
+    <signature>  ::=  "ADT:" <typename> <operationSpecs>
+
+    <typename>  ::=  <identifier>
+
+    <operationSpecs>  ::=  <operationSpec>
+                        |  <operationSpec> <operationSpecs>
+
+    <operationSpec>  ::=  <operation> ":"            "->" <type>
+                       |  <operation> ":" <argTypes> "->" <type>
+
+    <operation>  ::=  <identifier>
+
+    <argTypes>  ::=  <type>
+                  |  <type> "*" <argTypes>
+
+    <type>  ::=  "int"
+              |  "boolean"
+              |  "character"
+              |  "string"
+              |  <typename>
+
+    <equations>  ::=  <empty>
+
+---- CHANGELOG ----
+
+10/18/11:
+Initial software prototype for first homework assignment.
+
+---- ACKNOWLEDGEMENTS ----
+This software was built using tools included with the standard distribution of
+Scala 2.9.1:
+http://www.scala-lang.org/downloads
+
+Testing was made feasible by the ScalaTest library:
+http://www.scalatest.org/download
