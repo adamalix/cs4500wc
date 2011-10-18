@@ -1,0 +1,7 @@
+Signatures:
+
+ADT: THISADT
+
+makeBool: int * int -> boolean
+
+Equations:

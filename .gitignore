@@ -17,3 +17,5 @@ static/uploads/
 static/temp_*
 .class
 build/
+target/
+project/
