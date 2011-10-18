@@ -46,7 +46,7 @@ package com.cpb.cs4500.parsing {
   case class ArgTypes(args:List[Terminal]){
     override def toString():String = {
         var whole:String = ""
-        args.foreach((arg:Terminal) => whole+=arg.toString)
+        args.foreach((arg:Terminal) => whole+= " " + arg.toString)
         whole
     }
   }

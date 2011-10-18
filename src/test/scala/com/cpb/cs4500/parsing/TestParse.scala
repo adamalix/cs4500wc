@@ -7,9 +7,10 @@ package com.cpb.cs4500.parsing {
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
     val parser = new ADTParser()
     //val argTypes = List(ArgType("int"), ArgType("int"))
-    //    val adtSigs = 
+    //    val ad
     test("testParse") {expect ("")
-                       {parser.parseAll(parser.spec, thingy)}}
+                       {parser.parseAll(parser.spec, thingy).get.toSexpr}}
+                       
   }
 
 }
