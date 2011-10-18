@@ -10,3 +10,5 @@ scalaSource in Compile <<= baseDirectory(_ / "src")
 
 // set the Scala test source directory to be <base>/test
 scalaSource in Test <<= baseDirectory(_ / "test")
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "1.6.1" % "test"
