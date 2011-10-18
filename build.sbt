@@ -5,6 +5,8 @@ version := "0.1"
 
 organization := "com.cpb"
 
+scalaVersion := "2.9.1"
+
 // set the main Scala source directory to be <base>/src
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
