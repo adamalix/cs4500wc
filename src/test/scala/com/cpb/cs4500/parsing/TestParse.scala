@@ -9,7 +9,7 @@ package com.cpb.cs4500.parsing {
     //val argTypes = List(ArgType("int"), ArgType("int"))
     //    val ad
     test("testParse") {expect ("")
-                       {parser.parseAll(parser.spec, thingy).get.toSexpr}}
+                       {parser.parseAll(parser.spec, thingy).get.toString}}
                        
   }
 

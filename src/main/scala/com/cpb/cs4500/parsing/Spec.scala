@@ -5,9 +5,8 @@ package com.cpb.cs4500.parsing {
   }
 
   case class Spec(signatures:ADTSignatures, equations:Equation) {
-    def toSexpr():String = {
-        var sexpr:String = ""
-        sexpr + signatures.toSexpr + "\n" + equations.toString
+    override def toString():String = {
+        signatures.toSexpr + "\n" + equations.toString
     }
   }
 
