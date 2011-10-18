@@ -1,7 +1,7 @@
 package com.cpb.cs4500.io 
 {
     import scala.io._
-    object fileInputOutput
+    object ReadWriter
     {
       def inputFromFile(fileName: String)
       { 
