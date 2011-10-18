@@ -15,7 +15,7 @@ static/uploads/
 .DS_Store
 *.swp
 static/temp_*
-.class
+*.class
 build/
 target/
 project/
