@@ -21,13 +21,13 @@ package com.cpb.cs4500.parsing {
       def operation: Parser[Any] = ident
 
 
-  def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral
+    def argTypes: Parser[ArgTypes] = typeLiteral ~ "*"  ~ argTypes | typeLiteral
 
-  def typeLiteral: Parser[TypeLiteral] = (
-		(("int" | "boolean" | "character" | "string" ) ^^ (new TypeLiteral(_)))
-		| typeName)
-											
-  def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
+    def typeLiteral: Parser[TypeLiteral] = (
+      (("int" | "boolean" | "character" | "string" ) ^^ (new TypeLiteral(_)))
+      | typeName)
+
+      def typeName: Parser[TypeLiteral] = ident ^^ (new TypeLiteral(_))
 
     def equations: Parser[Any] = ""
   }
