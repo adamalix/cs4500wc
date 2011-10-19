@@ -6,7 +6,7 @@ package com.cpb.cs4500.rewriting {
 
   class TestRewriter extends FunSuite {
     val testPhraseYay:String =  "Signatures: ADT: THISADT makeBool: int * int -> boolean " +
-                                                          "rawr: kekeke * kekekek -> lolz" + 
+                                                          "huh: -> boolean " + 
                                             "ADT: DATADT testWoop: string * int -> char " +
                                             "ADT: coolStory Foobar: foo * lolz * kek * char -> WATISDIS " +
                                 "Equations:"
