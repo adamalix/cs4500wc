@@ -1,3 +1,10 @@
+/*
+Spec.scala is the home of many of our internal representations.
+After our parser goes through the input, it inserts them into their
+appropriate internal representation. Many of these have toStrings/toSexprs
+in order to be used in the Rewriter.
+*/
+
 package com.cpb.cs4500.parsing {
 
   trait Terminal {
@@ -6,21 +13,21 @@ package com.cpb.cs4500.parsing {
 
   case class Spec(signatures:ADTSignatures, equations:Equation) {
     override def toString():String = {
-        signatures.toSexpr + equations.toString
+        signatures.toSexpr
     }
   }
 
   case class ADTSignatures(sigs:List[ADTSignature]) {
     def toSexpr():String = {
         var sexpr:String = ""
-        sigs.foreach((sig:ADTSignature) => sexpr+=sig.toSexpr + "\n")
+        sigs.foreach((sig:ADTSignature) => sexpr+=sig.toSexpr)
         sexpr
     }
   }
 
   case class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {
     def toSexpr():String = {
-        "ADT named: " + name.toString + "\n" + opSpecs.toSexpr
+        opSpecs.toSexpr
     }
   }
 

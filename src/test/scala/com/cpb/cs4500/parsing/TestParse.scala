@@ -1,3 +1,7 @@
+/*
+TestParse.scala
+Holds the test cases for the parsing mechanism of our software
+*/
 package com.cpb.cs4500.parsing {
 
   import org.scalatest.FunSuite

@@ -1,3 +1,6 @@
+/*
+Rewrites the parsed data into Scheme tests. 
+*/
 package com.cpb.cs4500.rewriting {
     import com.cpb.cs4500.parsing._
     class Rewriter() {
