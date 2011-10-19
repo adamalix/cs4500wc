@@ -17,6 +17,7 @@ package com.cpb.cs4500.rewriting {
     val rewriter:Rewriter = new Rewriter()
     //val input:String = ReadWriter.inputFromFile("C:\\Users\\Paul\\Documents\\School\\Fall 2011\\Software Dev\\cs4500\\src\\main\\resources\\testInput.txt")
     //ReadWriter.outputToFile("C:\\Users\\Paul\\Documents\\School\\Fall 2011\\Software Dev\\cs4500\\src\\main\\resources\\lolz.txt", rewriter.applyRewriteRules(parser.parseAll(parser.spec, input).get))
+    // ReadWriter.outputToFile("meow.txt", rewriter.applyRewriteRules(parser.parseAll(parser.spec, input).get))
     test("RewriteTest1") {expect("ADT named: THISADT" + "\n" + "(test (makeBool int int) boolean)") 
                          {rewriter.applyRewriteRules(parser.parseAll(parser.spec, testPhraseYay).get)}}
   }
