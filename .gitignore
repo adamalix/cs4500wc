@@ -16,7 +16,7 @@ static/uploads/
 *.swp
 static/temp_*
 *.class
-build/cs450*
+build/cs4500*
 target/
 project/
-bin/
+bin/cs4500*
