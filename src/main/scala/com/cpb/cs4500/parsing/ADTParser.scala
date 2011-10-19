@@ -1,3 +1,7 @@
+/*
+ADTParser.java
+Parses the given ADT and converts the tokens into readable data based on the case classes
+*/
 package com.cpb.cs4500.parsing {
 
   import scala.util.parsing.combinator._
