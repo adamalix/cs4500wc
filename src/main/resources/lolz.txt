@@ -1,0 +1,5 @@
+
+(test (makeBool int int) boolean)
+(test (huh) boolean)
+(test (testWoop string int) char)
+(test (Foobar foo lolz kek char) WATISDIS)

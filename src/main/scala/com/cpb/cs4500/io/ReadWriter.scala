@@ -1,3 +1,8 @@
+/* 
+ReadWriter is a static class (an object in scala) that
+can input from a file or output to one.
+*/
+
 package com.cpb.cs4500.io 
 {
     import scala.io._
@@ -14,9 +19,13 @@ package com.cpb.cs4500.io
       def outputToFile(fileName: String, fileContent: String):Unit = 
       {
         val out = new java.io.FileWriter(fileName)
-        out.write(fileContent)
+
+        var x:Int = 0;
+        while(x < fileContent.length) {
+            out.write(fileContent.substring(x, x+1))
+            x+= 1
+        }
         out.close
       }
-    }
-    
+    }  
 }
