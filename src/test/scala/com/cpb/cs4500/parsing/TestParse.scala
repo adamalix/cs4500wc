@@ -17,7 +17,7 @@ package com.cpb.cs4500.parsing {
     val testSpecEquations = Equation("Equations:")
     val testSpec = Spec(testADTSignatureList, testSpecEquations)
 
-    val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations: some crap"
+    val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
     val parser = new ADTParser()
 
     test("testIntType") {
@@ -68,7 +68,7 @@ package com.cpb.cs4500.parsing {
 
     test("testTestSpecEquations") {
       expect(testSpecEquations) {
-        parser.parseAll(parser.equations, "Equations: some crap").get
+        parser.parseAll(parser.equations, "Equations:").get
       }
     }
 

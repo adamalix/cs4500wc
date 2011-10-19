@@ -6,7 +6,7 @@ package com.cpb.cs4500.parsing {
 
   case class Spec(signatures:ADTSignatures, equations:Equation) {
     override def toString():String = {
-        signatures.toSexpr + "\n" + equations.toString
+        signatures.toSexpr + equations.toString
     }
   }
 
