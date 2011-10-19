@@ -4,6 +4,7 @@ package com.cpb.cs4500.parsing {
   import com.cpb.cs4500.parsing._
 
   class TestParse extends FunSuite {
+    //thingy vals
     val intType = TypeLiteral("int")
     val booleanType = TypeLiteral("boolean")
     val makeBoolOp = Operation("makeBool")
@@ -17,7 +18,28 @@ package com.cpb.cs4500.parsing {
     val testSpecEquations = Equation("Equations:")
     val testSpec = Spec(testADTSignatureList, testSpecEquations)
 
-    val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations: some crap"
+    //moreComplicatedThingy vals
+    val stringType = TypeLiteral("string")
+    val charType = TypeLiteral("character")
+    val makeDadOp = Operation("makeDad")
+    val anotherMethodOp = Operation("anotherMethod")
+    val evenAThirdMethodOp = Operation("evenAThirdMethod")
+    val makeDadArgTypes = ArgTypes(List(intType, stringType))
+    val anotherMethodArgTypes = ArgTypes(List())
+    val evenAThirdMethodArgTypes = ArgTypes(List(stringType))
+    val makeDadOpSpec = OperationSpec(makeDadOp, makeDadArgTypes, charType)
+    val anotherMethodOpSpec = OperationSpec(anotherMethodOp, anotherMethodArgTypes, intType)
+    val evenAThirdMethodOpSpec = OperationSpec(evenAThirdMethodOp, evenAThirdMethodArgTypes, booleanType)
+    val anotherADTOperationSpecs = OperationSpecs(List(makeDadOpSpec, anotherMethodOpSpec, evenAThirdMethodOpSpec))
+    val anotherADTName = "anotherADT"
+    val anotherADT = TypeName(anotherADTName)
+    val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
+    val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
+    val anotherSpecEquations = Equation("Equations:")
+    val anotherSpec = Spec(anotherADTSignatureList, anotherSpecEquations)
+
+    val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
+    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod string -> boolean Equations:"
     val parser = new ADTParser()
 
     test("testIntType") {
@@ -68,13 +90,19 @@ package com.cpb.cs4500.parsing {
 
     test("testTestSpecEquations") {
       expect(testSpecEquations) {
-        parser.parseAll(parser.equations, "Equations: some crap").get
+        parser.parseAll(parser.equations, "Equations:").get
       }
     }
 
     test("testTestSpec") {
       expect(testSpec) {
         parser.parseAll(parser.spec, thingy).get
+      }
+    }
+
+    test("testMoreComplicatedSpec") {
+      expect(anotherSpec) {
+        parser.parseAll(parser.spec, moreComplicatedThingy).get
       }
     }
 
