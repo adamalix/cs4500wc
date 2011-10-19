@@ -19,3 +19,4 @@ static/temp_*
 build/
 target/
 project/
+bin/
