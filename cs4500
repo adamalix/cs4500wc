@@ -3,7 +3,6 @@
 INPUT_FILE=$1
 OUTPUT_FILE=$2
 
-JAVA_DIR=/usr/share/java
-LIB_CLASSPATH=$JAVA_DIR/scala-library.jar:$JAVA_DIR/scala-compiler.jar:$JAVA_DIR/jline.jar
+LIB_CLASSPATH=lib/scala-library.jar:lib/scala-compiler.jar
 
 java -cp $LIB_CLASSPATH -jar bin/cs4500.jar $INPUT_FILE $OUTPUT_FILE

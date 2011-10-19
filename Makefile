@@ -2,7 +2,7 @@
 # cd <project-base-dir> <-- this is the same directory that this file lives in
 
 all:
-	scalac -classpath /usr/share/java/scala-library.jar \
+	./bin/scalac -classpath lib/scala-library.jar \
 	-sourcepath src -d build src/main/scala/com/cpb/cs4500/Runner.scala \
 	src/main/scala/com/cpb/cs4500/parsing/Spec.scala \
 	src/main/scala/com/cpb/cs4500/parsing/ADTParser.scala \
