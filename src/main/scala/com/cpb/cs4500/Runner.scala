@@ -1,13 +1,13 @@
 package com.cpb.cs4500{
 
 
-    object Runner extends Application
+    object Runner
     {
         import com.cpb.cs4500.parsing._
         import com.cpb.cs4500.rewriting._
         import com.cpb.cs4500.io._
         
-        override def main(args: Array[String]) {
+        def main(args: Array[String]) {
             val input:String = ReadWriter.inputFromFile(args(0))
             val parser = new ADTParser()
             val rewriter:Rewriter = new Rewriter()
