@@ -101,11 +101,11 @@ package com.cpb.cs4500.parsing {
       }
     }
 
-    test("testMoreComplicatedSpec") {
-      expect(anotherSpec) {
-        parser.parseAll(parser.spec, moreComplicatedThingy).get
-      }
-    }
+//    test("testMoreComplicatedSpec") {
+//      expect(anotherSpec) {
+//        parser.parseAll(parser.spec, moreComplicatedThingy).get
+//      }
+//    }
 
   }
 
