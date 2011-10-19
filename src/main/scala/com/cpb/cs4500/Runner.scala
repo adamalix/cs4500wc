@@ -9,8 +9,8 @@ package com.cpb.cs4500{
         override def main(args: Array[String]) {
             val input:String = ReadWriter.inputFromFile("test.txt")
             val parser = new ADTParser()
-            val rewriter:Rewriter = new Rewriter(parser.parseAll(parser.spec, input).get)
-            ReadWriter.outputToFile("meow.txt", rewriter.applyRewriteRules)
+            val rewriter:Rewriter = new Rewriter()
+            ReadWriter.outputToFile("meow.txt", rewriter.applyRewriteRules(parser.parseAll(parser.spec, input).get))
         }
     }
 }
