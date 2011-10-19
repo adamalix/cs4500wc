@@ -1,0 +1,5 @@
+Signatures: ADT: THISADT makeBool: int * int -> boolean 
+                                   huh: -> boolean  
+            ADT: DATADT testWoop: string * int -> char 
+            ADT: coolStory Foobar: foo * lolz * kek * char -> WATISDIS 
+ Equations:

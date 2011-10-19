@@ -1,0 +1,12 @@
+
+ADT named: THISADT
+(test (makeBool int int) boolean)
+(test (huh) boolean)
+
+ADT named: DATADT
+(test (testWoop string int) char)
+
+ADT named: coolStory
+(test (Foobar foo lolz kek char) WATISDIS)
+
+Equations:
