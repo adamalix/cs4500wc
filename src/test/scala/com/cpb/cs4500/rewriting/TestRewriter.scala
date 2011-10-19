@@ -5,10 +5,15 @@ package com.cpb.cs4500.rewriting {
   import com.cpb.cs4500.parsing._
 
   class TestRewriter extends FunSuite {
-    val testPhrase = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
+    val testPhraseYay:String =  "Signatures: ADT: THISADT makeBool: int * int -> boolean " +
+                                                          "huh: -> boolean " + 
+                                            "ADT: DATADT testWoop: string * int -> char " +
+                                            "ADT: coolStory Foobar: foo * lolz * kek * char -> WATISDIS " +
+                                "Equations:"
+   
     val parser = new ADTParser()
     val rewriter:Rewriter = new Rewriter()
     test("RewriteTest1") {expect("ADT named: THISADT" + "\n" + "(test (makeBool int int) boolean)") 
-                         {rewriter.applyRewriteRules(parser.parseAll(parser.spec, testPhrase).get)}}
+                         {rewriter.applyRewriteRules(parser.parseAll(parser.spec, testPhraseYay).get)}}
   }
 }

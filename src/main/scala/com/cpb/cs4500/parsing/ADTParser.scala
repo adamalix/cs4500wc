@@ -28,7 +28,7 @@ package com.cpb.cs4500.parsing {
     def operationSpec: Parser[OperationSpec] = (
         operation ~ ":" ~ "->" ~ typeLiteral ^^
         { case op ~ ":" ~ "->" ~ returnType =>
-          OperationSpec(op, null, returnType) }
+          OperationSpec(op, new ArgTypes(List()), returnType) }
 
       | operation ~ ":" ~ argTypes ~ "->" ~ typeLiteral ^^
         { case op ~ ":" ~ args ~ "->" ~ returnType =>
