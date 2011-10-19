@@ -7,4 +7,5 @@ all:
 	src/main/scala/com/cpb/cs4500/parsing/ADTParser.scala \
 	src/main/scala/com/cpb/cs4500/io/ReadWriter.scala \
 	src/main/scala/com/cpb/cs4500/rewriting/Rewriter.scala
-	jar -cfm bin/cs4500.jar src/main/resources/MANIFEST.MF build/*
+	cd build && jar -cfm ../bin/cs4500.jar ../src/main/resources/MANIFEST.MF *
+	cd ..
