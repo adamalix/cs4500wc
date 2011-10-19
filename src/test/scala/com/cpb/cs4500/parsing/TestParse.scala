@@ -40,6 +40,7 @@ package com.cpb.cs4500.parsing {
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
     val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod string -> boolean Equations:"
+
     val parser = new ADTParser()
 
     test("testIntType") {
