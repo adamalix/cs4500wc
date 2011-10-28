@@ -2,11 +2,10 @@
  Runner.scala
  The main entry point for the software
  */
-package com.cpb.cs4500{
+package com.cpb.cs4500 {
 
 
-  object Runner
-  {
+  object Runner {
     import com.cpb.cs4500.parsing._
     import com.cpb.cs4500.rewriting._
     import com.cpb.cs4500.io._
