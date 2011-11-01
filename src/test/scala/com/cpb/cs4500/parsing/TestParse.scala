@@ -19,9 +19,10 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val emptyTerm = Term("", Operation(""), List())
-    val testSpecEquations = Equations(List(Equation(emptyTerm, emptyTerm)))
-    val testSpec = Spec(testADTSignatureList, testSpecEquations)
+    val term = Term("", Operation(""), List())
+    val testSpecEquations = Equations(List(Equation(term, term)))
+    val emptyEquations = Equations(List())
+    val testSpec = Spec(testADTSignatureList, emptyEquations)
 
     //moreComplicatedThingy vals
     val stringType = TypeLiteral("string")
@@ -40,7 +41,7 @@ package com.cpb.cs4500.parsing {
     val anotherADT = TypeName(anotherADTName)
     val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
     val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
-    val anotherSpecEquations = Equations(List(Equation(emptyTerm, emptyTerm)))
+    val anotherSpecEquations = Equations(List(Equation(term, term)))
     val anotherSpec = Spec(anotherADTSignatureList, anotherSpecEquations)
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
@@ -95,8 +96,8 @@ package com.cpb.cs4500.parsing {
     }
 
     test("testTestSpecEquations") {
-      expect(testSpecEquations) {
-        parser.parseAll(parser.equations, "Equations:").get
+      expect(emptyEquations) {
+        parser.parseAll(parser.equations, "").get
       }
     }
 

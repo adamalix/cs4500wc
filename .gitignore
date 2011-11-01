@@ -20,3 +20,4 @@ build/cs4500*
 target/
 project/
 bin/cs4500*
+.ensime
