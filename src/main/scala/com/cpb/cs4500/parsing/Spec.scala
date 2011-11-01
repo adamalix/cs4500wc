@@ -11,7 +11,7 @@ package com.cpb.cs4500.parsing {
     override def toString():String
   }
 
-  case class Spec(signatures:ADTSignatures, equations:Equation) {
+  case class Spec(signatures:ADTSignatures, equations:Equations) {
     override def toString():String = {
       signatures.toSexpr
     }
@@ -39,7 +39,7 @@ package com.cpb.cs4500.parsing {
     }
   }
 
-  case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal){
+  case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal) {
     def toSexpr():String = {
       "(test (" + op.toString + argTypes.toString + ") " + returnType.toString + ")"
     }
@@ -65,8 +65,20 @@ package com.cpb.cs4500.parsing {
     override def toString():String = value
   }
 
-  case class Equation(value:String) {
-    override def toString():String = value
+  case class Equations(eqs:List[Equation]) {
+    //override def toString():String = value
+  }
+
+  case class Equation(left:Term, right:Term) {
+    
+  }
+
+  case class Term(ident:String, op:Operation, args:List[Arg]) {
+    
+  }
+
+  case class Arg(term:Term, args:List[Arg]) {
+    
   }
 
 }

@@ -19,7 +19,8 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val testSpecEquations = Equation("Equations:")
+    val emptyTerm = Term("", Operation(""), List())
+    val testSpecEquations = Equations(List(Equation(emptyTerm, emptyTerm)))
     val testSpec = Spec(testADTSignatureList, testSpecEquations)
 
     //moreComplicatedThingy vals
@@ -39,7 +40,7 @@ package com.cpb.cs4500.parsing {
     val anotherADT = TypeName(anotherADTName)
     val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
     val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
-    val anotherSpecEquations = Equation("Equations:")
+    val anotherSpecEquations = Equations(List(Equation(emptyTerm, emptyTerm)))
     val anotherSpec = Spec(anotherADTSignatureList, anotherSpecEquations)
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"

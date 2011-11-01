@@ -13,8 +13,8 @@ package com.cpb.cs4500.parsing {
     val argTypeLiterals = List[TypeLiteral]()
 
     def spec: Parser[Spec] = (
-      "Signatures:" ~ adtSignatures ~ equations ^^
-      { case "Signatures:" ~ adtSigs ~ eqs => Spec(adtSigs, eqs) }
+      "Signatures:" ~ adtSignatures ~ "Equations:" ~ equations ^^
+      { case "Signatures:" ~ adtSigs ~ "Equations:" ~ eqs => Spec(adtSigs, eqs) }
     )
 
     def adtSignatures: Parser[ADTSignatures] = (
@@ -56,9 +56,24 @@ package com.cpb.cs4500.parsing {
     def typeName: Parser[TypeName] = ident ^^
       { case namedType => TypeName(namedType) }
 
-    def equations: Parser[Equation] = (
-      "Equations:" ^^ { case eqs => Equation(eqs) }
+    def equations: Parser[Equations] = (
+      rep(equation) ^^ { case eqsList => Equations(eqsList) }
     )
+
+    def equation: Parser[Equation] = (
+      term ~ "=" ~ term ^^ { case left ~ "=" ~ right => Equation(left, right) }
+    )
+
+    def term: Parser[Term] = (
+        "(" ~> operation ~ rep(arg) <~ ")" ^^ { case op ~ args => Term("", op, args) }
+      | ident ^^ { case identifier => Term(identifier, Operation(""), List()) }
+    )
+
+    def arg: Parser[Arg] = (
+      term ~ rep(arg) ^^ { case term ~ args => Arg(term, args) }
+      | rep(arg) ^^ { case emptyList => Arg(Term("empty", Operation(""), emptyList), emptyList) }
+    )
+
   }
 
 }
