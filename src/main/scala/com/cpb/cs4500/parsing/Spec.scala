@@ -6,28 +6,71 @@
  */
 
 package com.cpb.cs4500.parsing {
-
+  import scala.collection.immutable._
+  
   trait Terminal {
     override def toString():String
   }
 
-  case class Spec(signatures:ADTSignatures, equations:Equations) {
+  case class Spec(signatures:ADTSignatures, equations:Equations) 
+  {
     override def toString():String = {
       signatures.toSexpr
     }
+    
+    def getAllTypeNames():ListSet[TypeName] = {
+        signatures.getAllTypeNames()
+    }
+    
+    def getAllTypeLiterals():ListSet[TypeLiteral] = {
+        signatures.getAllTypeLiterals()
+    }
+    
+    def getAllTypes():ListSet[Terminal] = {
+        signatures.getAllTypeNames() ++ signatures.getAllTypeLiterals()
+    }
   }
 
-  case class ADTSignatures(sigs:List[ADTSignature]) {
+  case class ADTSignatures(sigs:List[ADTSignature])  
+  {
     def toSexpr():String = {
       var sexpr:String = ""
       sigs.foreach((sig:ADTSignature) => sexpr+=sig.toSexpr)
       sexpr
+    }
+    
+    def getAllTypeNames():ListSet[TypeName] = {
+        var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+        for (sig <- sigs){
+            allTypeNames = allTypeNames ++ sig.getAllTypeNames
+        }
+        allTypeNames    
+    }
+    
+    def getAllTypeLiterals():ListSet[TypeLiteral] = {
+        var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+        for (sig <- sigs){
+            allTypeLits = allTypeLits ++ sig.getAllTypeLiterals
+        }
+        allTypeLits   
     }
   }
 
   case class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {
     def toSexpr():String = {
       opSpecs.toSexpr
+    }
+    
+    def getAllTypeNames():ListSet[TypeName] = {
+      var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+      allTypeNames = allTypeNames + name ++ opSpecs.getAllTypeNames
+      allTypeNames
+    }
+    
+    def getAllTypeLiterals():ListSet[TypeLiteral] = {
+      var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+      allTypeLits = allTypeLits ++ opSpecs.getAllTypeLiterals
+      allTypeLits
     }
   }
 
@@ -37,11 +80,48 @@ package com.cpb.cs4500.parsing {
       ops.foreach((op:OperationSpec) => sexpr+= op.toSexpr + "\n")
       sexpr
     }
+    
+    def getAllTypeNames():ListSet[TypeName] = {
+      var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+      for(op<-ops){
+         allTypeNames = allTypeNames ++ op.getAllTypeNames()
+      }
+      allTypeNames
+    }
+    def getAllTypeLiterals():ListSet[TypeLiteral] = {
+      var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+      for(op<-ops){
+         allTypeLits = allTypeLits ++ op.getAllTypeLiterals
+      }
+      allTypeLits
+    }
   }
 
   case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal) {
     def toSexpr():String = {
       "(test (" + op.toString + argTypes.toString + ") " + returnType.toString + ")"
+    }
+    
+    def getAllTypeNames():ListSet[TypeName] = {
+        var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+        returnType match {
+            case a:TypeName => allTypeNames = allTypeNames + a
+            case a:TypeLiteral =>
+            case a:Operation =>
+        }
+        allTypeNames = allTypeNames ++ argTypes.getAllTypeNames()
+        allTypeNames
+    }
+    
+    def getAllTypeLiterals():ListSet[TypeLiteral] = {
+        var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+        returnType match {
+            case a:TypeLiteral => allTypeLits = allTypeLits + a
+            case a:TypeName => 
+            case a:Operation =>
+        }
+        allTypeLits = allTypeLits ++ argTypes.getAllTypeLiterals()
+        allTypeLits
     }
   }
 
@@ -55,13 +135,34 @@ package com.cpb.cs4500.parsing {
       args.foreach((arg:Terminal) => whole+= " " + arg.toString)
       whole
     }
+    
+    def getAllTypeNames():ListSet[TypeName] = {
+      var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+        for (a <- args) a match {
+            case a:TypeName => allTypeNames = allTypeNames + a
+            case a:TypeLiteral => 
+            case a:Operation =>
+        }
+        allTypeNames
+    }
+        
+    def getAllTypeLiterals():ListSet[TypeLiteral] = {
+      var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+        for (a <- args) a match {
+            case a:TypeLiteral => allTypeLits = allTypeLits + a
+            case a:TypeName => 
+            case a:Operation =>
+        }
+        allTypeLits
+    }
   }
 
   case class TypeLiteral(value:String) extends Terminal {
-    override def toString():String = value
+    override def toString():String = value 
   }
 
   case class TypeName(value:String) extends Terminal {
+  
     override def toString():String = value
   }
 

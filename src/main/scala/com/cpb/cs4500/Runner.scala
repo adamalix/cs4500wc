@@ -9,6 +9,7 @@ package com.cpb.cs4500 {
     import com.cpb.cs4500.parsing._
     import com.cpb.cs4500.rewriting._
     import com.cpb.cs4500.io._
+    import scala.collection.immutable._
 
     def main(args: Array[String]) {
       val input:String = ReadWriter.inputFromFile(args(0))
