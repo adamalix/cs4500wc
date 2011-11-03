@@ -42,10 +42,10 @@ package com.cpb.cs4500.parsing {
     val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
     val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
     val anotherSpecEquations = Equations(List(Equation(term, term)))
-    val anotherSpec = Spec(anotherADTSignatureList, anotherSpecEquations)
+    val anotherSpec = Spec(anotherADTSignatureList, emptyEquations)
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
-    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod string -> boolean Equations:"
+    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations:"
 
     val parser = new ADTParser()
 
@@ -107,11 +107,88 @@ package com.cpb.cs4500.parsing {
       }
     }
 
-//    test("testMoreComplicatedSpec") {
-//      expect(anotherSpec) {
-//        parser.parseAll(parser.spec, moreComplicatedThingy).get
-//      }
-//    }
+    test("testStringType") {
+      expect(stringType) {
+        parser.parseAll(parser.typeLiteral, "string").get
+      }
+    }
+
+    test("testCharacterType") {
+      expect(charType) {
+        parser.parseAll(parser.typeLiteral, "character").get
+      }
+    }
+
+    test("testMakeDadOp") {
+      expect(makeDadOp) {
+        parser.parseAll(parser.operation, "makeDad").get
+      }
+    }
+
+    test("testAnotherMethodOp") {
+      expect(anotherMethodOp) {
+        parser.parseAll(parser.operation, "anotherMethod").get
+      }
+    }
+
+    test("testEvenAThirdMethodOp") {
+      expect(evenAThirdMethodOp) {
+        parser.parseAll(parser.operation, "evenAThirdMethod").get
+      }
+    }
+
+    test("testMakeDadArgTypes") {
+      expect(makeDadArgTypes) {
+        parser.parseAll(parser.argTypes, "int * string").get
+      }
+    }
+
+    test("testAnotherMethodArgTypes") {
+      expect(anotherMethodArgTypes) {
+        parser.parseAll(parser.argTypes, "").get
+      }
+    }
+
+    test("testEvenAThirdMethodArgTypes") {
+      expect(evenAThirdMethodArgTypes) {
+        parser.parseAll(parser.argTypes, "string").get
+      }
+    }
+
+    test("testMakeDadOpSpec") {
+      expect(makeDadOpSpec) {
+        parser.parseAll(parser.operationSpec, "makeDad: int * string -> character").get
+      }
+    }
+
+    test("testAnotherMethodOpSpec") {
+      expect(anotherMethodOpSpec) {
+        parser.parseAll(parser.operationSpec, "anotherMethod: -> int").get
+      }
+    }
+
+    test("testEvenAThirdMethodOpSpec") {
+      expect(evenAThirdMethodOpSpec) {
+        parser.parseAll(parser.operationSpec, "evenAThirdMethod: string -> boolean").get
+      }
+    }
+
+    test("testAnotherADTOperationSpecs") {
+      expect(anotherADTOperationSpecs) {
+        parser.parseAll(parser.operationSpecs, "makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean").get
+      }
+    }
+
+    test("testAnotherADT") {
+      expect(anotherADT) { parser.parseAll(parser.typeName, "anotherADT").get }
+    }
+
+   
+    test("testMoreComplicatedSpec") {
+      expect(anotherSpec) {
+        parser.parseAll(parser.operationSpec, moreComplicatedThingy).get
+      }
+    }
 
   }
 
