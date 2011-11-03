@@ -183,10 +183,21 @@ package com.cpb.cs4500.parsing {
       expect(anotherADT) { parser.parseAll(parser.typeName, "anotherADT").get }
     }
 
+    test("testAnotherADTSignature") {
+      expect(anotherADTSignature) { 
+        parser.parseAll(parser.adtSignature, "ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean").get
+      }
+    }
+
+    test("testAnotherADTSignatureList") {
+      expect(anotherADTSignatureList) { 
+        parser.parseAll(parser.adtSignatures, "ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean").get
+      }
+    }
    
     test("testMoreComplicatedSpec") {
       expect(anotherSpec) {
-        parser.parseAll(parser.operationSpec, moreComplicatedThingy).get
+        parser.parseAll(parser.spec, moreComplicatedThingy).get
       }
     }
 
