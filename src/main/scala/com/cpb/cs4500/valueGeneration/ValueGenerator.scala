@@ -1,20 +1,19 @@
 package com.cpb.cs4500.valueGeneration {
+    import scala.util.parsing.combinator._
     import com.cpb.cs4500.parsing._
+    import com.cpb.cs4500.rewriting._
+    import com.cpb.cs4500.io._
     import scala.collection.mutable.HashMap
     import scala.collection.immutable._
     import scala.util._
+    
+
     object ValueGenerator{
       
       
-      //TODO
-      /*
-      CallOpSpecReplacement on al opSpecs
-        - Get AlTypes
-        - Get All Constructors
-      */
       
-      
-      def specReplacement(spec:Spec) =
+      //TODO Throw error if trying to return undeclared type.
+      def specValueGeneration(spec:Spec):HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] =
       {
         val constMap:HashMap[TypeName,OperationSpec] = makeConstMap(spec.getAllBaseConstructors)
         var valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] = HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]()
@@ -23,7 +22,7 @@ package com.cpb.cs4500.valueGeneration {
         {
             valMap = opSpecReplacement(op, valMap, constMap)
         }
-        System.out.println(valMap.mkString)
+        valMap
       }
       
       def makeConstMap(ops:ListSet[OperationSpec]):HashMap[TypeName, OperationSpec] =
@@ -54,7 +53,6 @@ package com.cpb.cs4500.valueGeneration {
             {
                   argVals = argVals :+ generateValueLiteral(term, constMap)
             }
-            System.out.println(argVals.toString)
             var returnVal:TypeLiteral = TypeLiteral("temporary")
             op.returnType match {
                 case lit:TypeLiteral => returnVal = generateValueLiteral(lit, constMap)
@@ -70,7 +68,6 @@ package com.cpb.cs4500.valueGeneration {
         term match {
             case lit:TypeLiteral => 
             {
-            System.out.println(lit.value)
                 lit.value match {
                     case "int" => generateRandomIntLiteral()
                     case "boolean" => generateRandomBoolean()

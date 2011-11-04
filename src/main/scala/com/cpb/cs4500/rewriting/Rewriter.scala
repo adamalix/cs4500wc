@@ -3,9 +3,10 @@ Rewrites the parsed data into Scheme tests.
 */
 package com.cpb.cs4500.rewriting {
     import com.cpb.cs4500.parsing._
+    import com.cpb.cs4500.valueGeneration._
     class Rewriter() {
         def applyRewriteRules(specification:Spec):String  = {
-            "\n" + specification.toString
+            "\n" + specification.toGeneratedSexpr(ValueGenerator.specValueGeneration(specification))
         }
 
        // def generateExpressions(specification:Spec):String = {

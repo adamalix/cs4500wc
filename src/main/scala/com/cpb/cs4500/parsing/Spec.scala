@@ -6,7 +6,9 @@
  */
 
 package com.cpb.cs4500.parsing {
+  import scala.collection.mutable.HashMap
   import scala.collection.immutable._
+  
   
   trait Terminal {
     override def toString():String
@@ -16,6 +18,10 @@ package com.cpb.cs4500.parsing {
   {
     override def toString():String = {
       signatures.toSexpr
+    }
+    
+    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
+        signatures.toGeneratedSexpr(repMap)
     }
     
     def getAllTypeNames():ListSet[TypeName] = {
@@ -67,6 +73,12 @@ package com.cpb.cs4500.parsing {
       sexpr
     }
     
+    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
+      var sexpr:String = ""
+      sigs.foreach((sig:ADTSignature) => sexpr+=sig.toGeneratedSexpr(repMap))
+      sexpr
+    }
+    
     def getAllTypeNames():ListSet[TypeName] = {
         var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
         for (sig<-sigs){
@@ -97,6 +109,10 @@ package com.cpb.cs4500.parsing {
       opSpecs.toSexpr
     }
     
+    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
+        opSpecs.toGeneratedSexpr(repMap)
+    }
+    
     def getAllTypeNames():ListSet[TypeName] = {
       var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
       allTypeNames = allTypeNames + name ++ opSpecs.getAllTypeNames
@@ -118,6 +134,12 @@ package com.cpb.cs4500.parsing {
     def toSexpr():String = {
       var sexpr:String = ""
       ops.foreach((op:OperationSpec) => sexpr+= op.toSexpr + "\n")
+      sexpr
+    }
+    
+    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
+      var sexpr:String = ""
+      ops.foreach((op:OperationSpec) => sexpr+= op.toGeneratedSexpr(repMap) + "\n")
       sexpr
     }
     
@@ -146,6 +168,12 @@ package com.cpb.cs4500.parsing {
 
     def toSexpr():String = {
       "(test (" + op.toString + argTypes.toString + ") " + returnType.toString + ")"
+    }
+    
+    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
+      val newArgTypes:ArgTypes = repMap(this).head._1
+      val newReturnType:Terminal = repMap(this).head._2
+      "(test (" + op.toString + newArgTypes.toString + ") " + newReturnType.toString + ")"
     }
     
     def getAllTypeNames():ListSet[TypeName] = {
