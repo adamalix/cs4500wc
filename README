@@ -1,5 +1,5 @@
 VERSION 0.1
-Date 10/18/11
+Date 11/4/11
 
 This is software written for the Fall seession of CS4500 taught by Will
 Clinger by:
@@ -17,14 +17,15 @@ cd <project-base-dir>
 make
 
 ---- TESTING ----
-Testing is not available on the CCIS Linux machines as of now.  To test the
-software, you must install Scala Build Tools on a machine that has maven
-version 2 or later installed:
+Running unit tests is not available on the CCIS Linux machines as of now.  To
+test the software, you must install Scala Build Tools on a machine that has
+maven version 2 or later installed:
 
 https://github.com/harrah/xsbt/wiki
 http://maven.apache.org/
 
-Once you have instaleld sbt, you can test by invoking the following commands:
+Once you have instaleld sbt, you can run unit tests by invoking the following
+commands:
 
 sbt compile
 sbt test
@@ -40,7 +41,7 @@ cd <project-base-dir>
 ADT written in the grammar specified by the homework assignment.  For grammar
 details, see Gramma section below.  URL:
 
-http://www.ccs.neu.edu/course/cs4500wc/assignment4.txt
+http://www.ccs.neu.edu/course/cs4500wc/assignment6.txt
 
 `file2' is the name of the output file to which R6RS scheme expressions will be
 written.  The file will be created within the directory it is called from so
@@ -78,6 +79,9 @@ Grammar for input files (file1):
     <equations>  ::=  <empty>
 
 ---- CHANGELOG ----
+
+11/4/11:
+Prototype 2 of the software.
 
 10/18/11:
 Initial software prototype for first homework assignment.
