@@ -34,7 +34,8 @@ package com.cpb.cs4500.parsing {
     val anotherMethodArgTypes = ArgTypes(List())
     val evenAThirdMethodArgTypes = ArgTypes(List(stringType))
     val makeDadOpSpec = OperationSpec(makeDadOp, makeDadArgTypes, charType, false)
-    val anotherMethodOpSpec = OperationSpec(anotherMethodOp, anotherMethodArgTypes, intType, false)
+    //basic creator
+    val anotherMethodOpSpec = OperationSpec(anotherMethodOp, anotherMethodArgTypes, intType, true)
     val evenAThirdMethodOpSpec = OperationSpec(evenAThirdMethodOp, evenAThirdMethodArgTypes, booleanType, false)
     val anotherADTOperationSpecs = OperationSpecs(List(makeDadOpSpec, anotherMethodOpSpec, evenAThirdMethodOpSpec))
     val anotherADTName = "anotherADT"
