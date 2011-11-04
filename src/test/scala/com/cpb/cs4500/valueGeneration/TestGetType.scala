@@ -14,8 +14,8 @@ package com.cpb.cs4500.parsing {
     val car = Operation("Car")
     val makeBoolOp = Operation("makeBool")
     val makeBoolArgTypes = ArgTypes(List(intType, intType))
-    val makeBoolOpSpec = OperationSpec(makeBoolOp, makeBoolArgTypes, booleanType)
-    val makeCarOpSpec = OperationSpec(car, makeBoolArgTypes, intType)
+    val makeBoolOpSpec = OperationSpec(makeBoolOp, makeBoolArgTypes, booleanType, false)
+    val makeCarOpSpec = OperationSpec(car, makeBoolArgTypes, intType, false)
     val thisADTOperationSpecs = OperationSpecs(List(makeBoolOpSpec, makeCarOpSpec))
     val adtName = "THISADT"
     val thisADT = TypeName(adtName) 

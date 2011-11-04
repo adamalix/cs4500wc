@@ -13,7 +13,7 @@ package com.cpb.cs4500.parsing {
     val booleanType = TypeLiteral("boolean")
     val makeBoolOp = Operation("makeBool")
     val makeBoolArgTypes = ArgTypes(List(intType, intType))
-    val makeBoolOpSpec = OperationSpec(makeBoolOp, makeBoolArgTypes, booleanType)
+    val makeBoolOpSpec = OperationSpec(makeBoolOp, makeBoolArgTypes, booleanType, false)
     val thisADTOperationSpecs = OperationSpecs(List(makeBoolOpSpec))
     val adtName = "THISADT"
     val thisADT = TypeName(adtName) 
@@ -33,9 +33,9 @@ package com.cpb.cs4500.parsing {
     val makeDadArgTypes = ArgTypes(List(intType, stringType))
     val anotherMethodArgTypes = ArgTypes(List())
     val evenAThirdMethodArgTypes = ArgTypes(List(stringType))
-    val makeDadOpSpec = OperationSpec(makeDadOp, makeDadArgTypes, charType)
-    val anotherMethodOpSpec = OperationSpec(anotherMethodOp, anotherMethodArgTypes, intType)
-    val evenAThirdMethodOpSpec = OperationSpec(evenAThirdMethodOp, evenAThirdMethodArgTypes, booleanType)
+    val makeDadOpSpec = OperationSpec(makeDadOp, makeDadArgTypes, charType, false)
+    val anotherMethodOpSpec = OperationSpec(anotherMethodOp, anotherMethodArgTypes, intType, false)
+    val evenAThirdMethodOpSpec = OperationSpec(evenAThirdMethodOp, evenAThirdMethodArgTypes, booleanType, false)
     val anotherADTOperationSpecs = OperationSpecs(List(makeDadOpSpec, anotherMethodOpSpec, evenAThirdMethodOpSpec))
     val anotherADTName = "anotherADT"
     val anotherADT = TypeName(anotherADTName)

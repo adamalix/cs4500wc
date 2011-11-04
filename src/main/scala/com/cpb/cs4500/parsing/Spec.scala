@@ -129,7 +129,8 @@ package com.cpb.cs4500.parsing {
     
   }
 
-  case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal) {
+  case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal, basicCreator:Boolean) {
+
     def toSexpr():String = {
       "(test (" + op.toString + argTypes.toString + ") " + returnType.toString + ")"
     }
@@ -159,6 +160,11 @@ package com.cpb.cs4500.parsing {
     def getOpName():String = {
         op.toString
     }
+
+    def isBasicCreator():Boolean = {
+      basicCreator
+    }
+
   }
 
   case class Operation(ident:String) extends Terminal {
