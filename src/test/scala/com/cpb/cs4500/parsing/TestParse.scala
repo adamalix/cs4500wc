@@ -44,8 +44,13 @@ package com.cpb.cs4500.parsing {
     val anotherSpecEquations = Equations(List(Equation(term, term)))
     val anotherSpec = Spec(anotherADTSignatureList, emptyEquations)
 
+    //moreComplicatedThingy equations
+    val emptyOp = Operation("")
+    val dTerm = Term("\'d\'", emptyOp, List())
+    val falseTerm = Term("#f", emptyOp, List())
+
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
-    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations:"
+    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations: (makeDad 1 \"dad\") = \'d\' (evenAThirdMethod \"lol\") = #f"
 
     val parser = new ADTParser()
 
@@ -192,6 +197,18 @@ package com.cpb.cs4500.parsing {
     test("testAnotherADTSignatureList") {
       expect(anotherADTSignatureList) { 
         parser.parseAll(parser.adtSignatures, "ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean").get
+      }
+    }
+
+    test("testDTerm") {
+      expect(dTerm) {
+        parser.parseAll(parser.term, "\'d\'").get
+      }
+    }
+
+    test("testFalseTerm") {
+      expect(falseTerm) {
+        parser.parseAll(parser.term, "#f").get
       }
     }
    
