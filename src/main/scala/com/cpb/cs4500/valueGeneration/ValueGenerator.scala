@@ -35,7 +35,7 @@ package com.cpb.cs4500.valueGeneration {
             List((op.argTypes, generateTypeNameValue(op.getOpName)))
         }
         
-        args:List[Terminal] = new List()
+        args:List[Terminal] = new List[Terminal]()
         //for(terminal<-op.argTypes.args)
         else 
         {
