@@ -27,7 +27,7 @@ package com.cpb.cs4500.valueGeneration {
         */
       def opSpecReplacement(op:OperationSpec, 
                             allTypes:List[Terminal], 
-                            valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):List[((ArgTypes, TypeLiteral))] =
+                            valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]) =
       {
         if(op.basicCreator)
         {
@@ -35,12 +35,8 @@ package com.cpb.cs4500.valueGeneration {
             List((op.argTypes, generateTypeNameValue(op.getOpName)))
         }
         
-        args:List[Terminal] = new List[Terminal]()
+        val args:List[Terminal] = List[Terminal]()
         //for(terminal<-op.argTypes.args)
-        else 
-        {
-            List()
-        }
       }
 
       
