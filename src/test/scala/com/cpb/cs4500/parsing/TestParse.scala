@@ -53,6 +53,8 @@ package com.cpb.cs4500.parsing {
     val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations: (makeDad 1 \"dad\") = \'d\' (evenAThirdMethod \"lol\") = #f"
 
     val parser = new ADTParser()
+    
+    
 
     test("testIntType") {
       expect(intType) { parser.parseAll(parser.typeLiteral, "int").get }

@@ -5,12 +5,12 @@
 package com.cpb.cs4500 {
   
   import scala.util.parsing.combinator._
-
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.rewriting._
   import com.cpb.cs4500.io._
 
   object Runner {
+
     def main(args: Array[String]) {
       val input:String = ReadWriter.inputFromFile(args(0))
       val parser = new ADTParser()
