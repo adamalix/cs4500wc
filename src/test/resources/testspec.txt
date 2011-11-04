@@ -1,0 +1,11 @@
+Signatures:
+  ADT: THISADT
+    method:     int * string -> string
+    methodTwo:  int          -> character
+    toInt:      string       -> int
+    isDad:                   -> boolean
+  Equations:
+   a = b
+   b = c
+   c = a
+   (method 3 "minus") = 3

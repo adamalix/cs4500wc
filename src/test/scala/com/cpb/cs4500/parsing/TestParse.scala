@@ -46,11 +46,13 @@ package com.cpb.cs4500.parsing {
 
     //moreComplicatedThingy equations
     val emptyOp = Operation("")
-    val dTerm = Term("\'d\'", emptyOp, List())
-    val falseTerm = Term("#f", emptyOp, List())
+    val dTerm = Term("d", emptyOp, List())
+    val falseTerm = Term("false", emptyOp, List())
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
-    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations: (makeDad 1 \"dad\") = \'d\' (evenAThirdMethod \"lol\") = #f"
+    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations:"
+
+    val equationsString = "(makeDad 1 \"dad\") = \'d\' (evenAThirdMethod \"lol\") = #f"
 
     val parser = new ADTParser()
     
@@ -204,21 +206,39 @@ package com.cpb.cs4500.parsing {
 
     test("testDTerm") {
       expect(dTerm) {
-        parser.parseAll(parser.term, "\'d\'").get
+        parser.parseAll(parser.term, "d") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
       }
     }
 
     test("testFalseTerm") {
       expect(falseTerm) {
-        parser.parseAll(parser.term, "#f").get
+        parser.parseAll(parser.term, "false") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
       }
     }
    
     test("testMoreComplicatedSpec") {
       expect(anotherSpec) {
-        parser.parseAll(parser.spec, moreComplicatedThingy).get
+        parser.parseAll(parser.spec, moreComplicatedThingy + equationsString) match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => msg
+          case parser.Error(_, _) => "error, sorry."
+	}
       }
     }
+
+//    def handleParsing(pr: parser.ParseResult[Any]) = pr match {
+//      case pr.Success(result, _) => result
+//      case pr.Failure(msg, _) => msg
+//      case pr.Error(_, _) => "error"
+//    }
 
   }
 
