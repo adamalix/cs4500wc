@@ -29,6 +29,21 @@ package com.cpb.cs4500.parsing {
     def getAllTypes():ListSet[Terminal] = {
         signatures.getAllTypeNames() ++ signatures.getAllTypeLiterals()
     }
+    
+    def getAllOpSpecs():ListSet[OperationSpec] = {
+        signatures.getAllOpSpecs
+    }
+    
+    def getOperationNames():List[String] = {
+        val ops:ListSet[OperationSpec] = getAllOpSpecs
+        var opNameList:List[String] = List[String]()
+        
+        for (op<-ops){
+            opNameList = opNameList :+ op.getOpName
+        }
+        opNameList
+        
+    }
   }
 
   case class ADTSignatures(sigs:List[ADTSignature])  
@@ -41,7 +56,7 @@ package com.cpb.cs4500.parsing {
     
     def getAllTypeNames():ListSet[TypeName] = {
         var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-        for (sig <- sigs){
+        for (sig<-sigs){
             allTypeNames = allTypeNames ++ sig.getAllTypeNames
         }
         allTypeNames    
@@ -49,13 +64,21 @@ package com.cpb.cs4500.parsing {
     
     def getAllTypeLiterals():ListSet[TypeLiteral] = {
         var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-        for (sig <- sigs){
+        for (sig<-sigs){
             allTypeLits = allTypeLits ++ sig.getAllTypeLiterals
         }
         allTypeLits   
     }
+    
+    def getAllOpSpecs():ListSet[OperationSpec] = {
+        var AllOpSpecs:ListSet[OperationSpec] = new ListSet[OperationSpec]()
+        for (sig<-sigs){
+            AllOpSpecs = AllOpSpecs ++ sig.getAllOpSpecs
+        }
+        AllOpSpecs
+    }
   }
-
+  
   case class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {
     def toSexpr():String = {
       opSpecs.toSexpr
@@ -71,6 +94,10 @@ package com.cpb.cs4500.parsing {
       var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
       allTypeLits = allTypeLits ++ opSpecs.getAllTypeLiterals
       allTypeLits
+    }
+    
+    def getAllOpSpecs():List[OperationSpec] = {
+        opSpecs.getOpSpecs
     }
   }
 
@@ -95,6 +122,11 @@ package com.cpb.cs4500.parsing {
       }
       allTypeLits
     }
+    
+    def getOpSpecs():List[OperationSpec] = {
+        ops
+    }
+    
   }
 
   case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal) {
@@ -123,6 +155,10 @@ package com.cpb.cs4500.parsing {
         allTypeLits = allTypeLits ++ argTypes.getAllTypeLiterals()
         allTypeLits
     }
+    
+    def getOpName():String = {
+        op.toString
+    }
   }
 
   case class Operation(ident:String) extends Terminal {
@@ -138,17 +174,17 @@ package com.cpb.cs4500.parsing {
     
     def getAllTypeNames():ListSet[TypeName] = {
       var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-        for (a <- args) a match {
-            case a:TypeName => allTypeNames = allTypeNames + a
-            case a:TypeLiteral => 
-            case a:Operation =>
-        }
-        allTypeNames
+      for (a<-args) a match {
+        case a:TypeName => allTypeNames = allTypeNames + a
+        case a:TypeLiteral => 
+        case a:Operation =>
+      }
+      allTypeNames
     }
         
     def getAllTypeLiterals():ListSet[TypeLiteral] = {
       var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-        for (a <- args) a match {
+        for (a<-args) a match {
             case a:TypeLiteral => allTypeLits = allTypeLits + a
             case a:TypeName => 
             case a:Operation =>
@@ -158,7 +194,7 @@ package com.cpb.cs4500.parsing {
   }
 
   case class TypeLiteral(value:String) extends Terminal {
-    override def toString():String = value 
+    override def toString():String = value
   }
 
   case class TypeName(value:String) extends Terminal {
