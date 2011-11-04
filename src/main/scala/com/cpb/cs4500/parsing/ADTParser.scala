@@ -31,13 +31,14 @@ package com.cpb.cs4500.parsing {
     )
 
     def operationSpec: Parser[OperationSpec] = (
+        // Most likely a basic creator
         operation ~ ":" ~ "->" ~ typeLiteral ^^
         { case op ~ ":" ~ "->" ~ returnType =>
-          OperationSpec(op, new ArgTypes(List()), returnType) }
+          OperationSpec(op, new ArgTypes(List()), returnType, true) }
 
       | operation ~ ":" ~ argTypes ~ "->" ~ typeLiteral ^^
         { case op ~ ":" ~ args ~ "->" ~ returnType =>
-          OperationSpec(op, args, returnType) }
+          OperationSpec(op, args, returnType, false) }
     )
 
     def operation: Parser[Operation] = ident ^^ { case op => Operation(op) }
