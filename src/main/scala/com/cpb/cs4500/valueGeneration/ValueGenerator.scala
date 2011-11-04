@@ -27,22 +27,53 @@ package com.cpb.cs4500.valueGeneration {
         */
       def opSpecReplacement(op:OperationSpec, 
                             allTypes:List[Terminal], 
-                            valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]) =
+                            valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] =
       {
         if(op.basicCreator)
         {
-            valMap.put(op, List((op.argTypes, generateTypeNameValue(op.getOpName))))
-            List((op.argTypes, generateTypeNameValue(op.getOpName)))
+            valMap.put(op, List((op.argTypes, TypeLiteral(op.getOpName))))
+            valMap
+        }
+        else
+        {
+            var argVals:List[Terminal] = List[Terminal]()
+            for(term<-op.argTypes.args)
+            {
+                  argVals = argVals :+ generateValueLiteral(term)
+            }
+            System.out.println(argVals.toString)
+            var returnVal:TypeLiteral = TypeLiteral("Check")
+            op.returnType match {
+                case lit:TypeLiteral => returnVal = generateValueLiteral(lit)
+                case name:TypeName => returnVal = TypeLiteral("MERP")
+            }
+            valMap.put(op, List((ArgTypes(argVals), returnVal)))
+            valMap
         }
         
-        val args:List[Terminal] = List[Terminal]()
         //for(terminal<-op.argTypes.args)
       }
 
+      def generateValueLiteral(term:Terminal):TypeLiteral = 
+      {
+        term match {
+            case lit:TypeLiteral => 
+            {
+            System.out.println(lit.value)
+                lit.value match {
+                    case "int" => generateRandomIntLiteral()
+                    case "boolean" => generateRandomBoolean()
+                    case "character" => generateRandomCharacter()
+                    case "string" => generateRandomString()
+                    }
+            }
+            case name:TypeName => TypeLiteral("TEST") 
+        }
+      }
       
       def generateRandomIntLiteral():TypeLiteral= 
       {
-        TypeLiteral(scala.util.Random.nextInt.toString)
+        TypeLiteral(scala.util.Random.nextInt(1001).toString)
       }
       
       def generateRandomBoolean():TypeLiteral=

@@ -7,6 +7,8 @@ package com.cpb.cs4500.parsing {
   import org.scalatest.FunSuite
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.valueGeneration._
+  import scala.collection.mutable.HashMap
+  import scala.collection.immutable._
 
   class TestGetType extends FunSuite {
         
@@ -26,6 +28,9 @@ package com.cpb.cs4500.parsing {
     val testSpecEquations = Equations(List(Equation(term, term)))
     val emptyEquations = Equations(List())
     //val testSpec = Spec(testADTSignatureList, emptyEquations)
+    val valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] = new HashMap()
+   
+    System.out.println(ValueGenerator.opSpecReplacement(makeBoolOpSpec, List[Terminal]() , valMap).mkString)
     
 
     
