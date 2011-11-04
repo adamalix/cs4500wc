@@ -14,6 +14,8 @@ package com.cpb.cs4500.parsing {
         
     val intType = TypeLiteral("int")
     val booleanType = TypeLiteral("boolean")
+    val stringType = TypeLiteral("string")
+    val charType = TypeLiteral("character")
     val car = Operation("Car")
     val makeBoolOp = Operation("makeBool")
     val makeBoolArgTypes = ArgTypes(List(intType, intType))
@@ -38,9 +40,13 @@ package com.cpb.cs4500.parsing {
     typeMap.put(catType, makeCat)
     val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
     val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
+
+    val newType = TypeName("NewType")
+    val newTypeMethodOp = Operation("newTypeMethod")
+    val newTypeMethodArgs = ArgTypes(List(charType, stringType))
+    val newTypeMethodOpSpec = OperationSpec(newTypeMethodOp, newTypeMethodArgs, stringType, false)
     //System.out.println(ValueGenerator.opSpecReplacement(makeCat, List[Terminal]() , valMap, typeMap).mkString)
-    //System.out.println(ValueGenerator.opSpecReplacement(makeBoolOpSpec2, List[Terminal]() , valMap, typeMap).mkString)
-    
+
 
     
     /*

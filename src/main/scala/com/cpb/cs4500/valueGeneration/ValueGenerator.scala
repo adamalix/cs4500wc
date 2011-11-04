@@ -103,7 +103,8 @@ package com.cpb.cs4500.valueGeneration {
       
       def generateRandomString():TypeLiteral=
       {
-         TypeLiteral(scala.util.Random.nextString(scala.util.Random.nextInt(11)))
+         val strList = List("string1", "string2", "string3", "string4", "string5")
+         TypeLiteral(strList(scala.util.Random.nextInt(5)))
       }
       
       def generateTypeNameValue(name:String):TypeLiteral = {
