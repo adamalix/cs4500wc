@@ -6,6 +6,7 @@ package com.cpb.cs4500.parsing {
 
   import org.scalatest.FunSuite
   import com.cpb.cs4500.parsing._
+  import com.cpb.cs4500.valueGeneration._
 
   class TestGetType extends FunSuite {
         
@@ -24,9 +25,9 @@ package com.cpb.cs4500.parsing {
     val term = Term("", Operation(""), Arg())
     val testSpecEquations = Equations(List(Equation(term, term)))
     val emptyEquations = Equations(List())
-    val testSpec = Spec(testADTSignatureList, emptyEquations)
+    //val testSpec = Spec(testADTSignatureList, emptyEquations)
     
-    System.out.println(testSpec.toString)
+
     
     /*
     test("testGetTypes") {
