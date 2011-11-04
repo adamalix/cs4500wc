@@ -12,8 +12,33 @@ package com.cpb.cs4500.valueGeneration {
         - Get AlTypes
         - Get All Constructors
       */
+      
+      
+      def specReplacement(spec:Spec) =
+      {
+        val constMap:HashMap[TypeName,OperationSpec] = makeConstMap(spec.getAllBaseConstructors)
+        var valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] = HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]()
+        val allOps:ListSet[OperationSpec] = spec.getAllOpSpecs
+        for(op<-allOps)
+        {
+            valMap = opSpecReplacement(op, valMap, constMap)
+        }
+        System.out.println(valMap.mkString)
+      }
+      
+      def makeConstMap(ops:ListSet[OperationSpec]):HashMap[TypeName, OperationSpec] =
+      {
+        val constMap:HashMap[TypeName, OperationSpec] = HashMap[TypeName, OperationSpec]()  
+        for(op<-ops)
+        {
+            op.returnType match {
+                case name:TypeName => constMap.put(name, op)
+            }
+        }
+        constMap
+      }
+      
       def opSpecReplacement(op:OperationSpec, 
-                            allTypes:List[Terminal], 
                             valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]],
                             constMap:HashMap[TypeName, OperationSpec]):HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] =
       {

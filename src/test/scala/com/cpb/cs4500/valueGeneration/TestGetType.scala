@@ -39,7 +39,7 @@ package com.cpb.cs4500.parsing {
     val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
     val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
     //System.out.println(ValueGenerator.opSpecReplacement(makeCat, List[Terminal]() , valMap, typeMap).mkString)
-    System.out.println(ValueGenerator.opSpecReplacement(makeBoolOpSpec2, List[Terminal]() , valMap, typeMap).mkString)
+    //System.out.println(ValueGenerator.opSpecReplacement(makeBoolOpSpec2, List[Terminal]() , valMap, typeMap).mkString)
     
 
     
