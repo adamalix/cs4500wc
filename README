@@ -1,4 +1,4 @@
-VERSION 0.1
+VERSION 0.2
 Date 11/4/11
 
 This is software written for the Fall seession of CS4500 taught by Will
@@ -77,11 +77,29 @@ Grammar for input files (file1):
               |  <typename>
 
     <equations>  ::=  <empty>
+                   |  <equation> <equations>
+
+    <equation>  ::=  <term> "=' <term>
+
+    <term>  ::=  <identifier>
+              |  "(" <operation> <args> ")"
+
+    <args>  ::=  <empty>
+              |  <term> <args>
 
 ---- CHANGELOG ----
 
 11/4/11:
-Prototype 2 of the software.
+Prototype 2 of the software.  This version correclty parses all Equations but
+does not yet apply the rewrite rules found in Equations.  Due to a backlog of
+work involving attempting to port code to Scala version 2.7.5, our prototype is
+not complete.
+
+We have included the Scala library and compiler jars in order to run our
+software on CCIS machines.  Version .3 will be feature complete and a work
+around for the CCIS Scala version has been planned.
+
+Bump in Version (.1 -> .2)
 
 10/18/11:
 Initial software prototype for first homework assignment.
