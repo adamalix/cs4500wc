@@ -19,7 +19,7 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val term = Term("", Operation(""), List())
+    val term = Term("", Operation(""), Arg())
     val testSpecEquations = Equations(List(Equation(term, term)))
     val emptyEquations = Equations(List())
     val testSpec = Spec(testADTSignatureList, emptyEquations)
@@ -47,13 +47,13 @@ package com.cpb.cs4500.parsing {
 
     //moreComplicatedThingy equations
     val emptyOp = Operation("")
-    val dTerm = Term("d", emptyOp, List())
-    val falseTerm = Term("false", emptyOp, List())
+    val dTerm = Term("d", emptyOp, Arg())
+    val falseTerm = Term("false", emptyOp, Arg())
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
     val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations:"
 
-    val equationsString = "(makeDad 1 \"dad\") = \'d\' (evenAThirdMethod \"lol\") = #f"
+    val equationsString = "(makeDad adsf dad) = (evenAThirdMethod lol)"
 
     val parser = new ADTParser()
     

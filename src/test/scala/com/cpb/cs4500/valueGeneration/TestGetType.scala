@@ -22,7 +22,7 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val term = Term("", Operation(""), List())
+    val term = Term("", Operation(""), Arg())
     val testSpecEquations = Equations(List(Equation(term, term)))
     val emptyEquations = Equations(List())
     //val testSpec = Spec(testADTSignatureList, emptyEquations)

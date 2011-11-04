@@ -66,13 +66,19 @@ package com.cpb.cs4500.parsing {
     )
 
     def term: Parser[Term] = (
-        "(" ~> operation ~ rep(arg) <~ ")" ^^ { case op ~ args => Term("", op, args) }
-      | ident ^^ { case identifier => Term(identifier, Operation(""), List()) }
+        "(" ~> operation ~ args <~ ")" ^^ { case op ~ args => Term("", op, args) }
+      | ident ^^ { case identifier => Term(identifier, Operation(""), Arg()) }
     )
 
-    def arg: Parser[Arg] = (
-      term ~ rep(arg) ^^ { case term ~ args => Arg(term, args) }
-      | rep(arg) ^^ { case emptyList => Arg(Term("empty", Operation(""), emptyList), emptyList) }
+    def args: Parser[ArgTrait] = (
+        term ~ args ^^ { case term ~ args => Args(term, args) }
+      | bogusArg // empty case
+
+    )
+
+    // Hack because there is not else case
+    def bogusArg: Parser[Arg] = (
+      rep("BOGUS&123456789") ^^ { case _ => Arg() }
     )
 
   }

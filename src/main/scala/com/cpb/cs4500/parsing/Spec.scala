@@ -216,12 +216,19 @@ package com.cpb.cs4500.parsing {
     
   }
 
-  case class Term(ident:String, op:Operation, args:List[Arg]) {
+  trait ArgTrait {
+    override def toString():String
+  }
+
+  case class Term(ident:String, op:Operation, args:ArgTrait) {
     
   }
 
-  case class Arg(term:Term, args:List[Arg]) {
+  case class Args(term:Term, args:ArgTrait) extends ArgTrait {
     
   }
+
+  // This is the empty case.
+  case class Arg() extends ArgTrait {}
 
 }
