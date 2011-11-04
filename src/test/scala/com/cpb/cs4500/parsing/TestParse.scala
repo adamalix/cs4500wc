@@ -43,17 +43,22 @@ package com.cpb.cs4500.parsing {
     val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
     val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
     val anotherSpecEquations = Equations(List(Equation(term, term)))
-    val anotherSpec = Spec(anotherADTSignatureList, emptyEquations)
 
     //moreComplicatedThingy equations
     val emptyOp = Operation("")
-    val dTerm = Term("d", emptyOp, Arg())
-    val falseTerm = Term("false", emptyOp, Arg())
+    val asdfTerm = Term("asdf", emptyOp, Arg())
+    val dadTerm = Term("dad", emptyOp, Arg())
+    val lolTerm = Term("lol", emptyOp, Arg())
+
+    val eq1Left = Term("", makeDadOp, Args(asdfTerm, Args(dadTerm, Arg())))
+    val eq1Right = Term("", evenAThirdMethodOp, Args(lolTerm, Arg()))
+    val eq1 = Equation(eq1Left, eq1Right)
+    val moreComplicatedThingyEquations = Equations(List(eq1))
+
+    val anotherSpec = Spec(anotherADTSignatureList, moreComplicatedThingyEquations)
 
     val thingy = "Signatures: ADT: THISADT makeBool: int * int -> boolean Equations:"
-    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations:"
-
-    val equationsString = "(makeDad adsf dad) = (evenAThirdMethod lol)"
+    val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations: (makeDad adsf dad) = (evenAThirdMethod lol)"
 
     val parser = new ADTParser()
     
@@ -205,9 +210,9 @@ package com.cpb.cs4500.parsing {
       }
     }
 
-    test("testDTerm") {
-      expect(dTerm) {
-        parser.parseAll(parser.term, "d") match {
+    test("testAsdfTerm") {
+      expect(asdfTerm) {
+        parser.parseAll(parser.term, "asdf") match {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
@@ -215,23 +220,74 @@ package com.cpb.cs4500.parsing {
       }
     }
 
-    test("testFalseTerm") {
-      expect(falseTerm) {
-        parser.parseAll(parser.term, "false") match {
+    test("testDadTerm") {
+      expect(dadTerm) {
+        parser.parseAll(parser.term, "dad") match {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
 	}
       }
     }
-   
+
+    test("testLolTerm") {
+      expect(lolTerm) {
+        parser.parseAll(parser.term, "lol") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
+      }
+    }
+
+    test("testEq1Left") {
+      expect(eq1Left) {
+        parser.parseAll(parser.term, "(makeDad asdf dad)") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
+      }
+    }
+
+    test("testEq1Right") {
+      expect(eq1Right) {
+        parser.parseAll(parser.term, "(evenAThirdMethod lol)") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
+      }
+    }
+
+    test("testEq1") {
+      expect(eq1) {
+        parser.parseAll(parser.equation, "(makeDad asdf dad) = (evenAThirdMethod lol)") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
+      }
+    }
+
+    test("testMoreComplicatedThingyEquations") {
+      expect(moreComplicatedThingyEquations) {
+        parser.parseAll(parser.equations, "(makeDad asdf dad) = (evenAThirdMethod lol)") match {
+          case parser.Success(result, _) => result
+          case parser.Failure(msg, _) => "FAILURE: " + msg
+          case parser.Error(_, _) => "error, sorry."
+	}
+      }
+    }
+
     test("testMoreComplicatedSpec") {
       expect(anotherSpec) {
-        parser.parseAll(parser.spec, moreComplicatedThingy + equationsString) match {
+        parser.parseAll(parser.spec, moreComplicatedThingy) match {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => msg
           case parser.Error(_, _) => "error, sorry."
 	}
+       
       }
     }
 

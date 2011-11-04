@@ -18,8 +18,8 @@ package com.cpb.cs4500 {
 
       parser.parseAll(parser.spec, input) match {
         case parser.Success(result, _) => ReadWriter.outputToFile(args(1), rewriter.applyRewriteRules(result) + result.equations)
-        case parser.Failure(msg, _) => ReadWriter.outputToFile(args(1), "!!FAILURE!!:\n" + msg) 
-        case parser.Error(msg, _) => ReadWriter.outputToFile(args(1), "error, sorry:\n" + msg)
+        case parser.Failure(msg, _) => println("!!FAILURE!!:\nMalformed Input.\n" + msg) 
+        case parser.Error(msg, _) => println("error, sorry:\n" + msg)
       }
     }
   }
