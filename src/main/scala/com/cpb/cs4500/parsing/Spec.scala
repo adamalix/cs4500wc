@@ -34,6 +34,19 @@ package com.cpb.cs4500.parsing {
         signatures.getAllOpSpecs
     }
     
+    def getAllBaseConstructors():ListSet[OperationSpec] = {
+        var ops:ListSet[OperationSpec] = getAllOpSpecs
+        var cons:ListSet[OperationSpec] = ListSet[OperationSpec]()
+        for(op<-ops)
+        {
+            if(op.isBasicCreator)
+            {
+                cons = cons + op
+            }
+        }
+        cons
+    }
+    
     def getOperationNames():List[String] = {
         val ops:ListSet[OperationSpec] = getAllOpSpecs
         var opNameList:List[String] = List[String]()

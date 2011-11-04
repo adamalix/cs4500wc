@@ -29,8 +29,17 @@ package com.cpb.cs4500.parsing {
     val emptyEquations = Equations(List())
     //val testSpec = Spec(testADTSignatureList, emptyEquations)
     val valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] = new HashMap()
-   
-    System.out.println(ValueGenerator.opSpecReplacement(makeBoolOpSpec, List[Terminal]() , valMap).mkString)
+    
+    val catType = TypeName("Cat")
+    val makeArgs = ArgTypes(List[Terminal]())
+    val makeCatName = Operation("emptyCat")
+    val makeCat = OperationSpec(makeCatName, makeArgs, catType, true)
+    val typeMap:HashMap[TypeName, OperationSpec] = new HashMap()
+    typeMap.put(catType, makeCat)
+    val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
+    val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
+    //System.out.println(ValueGenerator.opSpecReplacement(makeCat, List[Terminal]() , valMap, typeMap).mkString)
+    System.out.println(ValueGenerator.opSpecReplacement(makeBoolOpSpec2, List[Terminal]() , valMap, typeMap).mkString)
     
 
     

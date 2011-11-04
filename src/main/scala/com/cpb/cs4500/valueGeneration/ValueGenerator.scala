@@ -5,29 +5,17 @@ package com.cpb.cs4500.valueGeneration {
     import scala.util._
     object ValueGenerator{
       
-      // Our value map. The Key is the Type and the Value is
-      // a list of Strings (So we can have more than one value).
-      //val valueMap = new HashMap[OpSpec, 
       
+      //TODO
       /*
-      // Creates our values
-      def fillValueMap(spec:Spec) = 
-      {
-          val allTypeLiterals:ListSet[TypeLiteral] = spec.getAllTypeLiterals
-          val allTypeNames:ListSet[TypeName] = spec.getAllTypeNames
-          
-          for(typeLit<-allTypeLiterals)
-          {
-             createLiteralValues(typeLit)
-          }
-          // What are we returning here? - AA
-      }
-      
-      
-        */
+      CallOpSpecReplacement on al opSpecs
+        - Get AlTypes
+        - Get All Constructors
+      */
       def opSpecReplacement(op:OperationSpec, 
                             allTypes:List[Terminal], 
-                            valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] =
+                            valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]],
+                            constMap:HashMap[TypeName, OperationSpec]):HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] =
       {
         if(op.basicCreator)
         {
@@ -39,22 +27,20 @@ package com.cpb.cs4500.valueGeneration {
             var argVals:List[Terminal] = List[Terminal]()
             for(term<-op.argTypes.args)
             {
-                  argVals = argVals :+ generateValueLiteral(term)
+                  argVals = argVals :+ generateValueLiteral(term, constMap)
             }
             System.out.println(argVals.toString)
-            var returnVal:TypeLiteral = TypeLiteral("Check")
+            var returnVal:TypeLiteral = TypeLiteral("temporary")
             op.returnType match {
-                case lit:TypeLiteral => returnVal = generateValueLiteral(lit)
-                case name:TypeName => returnVal = TypeLiteral("MERP")
+                case lit:TypeLiteral => returnVal = generateValueLiteral(lit, constMap)
+                case name:TypeName => returnVal = generateValueLiteral(name, constMap)
             }
             valMap.put(op, List((ArgTypes(argVals), returnVal)))
             valMap
         }
-        
-        //for(terminal<-op.argTypes.args)
       }
 
-      def generateValueLiteral(term:Terminal):TypeLiteral = 
+      def generateValueLiteral(term:Terminal, constMap:HashMap[TypeName, OperationSpec]):TypeLiteral = 
       {
         term match {
             case lit:TypeLiteral => 
@@ -67,7 +53,11 @@ package com.cpb.cs4500.valueGeneration {
                     case "string" => generateRandomString()
                     }
             }
-            case name:TypeName => TypeLiteral("TEST") 
+            case name:TypeName => 
+            {
+                val const:String = constMap(name).getOpName
+                TypeLiteral(const)
+            }
         }
       }
       
