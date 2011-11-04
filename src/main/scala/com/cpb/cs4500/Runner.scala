@@ -17,9 +17,9 @@ package com.cpb.cs4500 {
       val rewriter:Rewriter = new Rewriter()
 
       parser.parseAll(parser.spec, input) match {
-        case parser.Success(result, _) => ReadWriter.outputToFile(args(1), rewriter.applyRewriteRules(result))
+        case parser.Success(result, _) => ReadWriter.outputToFile(args(1), rewriter.applyRewriteRules(result) + result.equations)
         case parser.Failure(msg, _) => ReadWriter.outputToFile(args(1), "!!FAILURE!!:\n" + msg) 
-        case parser.Error(_, _) => ReadWriter.outputToFile(args(1), "error, sorry.")
+        case parser.Error(msg, _) => ReadWriter.outputToFile(args(1), "error, sorry:\n" + msg)
       }
     }
   }
