@@ -48,8 +48,8 @@ package com.cpb.cs4500.parsing {
     val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
     val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
 
-    //ValueGenerator.specValueGeneration(testSpec)
-    //System.out.println(testSpec.toGeneratedSexpr(ValueGenerator.specValueGeneration(testSpec)))
+    //System.out.println(ValueGenerator.specValueGeneration(testSpec).mkString)
+    System.out.println(testSpec.toGeneratedSexpr(ValueGenerator.specValueGeneration(testSpec)))
     
     //System.out.println(ValueGenerator.opSpecReplacement(makeCat, List[Terminal]() , valMap, typeMap).mkString)
 
