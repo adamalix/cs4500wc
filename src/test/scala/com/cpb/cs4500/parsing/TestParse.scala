@@ -9,8 +9,8 @@ package com.cpb.cs4500.parsing {
 
   class TestParse extends FunSuite {
     //thingy vals
-    val intType = TypeLiteral("int")
-    val booleanType = TypeLiteral("boolean")
+    val intType = IntLiteral("int")
+    val booleanType = BooleanLiteral("boolean")
     val makeBoolOp = Operation("makeBool")
     val makeBoolArgTypes = ArgTypes(List(intType, intType))
     val makeBoolOpSpec = OperationSpec(makeBoolOp, makeBoolArgTypes, booleanType, false)
@@ -25,8 +25,8 @@ package com.cpb.cs4500.parsing {
     val testSpec = Spec(testADTSignatureList, emptyEquations)
 
     //moreComplicatedThingy vals
-    val stringType = TypeLiteral("string")
-    val charType = TypeLiteral("character")
+    val stringType = StringLiteral("string")
+    val charType = CharLiteral("character")
     val makeDadOp = Operation("makeDad")
     val anotherMethodOp = Operation("anotherMethod")
     val evenAThirdMethodOp = Operation("evenAThirdMethod")

@@ -12,10 +12,10 @@ package com.cpb.cs4500.parsing {
 
   class TestGetType extends FunSuite {
         
-    val intType = TypeLiteral("int")
-    val booleanType = TypeLiteral("boolean")
-    val stringType = TypeLiteral("string")
-    val charType = TypeLiteral("character")
+    val intType = IntLiteral("int")
+    val booleanType = BooleanLiteral("boolean")
+    val stringType = StringLiteral("string")
+    val charType = CharLiteral("character")
     val car = Operation("Car")
     val makeBoolOp = Operation("makeBool")
     val makeBoolArgTypes = ArgTypes(List(intType, intType))
