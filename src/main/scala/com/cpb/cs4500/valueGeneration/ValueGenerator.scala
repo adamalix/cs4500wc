@@ -9,6 +9,8 @@ package com.cpb.cs4500.valueGeneration {
 
     object ValueGenerator{
     //Just a reference
+    
+        var TypeToConstructer:HashMap[Int, String] = HashMap[Int, String]()
         def fillTypeMap(spec:Spec):Unit = 
         {
             System.out.println("HNNNNNG")
@@ -27,6 +29,7 @@ package com.cpb.cs4500.valueGeneration {
                     case boolLit:BooleanLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomBooleanLiteral()))
                     case charLit:CharLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomCharLiteral()))
                     case stringLit:StringLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomStringLiteral()))
+                    //case typeN:TypeName => generateTypeNameValues(typeN, listGenValues)
                 }
             }
             new GeneratedFunction(operationName, listGenValues, returnLiteral)
@@ -52,5 +55,6 @@ package com.cpb.cs4500.valueGeneration {
             val strList = List("string1", "string2", "string3", "string4", "string5")
             StringLiteral(strList(scala.util.Random.nextInt(5)))
         }
+        
     }
 }
