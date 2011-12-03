@@ -19,8 +19,8 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val term = Term("", Operation(""), Arg())
-    val testSpecEquations = Equations(List(Equation(term, term)))
+    val termExpr = TermExpr(Operation(""), Arg())
+    val testSpecEquations = Equations(List(Equation(termExpr, termExpr)))
     val emptyEquations = Equations(List())
     val testSpec = Spec(testADTSignatureList, emptyEquations)
 
@@ -42,16 +42,16 @@ package com.cpb.cs4500.parsing {
     val anotherADT = TypeName(anotherADTName)
     val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
     val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
-    val anotherSpecEquations = Equations(List(Equation(term, term)))
+    val anotherSpecEquations = Equations(List(Equation(termExpr, termExpr)))
 
     //moreComplicatedThingy equations
     val emptyOp = Operation("")
-    val asdfTerm = Term("asdf", emptyOp, Arg())
-    val dadTerm = Term("dad", emptyOp, Arg())
-    val lolTerm = Term("lol", emptyOp, Arg())
+    val asdfTerm = TermID("asdf")
+    val dadTerm = TermID("dad")
+    val lolTerm = TermID("lol")
 
-    val eq1Left = Term("", makeDadOp, Args(asdfTerm, Args(dadTerm, Arg())))
-    val eq1Right = Term("", evenAThirdMethodOp, Args(lolTerm, Arg()))
+    val eq1Left = TermExpr(makeDadOp, Args(asdfTerm, Args(dadTerm, Arg())))
+    val eq1Right = TermExpr(evenAThirdMethodOp, Args(lolTerm, Arg()))
     val eq1 = Equation(eq1Left, eq1Right)
     val moreComplicatedThingyEquations = Equations(List(eq1))
 

@@ -37,8 +37,8 @@ package com.cpb.cs4500.parsing {
     val thisADT = TypeName(adtName) 
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val term = Term("", Operation(""), Arg())
-    val testSpecEquations = Equations(List(Equation(term, term)))
+	val termExpr = TermExpr(Operation(""), Arg())
+    val testSpecEquations = Equations(List(Equation(termExpr, termExpr)))
     val emptyEquations = Equations(List())
     val testSpec = Spec(testADTSignatureList, emptyEquations)
     val valMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]] = new HashMap()
@@ -47,6 +47,7 @@ package com.cpb.cs4500.parsing {
     typeMap.put(catType, makeCat)
     val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
     val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
+
 
     
 
