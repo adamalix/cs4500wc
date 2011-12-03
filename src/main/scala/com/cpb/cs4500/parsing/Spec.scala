@@ -269,12 +269,16 @@ package com.cpb.cs4500.parsing {
   case class TermExpr(op:Operation, args:ArgTrait) extends Term
 
   // Trait used so that we can cover the empty case for a Arg
-  trait ArgTrait
+  trait ArgTrait {
+    def isEmpty():Boolean = false
+  }
 
   case class Args(term:Term, args:ArgTrait) extends ArgTrait
 
   // This is the empty case.
-  case class Arg() extends ArgTrait
+  case class Arg() extends ArgTrait {
+    override def isEmpty():Boolean = true
+  }
 
   trait RhsID {
     override def toString():String
