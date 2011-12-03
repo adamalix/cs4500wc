@@ -268,7 +268,7 @@ package com.cpb.cs4500.parsing {
 
   case class TermExpr(op:Operation, args:ArgTrait) extends Term
 
-  // Trait used so that we can over the empty case for a Arg
+  // Trait used so that we can cover the empty case for a Arg
   trait ArgTrait
 
   case class Args(term:Term, args:ArgTrait) extends ArgTrait
