@@ -262,15 +262,14 @@ package com.cpb.cs4500.parsing {
 
   case class Equation(left:Term, right:Term)
 
-  trait ArgTrait {
-    override def toString():String
-  }
-
-  abstract class Term()
+  trait Term
 
   case class TermID(ident:String) extends Term
 
   case class TermExpr(op:Operation, args:ArgTrait) extends Term
+
+  // Trait used so that we can cover the empty case for a Arg
+  trait ArgTrait
 
   case class Args(term:Term, args:ArgTrait) extends ArgTrait
 
