@@ -49,8 +49,10 @@ package com.cpb.cs4500.parsing {
     )
 
     def typeLiteral: Parser[Terminal] = (
-        (("int" | "boolean" | "character" | "string" ) ^^
-         { case literalType => TypeLiteral(literalType) })
+        "int" ^^ { case literalType => IntLiteral(literalType) }
+      | "boolean" ^^ { case literalType => BooleanLiteral(literalType) }
+      | "character" ^^ { case literalType => CharLiteral(literalType) }
+      | "string" ^^ { case literalType => StringLiteral(literalType) }
       | typeName
     )
 

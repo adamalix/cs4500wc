@@ -42,10 +42,8 @@ package com.cpb.cs4500.parsing {
     def getAllBaseConstructors():ListSet[OperationSpec] = {
         var ops:ListSet[OperationSpec] = getAllOpSpecs
         var cons:ListSet[OperationSpec] = ListSet[OperationSpec]()
-        for(op<-ops)
-        {
-            if(op.isBasicCreator)
-            {
+        for(op<-ops) {
+            if(op.isBasicCreator) {
                 cons = cons + op
             }
         }
@@ -56,11 +54,10 @@ package com.cpb.cs4500.parsing {
         val ops:ListSet[OperationSpec] = getAllOpSpecs
         var opNameList:List[String] = List[String]()
 
-        for (op<-ops){
+        for (op<-ops) {
             opNameList = opNameList :+ op.getOpName
         }
         opNameList
-
     }
   }
 
@@ -79,7 +76,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeNames():ListSet[TypeName] = {
         var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-        for (sig<-sigs){
+        for (sig<-sigs) {
             allTypeNames = allTypeNames ++ sig.getAllTypeNames
         }
         allTypeNames
@@ -87,7 +84,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeLiterals():ListSet[TypeLiteral] = {
         var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-        for (sig<-sigs){
+        for (sig<-sigs) {
             allTypeLits = allTypeLits ++ sig.getAllTypeLiterals
         }
         allTypeLits
@@ -95,7 +92,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllOpSpecs():ListSet[OperationSpec] = {
         var AllOpSpecs:ListSet[OperationSpec] = new ListSet[OperationSpec]()
-        for (sig<-sigs){
+        for (sig<-sigs) {
             AllOpSpecs = AllOpSpecs ++ sig.getAllOpSpecs
         }
         AllOpSpecs
@@ -143,7 +140,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeNames():ListSet[TypeName] = {
       var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-      for(op<-ops){
+      for(op<-ops) {
          allTypeNames = allTypeNames ++ op.getAllTypeNames()
       }
       allTypeNames
@@ -239,36 +236,45 @@ package com.cpb.cs4500.parsing {
     }
   }
 
-  case class TypeLiteral(value:String) extends Terminal {
+  abstract class TypeLiteral() extends Terminal
+
+  case class IntLiteral(value:String) extends TypeLiteral {
+    override def toString():String = value
+  }
+
+  case class BooleanLiteral(value:String) extends TypeLiteral {
+    override def toString():String = value
+  }
+
+  case class CharLiteral(value:String) extends TypeLiteral {
+    override def toString():String = value
+  }
+
+  case class StringLiteral(value:String) extends TypeLiteral {
     override def toString():String = value
   }
 
   case class TypeName(value:String) extends Terminal {
-
     override def toString():String = value
   }
 
-  case class Equations(eqs:List[Equation]) {
-    //override def toString():String = value
-  }
+  case class Equations(eqs:List[Equation])
 
-  case class Equation(left:Term, right:Term) {
-
-  }
+  case class Equation(left:Term, right:Term)
 
   trait ArgTrait {
     override def toString():String
   }
 
-  case class Term(ident:String, op:Operation, args:ArgTrait) {
+  case class Term(ident:String, op:Operation, args:ArgTrait)
 
-  }
-
-  case class Args(term:Term, args:ArgTrait) extends ArgTrait {
-
-  }
+  case class Args(term:Term, args:ArgTrait) extends ArgTrait
 
   // This is the empty case.
-  case class Arg() extends ArgTrait {}
+  case class Arg() extends ArgTrait
+
+  trait RhsID {
+    override def toString():String
+  }
 
 }
