@@ -68,8 +68,8 @@ package com.cpb.cs4500.parsing {
     )
 
     def term: Parser[Term] = (
-        "(" ~> operation ~ args <~ ")" ^^ { case op ~ args => Term("", op, args) }
-      | ident ^^ { case identifier => Term(identifier, Operation(""), Arg()) }
+        "(" ~> operation ~ args <~ ")" ^^ { case op ~ args => TermExpr(op, args) }
+      | ident ^^ { case identifier => TermID(identifier) }
     )
 
     def args: Parser[ArgTrait] = (

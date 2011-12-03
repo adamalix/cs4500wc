@@ -266,7 +266,11 @@ package com.cpb.cs4500.parsing {
     override def toString():String
   }
 
-  case class Term(ident:String, op:Operation, args:ArgTrait)
+  abstract class Term()
+
+  case class TermID(ident:String) extends Term
+
+  case class TermExpr(op:Operation, args:ArgTrait) extends Term
 
   case class Args(term:Term, args:ArgTrait) extends ArgTrait
 
