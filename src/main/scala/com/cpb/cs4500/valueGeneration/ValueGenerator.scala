@@ -4,10 +4,19 @@ package com.cpb.cs4500.valueGeneration {
     import com.cpb.cs4500.rewriting._
     import com.cpb.cs4500.io._
     import scala.collection.mutable.HashMap
-    import scala.collection.immutable._
     import scala.util._
     
 
     object ValueGenerator{
+    //Just a reference
+        def fillTypeMap(spec:Spec):Unit = 
+        {
+            System.out.println("HNNNNNG")
+        }
+        
+        def generatedFunctionValues(opspec:OperationSpec) : List[GeneratedValue] =
+        {
+            null
+        }
     }
 }
