@@ -48,6 +48,7 @@ package com.cpb.cs4500.parsing {
     val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
     val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
 
+
     
 
     

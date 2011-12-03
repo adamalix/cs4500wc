@@ -17,7 +17,7 @@ package com.cpb.cs4500.valueGeneration {
             name
         }
         
-        def getArguments:List[GeneratedValue} = 
+        def getArguments:List[GeneratedValue] = 
         {
             arguments
         }
