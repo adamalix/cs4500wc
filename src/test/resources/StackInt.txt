@@ -1,6 +1,6 @@
-StackInt
-
 Signatures:
+
+ADT: StackInt
 
     empty:                    ->  StackInt
     push:     StackInt * int  ->  StackInt

@@ -6,7 +6,7 @@ package com.cpb.cs4500.rewriting {
     import com.cpb.cs4500.valueGeneration._
     class Rewriter() {
         def applyRewriteRules(specification:Spec):String  = {
-            "\n" + specification.toGeneratedSexpr(ValueGenerator.specValueGeneration(specification))
+            "HNNGG"
         }
 
        // def generateExpressions(specification:Spec):String = {

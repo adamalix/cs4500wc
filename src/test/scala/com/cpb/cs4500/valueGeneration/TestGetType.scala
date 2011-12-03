@@ -12,10 +12,10 @@ package com.cpb.cs4500.parsing {
 
   class TestGetType extends FunSuite {
         
-    val intType = TypeLiteral("int")
-    val booleanType = TypeLiteral("boolean")
-    val stringType = TypeLiteral("string")
-    val charType = TypeLiteral("character")
+    val intType = IntLiteral("int")
+    val booleanType = BooleanLiteral("boolean")
+    val stringType = StringLiteral("string")
+    val charType = CharLiteral("character")
     val car = Operation("Car")
     val makeBoolOp = Operation("makeBool")
     val makeBoolArgTypes = ArgTypes(List(intType, intType))
@@ -47,11 +47,6 @@ package com.cpb.cs4500.parsing {
     typeMap.put(catType, makeCat)
     val makeBoolArgTypes2 = ArgTypes(List(intType, catType))
     val makeBoolOpSpec2 = OperationSpec(makeBoolOp, makeBoolArgTypes2, catType, false)
-
-    //ValueGenerator.specValueGeneration(testSpec)
-    //System.out.println(testSpec.toGeneratedSexpr(ValueGenerator.specValueGeneration(testSpec)))
-    
-    //System.out.println(ValueGenerator.opSpecReplacement(makeCat, List[Terminal]() , valMap, typeMap).mkString)
 
     
 
