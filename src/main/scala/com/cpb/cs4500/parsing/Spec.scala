@@ -260,28 +260,83 @@ package com.cpb.cs4500.parsing {
 
   case class Equations(eqs:List[Equation])
 
-  case class Equation(left:Term, right:Term)
+  case class Equation(left:Term, right:Rhs)
 
-  trait Term
+  abstract class Term
 
   case class TermID(ident:String) extends Term
 
-  case class TermExpr(op:Operation, args:ArgTrait) extends Term
+  case class TermExpr(op:Operation, args:Arg) extends Term
 
-  // Trait used so that we can cover the empty case for a Arg
-  trait ArgTrait {
+  // Lefthand side style Args
+  trait Arg {
     def isEmpty():Boolean = false
   }
 
-  case class Args(term:Term, args:ArgTrait) extends ArgTrait
+  case class Args(term:Term, args:Arg) extends Arg
 
-  // This is the empty case.
-  case class Arg() extends ArgTrait {
+  case class EmptyArg() extends Arg {
     override def isEmpty():Boolean = true
   }
 
-  trait RhsID {
-    override def toString():String
+  abstract class Rhs
+
+  case class RhsTrue() extends Rhs {
+    val value = "#t"
+  }
+
+  case class RhsFalse() extends Rhs {
+    val value = "#f"
+  }
+
+  // TODO: WTF Is a UInt??!!
+  case class RhsUInt(value:String) extends Rhs
+
+  case class RhsID(ident:String) extends Rhs
+
+  case class RhsExpr(op:Operation, args:RhsArg) extends Rhs
+
+  case class RhsPrimExpr(prim:Primitive, args:RhsArg) extends Rhs
+
+  // Righthand side style Args
+  trait RhsArg {
+    def isEmpty():Boolean = false
+  }
+
+  case class RhsArgs(rhs:Rhs, args:RhsArg) extends RhsArg
+
+  case class RhsEmptyArg() extends RhsArg {
+    override def isEmpty():Boolean = true
+  }
+
+  abstract class Primitive
+
+  case class Not() extends Primitive {
+    val value = "not"
+  }
+
+  case class Plus() extends Primitive {
+    val value = "+"
+  }
+
+  case class Minus() extends Primitive {
+    val value = "-"
+  }
+
+  case class Star() extends Primitive {
+    val value = "*"
+  }
+
+  case class Eq() extends Primitive {
+    val value = "="
+  }
+
+  case class GreaterThan extends Primitive {
+    val value = ">"
+  }
+
+  case class LessThan extends Primitive {
+    val value = "<"
   }
 
 }

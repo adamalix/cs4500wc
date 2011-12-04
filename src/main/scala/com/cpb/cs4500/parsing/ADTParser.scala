@@ -64,7 +64,7 @@ package com.cpb.cs4500.parsing {
     )
 
     def equation: Parser[Equation] = (
-      term ~ "=" ~ term ^^ { case left ~ "=" ~ right => Equation(left, right) }
+      term ~ "=" ~ rhs ^^ { case left ~ "=" ~ right => Equation(left, right) }
     )
 
     def term: Parser[Term] = (
@@ -72,15 +72,44 @@ package com.cpb.cs4500.parsing {
       | ident ^^ { case identifier => TermID(identifier) }
     )
 
-    def args: Parser[ArgTrait] = (
+    def args: Parser[Arg] = (
         term ~ args ^^ { case term ~ args => Args(term, args) }
-      | bogusArg // empty case
+      | emptyArg
 
     )
 
     // Hack because there is not else case
-    def bogusArg: Parser[Arg] = (
-      rep("BOGUS&123456789") ^^ { case _ => Arg() }
+    def emptyArg: Parser[Arg] = (
+      rep("BOGUS&123456789") ^^ { case _ => EmptyArg() }
+    )
+
+    def rhs: Parser[Rhs] = (
+        "#t" ^^ { case itsTrue => RhsTrue() }
+      | "#f" ^^ { case itsFalse => RhsFalse() }
+      | decimalNumber ^^ { case number => RhsUInt(number) }
+      | "(" ~> operation ~ rhsArgs <~ ")" ^^
+        { case op ~ rhsArgs => RhsExpr(op, rhsArgs) }
+      | "(" ~> primOp ~ rhsArgs <~ ")" ^^
+        { case primOp ~ rhsArgs => RhsPrimExpr(primOp, rhsArgs) }
+    )
+
+    def rhsArgs: Parser[RhsArg] = (
+        rhs ~ rhsArgs ^^ { case rhs ~ rhsArgs => RhsArgs(rhs, rhsArgs) }
+      | emptyRhsArg
+    )
+
+    def emptyRhsArg: Parser[RhsArg] = (
+      rep("BOGUS&123456789") ^^ { case _ => RhsEmptyArg() }
+    )
+
+    def primOp: Parser[Primitive] = (
+        "not" ^^ { case not => Not() }
+      | "+" ^^ { case plus => Plus() }
+      | "-" ^^ { case minus => Minus() }
+      | "*" ^^ { case star => Star() }
+      | "=" ^^ { case eq => Eq() }
+      | ">" ^^ { case gt => GreaterThan() }
+      | "<" ^^ { case lt => LessThan() }
     )
 
   }
