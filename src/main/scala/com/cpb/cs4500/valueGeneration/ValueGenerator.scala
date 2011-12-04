@@ -50,6 +50,35 @@ package com.cpb.cs4500.valueGeneration {
             totalTests
         }
         
+        def createCorrectNumberOfTests(opspec:OperationSpec):List[GeneratedFunction] =
+        {
+            val totalTestsToMake:Int = countNumberOfTests(opspec)
+            var generatedTests:List[GeneratedFunction] = List[GeneratedFunction]()
+            for (i <- 0 until totalTestsToMake)
+            {
+                System.out.println("HNNNG")
+            }
+            generatedTests
+            /*
+                        val operationName:String = opspec.getOpName
+            val returnLiteral:Terminal = opspec.returnType
+            val arguments:List[Terminal] = opspec.argTypes.args
+            var listGenValues:List[GeneratedValue] = List[GeneratedValue]()
+            for (arg<-arguments)
+            {
+                arg match{
+                    case intLit:IntLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomIntLiteral()))
+                    case boolLit:BooleanLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomBooleanLiteral()))
+                    case charLit:CharLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomCharLiteral()))
+                    case stringLit:StringLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomStringLiteral()))
+                    //case typeN:TypeName => generateTypeNameValues(typeN, listGenValues)
+                }
+            }
+            new GeneratedFunction(operationName, listGenValues, returnLiteral)
+            */
+        }
+        
+ 
         def generateRandomIntLiteral():IntLiteral= 
         {
             IntLiteral(scala.util.Random.nextInt(1001).toString)
