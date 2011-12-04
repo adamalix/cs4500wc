@@ -10,7 +10,7 @@ package com.cpb.cs4500.valueGeneration {
             lit
         }
     }
- 
+                
     class GeneratedFunction(name:String, arguments:List[GeneratedValue], returnType:Terminal) extends GeneratedValue{
         def getName:String = 
         {
