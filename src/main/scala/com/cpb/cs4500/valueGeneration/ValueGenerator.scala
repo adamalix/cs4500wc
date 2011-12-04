@@ -10,7 +10,7 @@ package com.cpb.cs4500.valueGeneration {
     object ValueGenerator{
     //Just a reference
     
-        var TypeToConstructer:HashMap[Int, String] = HashMap[Int, String]()
+        var TypeToConstructer:HashMap[TypeName, List[GeneratedValue]] = HashMap[TypeName, List[GeneratedValue]]()
         def fillTypeMap(spec:Spec):Unit = 
         {
             System.out.println("HNNNNNG")
@@ -33,6 +33,21 @@ package com.cpb.cs4500.valueGeneration {
                 }
             }
             new GeneratedFunction(operationName, listGenValues, returnLiteral)
+        }
+        
+        // Given an OperationSpec, figure out how many tests
+        // we need to make for it (based on the arguments).
+        def countNumberOfTests(opspec:OperationSpec):Int = 
+        {
+            var totalTests:Int = 1
+            val arguments:List[Terminal] = opspec.argTypes.args
+            for (arg<-arguments)
+            {
+                arg match{
+                    case typeN:TypeName => totalTests *= TypeToConstructer.get(typeN).size 
+                }
+            }
+            totalTests
         }
         
         def generateRandomIntLiteral():IntLiteral= 
