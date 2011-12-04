@@ -1,7 +1,7 @@
 /*
-TestParse.scala
-Holds the test cases for the parsing mechanism of our software
-*/
+ TestParse.scala
+ Holds the test cases for the parsing mechanism of our software
+ */
 package com.cpb.cs4500.parsing {
 
   import org.scalatest.FunSuite
@@ -16,11 +16,12 @@ package com.cpb.cs4500.parsing {
     val makeBoolOpSpec = OperationSpec(makeBoolOp, makeBoolArgTypes, booleanType, false)
     val thisADTOperationSpecs = OperationSpecs(List(makeBoolOpSpec))
     val adtName = "THISADT"
-    val thisADT = TypeName(adtName) 
+    val thisADT = TypeName(adtName)
     val thisADTSignature = ADTSignature(thisADT, thisADTOperationSpecs)
     val testADTSignatureList = ADTSignatures(List(thisADTSignature))
-    val termExpr = TermExpr(Operation(""), Arg())
-    val testSpecEquations = Equations(List(Equation(termExpr, termExpr)))
+    val termExpr = TermExpr(Operation(""), EmptyArg())
+    val rhsExpr = RhsExpr(Operation(""), RhsEmptyArg())
+    val testSpecEquations = Equations(List(Equation(termExpr, rhsExpr)))
     val emptyEquations = Equations(List())
     val testSpec = Spec(testADTSignatureList, emptyEquations)
 
@@ -42,7 +43,7 @@ package com.cpb.cs4500.parsing {
     val anotherADT = TypeName(anotherADTName)
     val anotherADTSignature = ADTSignature(anotherADT, anotherADTOperationSpecs)
     val anotherADTSignatureList = ADTSignatures(List(anotherADTSignature))
-    val anotherSpecEquations = Equations(List(Equation(termExpr, termExpr)))
+    val anotherSpecEquations = Equations(List(Equation(termExpr, rhsExpr)))
 
     //moreComplicatedThingy equations
     val emptyOp = Operation("")
@@ -50,8 +51,8 @@ package com.cpb.cs4500.parsing {
     val dadTerm = TermID("dad")
     val lolTerm = TermID("lol")
 
-    val eq1Left = TermExpr(makeDadOp, Args(asdfTerm, Args(dadTerm, Arg())))
-    val eq1Right = TermExpr(evenAThirdMethodOp, Args(lolTerm, Arg()))
+    val eq1Left = TermExpr(makeDadOp, Args(asdfTerm, Args(dadTerm, EmptyArg())))
+    val eq1Right = RhsExpr(evenAThirdMethodOp, RhsEmptyArg())
     val eq1 = Equation(eq1Left, eq1Right)
     val moreComplicatedThingyEquations = Equations(List(eq1))
 
@@ -61,8 +62,8 @@ package com.cpb.cs4500.parsing {
     val moreComplicatedThingy = "Signatures: ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean Equations: (makeDad adsf dad) = (evenAThirdMethod lol)"
 
     val parser = new ADTParser()
-    
-    
+
+
 
     test("testIntType") {
       expect(intType) { parser.parseAll(parser.typeLiteral, "int").get }
@@ -83,13 +84,13 @@ package com.cpb.cs4500.parsing {
     }
 
     test("testMakeBoolOpSpec") {
-      expect(makeBoolOpSpec) { 
-        parser.parseAll(parser.operationSpec, "makeBool: int * int -> boolean").get 
+      expect(makeBoolOpSpec) {
+        parser.parseAll(parser.operationSpec, "makeBool: int * int -> boolean").get
       }
     }
 
     test("testThisADTOperationSpecs") {
-      expect(thisADTOperationSpecs) {     
+      expect(thisADTOperationSpecs) {
         parser.parseAll(parser.operationSpecs, "makeBool: int * int -> boolean").get
       }
     }
@@ -199,13 +200,13 @@ package com.cpb.cs4500.parsing {
     }
 
     test("testAnotherADTSignature") {
-      expect(anotherADTSignature) { 
+      expect(anotherADTSignature) {
         parser.parseAll(parser.adtSignature, "ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean").get
       }
     }
 
     test("testAnotherADTSignatureList") {
-      expect(anotherADTSignatureList) { 
+      expect(anotherADTSignatureList) {
         parser.parseAll(parser.adtSignatures, "ADT: anotherADT makeDad: int * string -> character anotherMethod: -> int evenAThirdMethod: string -> boolean").get
       }
     }
@@ -216,7 +217,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -226,7 +227,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -236,7 +237,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -246,7 +247,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -256,7 +257,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -266,7 +267,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -276,7 +277,7 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
-	}
+        }
       }
     }
 
@@ -286,16 +287,16 @@ package com.cpb.cs4500.parsing {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => msg
           case parser.Error(_, _) => "error, sorry."
-	}
-       
+        }
+
       }
     }
 
-//    def handleParsing(pr: parser.ParseResult[Any]) = pr match {
-//      case pr.Success(result, _) => result
-//      case pr.Failure(msg, _) => msg
-//      case pr.Error(_, _) => "error"
-//    }
+    //    def handleParsing(pr: parser.ParseResult[Any]) = pr match {
+    //      case pr.Success(result, _) => result
+    //      case pr.Failure(msg, _) => msg
+    //      case pr.Error(_, _) => "error"
+    //    }
 
   }
 
