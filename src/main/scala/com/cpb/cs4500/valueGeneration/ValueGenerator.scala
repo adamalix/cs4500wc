@@ -15,7 +15,7 @@ package com.cpb.cs4500.valueGeneration {
 
 
 
-    def generateTermsForSpec(minTests: Int): ListSet[Term] = {
+    def generateTerms(minTests: Int): ListSet[Term] = {
       generatedTerms
     }
 

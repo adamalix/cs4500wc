@@ -12,7 +12,7 @@ package com.cpb.cs4500.rewriting {
       "HNNGG"
     }
 
-    def rewrite(term: Term) = {
+    def rewriteTerm(term: Term) = {
       null
     }
 
