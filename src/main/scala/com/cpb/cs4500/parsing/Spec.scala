@@ -15,6 +15,7 @@ package com.cpb.cs4500.parsing {
   }
 
   case class Spec(signatures:ADTSignatures, equations:Equations) {
+
     override def toString():String = {
       signatures.toSexpr
     }

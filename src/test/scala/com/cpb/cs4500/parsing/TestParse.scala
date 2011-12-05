@@ -5,6 +5,7 @@
 package com.cpb.cs4500.parsing {
 
   import org.scalatest.FunSuite
+  import com.cpb.cs4500.io.ReadWriter
   import com.cpb.cs4500.parsing._
 
   class TestParse extends FunSuite {
@@ -52,7 +53,7 @@ package com.cpb.cs4500.parsing {
     val lolTerm = TermID("lol")
 
     val eq1Left = TermExpr(makeDadOp, Args(asdfTerm, Args(dadTerm, EmptyArg())))
-    val eq1Right = RhsExpr(evenAThirdMethodOp, RhsEmptyArg())
+    val eq1Right = RhsExpr(evenAThirdMethodOp, RhsArgs(RhsID("lol"), RhsEmptyArg()))
     val eq1 = Equation(eq1Left, eq1Right)
     val moreComplicatedThingyEquations = Equations(List(eq1))
 
@@ -63,7 +64,23 @@ package com.cpb.cs4500.parsing {
 
     val parser = new ADTParser()
 
+    val testFileName1 = "src/test/resources/test1"
+    val testFileName2 = "src/test/resources/test2"
+    val testFileName3 = "src/test/resources/test3"
+    val testFileName4 = "src/test/resources/test4"
+    val testFileName5 = "src/test/resources/test5"
+    val testFileName6 = "src/test/resources/test6"
+    val testFileName7 = "src/test/resources/test7"
 
+    val testFile1 = ReadWriter.inputFromFile(testFileName1)
+    val testFile2 = ReadWriter.inputFromFile(testFileName2)
+    val testFile3 = ReadWriter.inputFromFile(testFileName3)
+    val testFile4 = ReadWriter.inputFromFile(testFileName4)
+    val testFile5 = ReadWriter.inputFromFile(testFileName5)
+    val testFile6 = ReadWriter.inputFromFile(testFileName6)
+    val testFile7 = ReadWriter.inputFromFile(testFileName7)
+
+    val testFileList = List(testFile1, testFile2, testFile3, testFile4, testFile5, testFile6, testFile7)
 
     test("testIntType") {
       expect(intType) { parser.parseAll(parser.typeLiteral, "int").get }
@@ -253,7 +270,7 @@ package com.cpb.cs4500.parsing {
 
     test("testEq1Right") {
       expect(eq1Right) {
-        parser.parseAll(parser.term, "(evenAThirdMethod lol)") match {
+        parser.parseAll(parser.rhs, "(evenAThirdMethod lol)") match {
           case parser.Success(result, _) => result
           case parser.Failure(msg, _) => "FAILURE: " + msg
           case parser.Error(_, _) => "error, sorry."
@@ -282,9 +299,9 @@ package com.cpb.cs4500.parsing {
     }
 
     test("testMoreComplicatedSpec") {
-      expect(anotherSpec) {
+      expect(anotherSpec.toString()) {
         parser.parseAll(parser.spec, moreComplicatedThingy) match {
-          case parser.Success(result, _) => result
+          case parser.Success(result, _) => result.toString()
           case parser.Failure(msg, _) => msg
           case parser.Error(_, _) => "error, sorry."
         }
@@ -292,11 +309,16 @@ package com.cpb.cs4500.parsing {
       }
     }
 
-    //    def handleParsing(pr: parser.ParseResult[Any]) = pr match {
-    //      case pr.Success(result, _) => result
-    //      case pr.Failure(msg, _) => msg
-    //      case pr.Error(_, _) => "error"
-    //    }
+    test("parseTestSpecs") {
+      for (testFile <- testFileList) {
+        expect(true) {
+          parser.parseAll(parser.spec, testFile) match {
+            case parser.Success(result, _) => true
+            case _ => false
+          }
+        }
+      }
+    }
 
   }
 

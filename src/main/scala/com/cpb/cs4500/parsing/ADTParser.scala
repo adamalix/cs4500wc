@@ -87,6 +87,7 @@ package com.cpb.cs4500.parsing {
         "#t" ^^ { case itsTrue => RhsTrue() }
       | "#f" ^^ { case itsFalse => RhsFalse() }
       | decimalNumber ^^ { case number => RhsUInt(number) }
+      | ident ^^ { case identifier => RhsID(identifier) }
       | "(" ~> operation ~ rhsArgs <~ ")" ^^
         { case op ~ rhsArgs => RhsExpr(op, rhsArgs) }
       | "(" ~> primOp ~ rhsArgs <~ ")" ^^
