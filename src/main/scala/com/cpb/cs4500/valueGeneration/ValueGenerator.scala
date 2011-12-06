@@ -35,6 +35,7 @@ package com.cpb.cs4500.valueGeneration {
       destMap
     }
 
+    // Store basic creators for convenient use later
     def createBasicCreatorMap(): Map[TypeName, List[OperationSpec]] = {
       val bcMap = Map[TypeName, List[OperationSpec]]()
 
@@ -52,11 +53,15 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     // create a term for this opspec
-    def createTestsForOpSpec(opspec: OperationSpec, numTests: Int): ListSet[Term] = {
+    def createTestsForOpSpec(opspec: OperationSpec, numTests: Int): HashSet[Term] = {
       val argTypes: List[Terminal] = opspec.getArgTypes
+
+      // bottom out immediately if we have no argTypes
       if (argTypes.isEmpty)
-          return ListSet(TermExpr(opspec.op, EmptyArg()))
-      var tests = ListSet[Term]()
+          return HashSet(TermExpr(opspec.op, EmptyArg()))
+
+      // Place to uniquely store tests
+      var tests = HashSet[Term]()
 
       // while loop
       createTestForOp(opspec.op, argTypes)
@@ -64,14 +69,22 @@ package com.cpb.cs4500.valueGeneration {
       tests
     }
 
+    // Create a single TermExpr for an Operation
+    // Individual test generation
     def createTestForOp(op: Operation, argTypes: List[Terminal]): Term = {
+      if (argTypes.isEmpty)
+        return TermExpr(op, EmptyArg())
+
       TermExpr(op, createArgs(argTypes))
     }
 
+    // Recursively create args for the TermExpr
     def createArgs(argTypes: List[Terminal]): Arg = {
+      // Base Case
       if (argTypes.isEmpty)
         return EmptyArg()
 
+      // Do we have a TypeLiteral or TypeName?
       val term = argTypes.head match {
         case literal: TypeLiteral => createTermAndValueForTypeLit(literal)
         case typeName: TypeName => createTermForTypeName(typeName)
@@ -80,7 +93,9 @@ package com.cpb.cs4500.valueGeneration {
       Args(term, createArgs(argTypes.tail))
     }
 
+    // Create the term for a TypeName by using a basic creator
     def createTermForTypeName(typeName: TypeName): Term = {
+      // get the list of basic creators for the TypeName
       val basicCreators: List[OperationSpec] = basicCreatorMap(typeName)
 
       // wtf happens here
@@ -88,7 +103,8 @@ package com.cpb.cs4500.valueGeneration {
         throw new RuntimeException("Cannot instantiate ADT: " + typeName +
                                    " because it has no basic creator")
 
-      // TODO: DONT DO THIS I NTHE FUTURE
+      // TODO: DONT DO THIS IN THE FUTURE
+      // we should be choosing correct basic or attempting to guess at it
       val idx = scala.util.Random.nextInt(basicCreators.size)
       val randomCreator = basicCreators(idx)
       createTestForOp(randomCreator.op, randomCreator.getArgTypes())
