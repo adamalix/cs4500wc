@@ -39,6 +39,29 @@ package com.cpb.cs4500.parsing {
     def getAllOpSpecs():ListSet[OperationSpec] = {
         signatures.getAllOpSpecs
     }
+	
+	def getAllConstructors():HashMap[TypeName, ListSet[OperationSpec]] = {
+		val allTypes:ListSet[TypeName] = getAllTypeNames()
+		val allOpSpecs:ListSet[OperationSpec] =   getAllOpSpecs()
+		var allConstructors:HashMap[TypeName, ListSet[OperationSpec]] = HashMap[TypeName, ListSet[OperationSpec]]()
+		for (typeN <- allTypes)
+		{
+			var constructors:ListSet[OperationSpec] = ListSet[OperationSpec]()
+			for (opspec <- allOpSpecs)
+			{
+				if(opspec.getReturnType().equals(typeN))
+				{
+					constructors = constructors + opspec
+				}
+			}
+			typeN match
+			{
+				case typeN:TypeName => allConstructors.put(typeN, constructors)
+			}
+			
+		}
+		allConstructors
+	}
 
     def getAllBaseConstructors():ListSet[OperationSpec] = {
         var ops:ListSet[OperationSpec] = getAllOpSpecs
@@ -198,6 +221,12 @@ package com.cpb.cs4500.parsing {
     def getOpName():String = {
         op.toString
     }
+	
+	def getReturnType():Terminal = 
+	{
+		returnType
+	}
+	
 
     def isBasicCreator():Boolean = {
       basicCreator

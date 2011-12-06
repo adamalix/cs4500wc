@@ -29,9 +29,9 @@ package com.cpb.cs4500 {
     def generateTerms(spec: Spec) = {
       val valGen = new ValueGenerator(spec)
       val rewriter = new Rewriter(spec)
-      var termList: ListSet[Term] = valGen.generateTerms(minimumTests)
+      //var termList: ListSet[Term] = valGen.generateTerms(minimumTests)
       var termValuePairs = ListSet[Tuple2[Term, Rhs]]()
-      termList.foreach((term: Term) => termList += (term, rewriter.rewriteTerm(term)))
+      //termList.foreach((term: Term) => termList += (term, rewriter.rewriteTerm(term)))
     }
 
     def fail(failureMessage: String) = {
