@@ -283,7 +283,7 @@ package com.cpb.cs4500.parsing {
 
   case class CharLiteral(value: Char, stringValue: String) extends TypeLiteral {
     // additional constructors are for testing
-    def this(stringValue: String) = this(scala.util.Random.nextPrintableChar, stringValue)
+    def this(stringValue: String) = this('c', stringValue)
     def this(value: Char) = this(value, value.toString)
     override def toString(): String = stringValue
   }
