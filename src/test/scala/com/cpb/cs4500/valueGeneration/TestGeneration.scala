@@ -21,7 +21,7 @@ package com.cpb.cs4500.valueGeneration {
 		val makeDog:Operation = new Operation("makeDog")
 		val addBasicTypes:ArgTypes = ArgTypes(List(intLit))
 		val addArgTypes:ArgTypes = ArgTypes(List(catType, boolLit, intLit))
-		val simpleArgTypes:ArgTypes = ArgTypes(List(intLit, boolLit, catType))
+		val simpleArgTypes:ArgTypes = ArgTypes(List(catType))
 		val emptyList:List[Terminal] = List[Terminal]()
 		val emptyArgs:ArgTypes = ArgTypes(emptyList)
 		
