@@ -1,10 +1,10 @@
 package com.cpb.cs4500.valueGeneration {
   import org.scalatest.FunSuite
+  import com.cpb.cs4500.io.ReadWriter
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.valueGeneration._
-  import scala.collection.mutable.HashMap
-  import scala.collection.immutable.ListSet
 
+  import scala.collection.immutable.ListSet
 
   class TestGeneration extends FunSuite {
     val parser = new ADTParser()
@@ -75,8 +75,8 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     test("Test test1 Value Generation") {
-      val spec1: Spec = parser.parseAll(parser.spec, testFile1)
-      
+      val spec3 = parser.parseAll(parser.spec, testFile1).get
+      println(spec3)
     }
 
   }
