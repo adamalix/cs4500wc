@@ -31,7 +31,8 @@ package com.cpb.cs4500 {
       val rewriter = new Rewriter(spec)
       var termList: ListSet[Term] = valGen.generateTerms(minimumTests)
       var termValuePairs = ListSet[Tuple2[Term, Rhs]]()
-      termList.foreach((term: Term) => termList += (term, rewriter.rewriteTerm(term)))
+      //PQ: commented this line out because i changed the implementation of rewrite
+      //termList.foreach((term: Term) => termList += (term, rewriter.rewriteTerm(term)))
     }
 
     def fail(failureMessage: String) = {
