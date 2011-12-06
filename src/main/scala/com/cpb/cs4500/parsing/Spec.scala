@@ -308,12 +308,21 @@ package com.cpb.cs4500.parsing {
   // Lefthand side style Args
   trait Arg {
     def isEmpty(): Boolean = false
+    def length(): Int
   }
 
   case class Args(term: Term, args: Arg) extends Arg
+  {
+    def length(): Int = {
+        1 + args.length()
+    }
+  }
 
   case class EmptyArg() extends Arg {
     override def isEmpty(): Boolean = true
+    def length(): Int = {
+        0
+    }
   }
 
   abstract class Rhs
