@@ -79,13 +79,26 @@ Grammar for input files (file1):
     <equations>  ::=  <empty>
                    |  <equation> <equations>
 
-    <equation>  ::=  <term> "=' <term>
+    <equation>  ::=  <term> "=" <rhs>
 
     <term>  ::=  <identifier>
               |  "(" <operation> <args> ")"
 
     <args>  ::=  <empty>
               |  <term> <args>
+
+    <rhs>  ::=  "#t"  |  "#f"
+             |  <uinteger 10>
+             |  <identifier>
+             |  "(" <operation> <rhsArgs> ")"
+             |  "(" <primitive> <rhsArgs> ")"
+
+    <rhsArgs>  ::=  <empty>
+                 |  <rhs> <rhsArgs>
+
+    <primitive>  ::=  "not"
+                   |  "+"  |  "-"  |  "*"
+                   |  "="  |  "<"  |  ">"
 
 ---- CHANGELOG ----
 

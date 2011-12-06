@@ -37,9 +37,19 @@ package com.cpb.cs4500.parsing {
           OperationSpec(op, new ArgTypes(List()), returnType, true) }
 
       | operation ~ ":" ~ argTypes ~ "->" ~ typeLiteral ^^
-        { case op ~ ":" ~ args ~ "->" ~ returnType =>
-          OperationSpec(op, args, returnType, false) }
+        { case op ~ ":" ~ args ~ "->" ~ returnType => opSpecHelper(op, args, returnType) }
     )
+
+    // detect whether we have a basic creator on our hands!
+    def opSpecHelper(op: Operation, args: ArgTypes, returnType: Terminal): OperationSpec = {
+      val isBasicCreator = returnType match {
+        case typeName: TypeName => !args.getAllTypeNames().contains(typeName)
+        case _ => false
+      }
+
+      OperationSpec(op, args, returnType, isBasicCreator)
+
+    }
 
     def operation: Parser[Operation] = ident ^^ { case op => Operation(op) }
 

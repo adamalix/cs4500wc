@@ -11,302 +11,300 @@ package com.cpb.cs4500.parsing {
 
 
   trait Terminal {
-    override def toString():String
+    override def toString(): String
   }
 
-  case class Spec(signatures:ADTSignatures, equations:Equations) {
+  case class Spec(signatures: ADTSignatures, equations: Equations) {
 
-    override def toString():String = {
+    override def toString(): String = {
       signatures.toSexpr
     }
 
-    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
-        signatures.toGeneratedSexpr(repMap)
+    def toGeneratedSexpr(repMap: HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]): String = {
+      signatures.toGeneratedSexpr(repMap)
     }
 
-    def getAllTypeNames():ListSet[TypeName] = {
-        signatures.getAllTypeNames()
+    def getAllTypeNames(): ListSet[TypeName] = {
+      signatures.getAllTypeNames()
     }
 
-    def getAllTypeLiterals():ListSet[TypeLiteral] = {
-        signatures.getAllTypeLiterals()
+    def getAllTypeLiterals(): ListSet[TypeLiteral] = {
+      signatures.getAllTypeLiterals()
     }
 
-    def getAllTypes():ListSet[Terminal] = {
-        signatures.getAllTypeNames() ++ signatures.getAllTypeLiterals()
+    def getAllTypes(): ListSet[Terminal] = {
+      signatures.getAllTypeNames() ++ signatures.getAllTypeLiterals()
     }
 
-    def getAllOpSpecs():ListSet[OperationSpec] = {
-        signatures.getAllOpSpecs
+    def getAllOpSpecs(): ListSet[OperationSpec] = {
+      signatures.getAllOpSpecs
     }
-	
-	def getAllConstructors():HashMap[TypeName, ListSet[OperationSpec]] = {
-		val allTypes:ListSet[TypeName] = getAllTypeNames()
-		val allOpSpecs:ListSet[OperationSpec] =   getAllOpSpecs()
-		var allConstructors:HashMap[TypeName, ListSet[OperationSpec]] = HashMap[TypeName, ListSet[OperationSpec]]()
-		for (typeN <- allTypes)
-		{
-			var constructors:ListSet[OperationSpec] = ListSet[OperationSpec]()
-			for (opspec <- allOpSpecs)
-			{
-				if(opspec.getReturnType().equals(typeN))
-				{
-					constructors = constructors + opspec
-				}
-			}
-			typeN match
-			{
-				case typeN:TypeName => allConstructors.put(typeN, constructors)
-			}
-			
-		}
-		allConstructors
-	}
 
-    def getAllBaseConstructors():ListSet[OperationSpec] = {
-        var ops:ListSet[OperationSpec] = getAllOpSpecs
-        var cons:ListSet[OperationSpec] = ListSet[OperationSpec]()
-        for(op<-ops) {
-            if(op.isBasicCreator) {
-                cons = cons + op
-            }
+    def getAllConstructors(): HashMap[TypeName, ListSet[OperationSpec]] = {
+      val allTypes: ListSet[TypeName] = getAllTypeNames()
+      val allOpSpecs: ListSet[OperationSpec] = getAllOpSpecs()
+      var allConstructors = HashMap[TypeName, ListSet[OperationSpec]]()
+
+      for (typeN <- allTypes) {
+        var constructors = ListSet[OperationSpec]()
+
+        for (opspec <- allOpSpecs) {
+          if (typeN.equals(opspec.getReturnType()))
+            constructors = constructors + opspec
         }
-        cons
+
+        allConstructors.put(typeN, constructors)
+      }
+
+      allConstructors
     }
 
-    def getOperationNames():List[String] = {
-        val ops:ListSet[OperationSpec] = getAllOpSpecs
-        var opNameList:List[String] = List[String]()
-
-        for (op<-ops) {
-            opNameList = opNameList :+ op.getOpName
+    def getAllBaseConstructors(): ListSet[OperationSpec] = {
+      var ops: ListSet[OperationSpec] = getAllOpSpecs
+      var cons: ListSet[OperationSpec] = ListSet[OperationSpec]()
+      for (op<-ops) {
+        if (op.isBasicCreator) {
+          cons = cons + op
         }
-        opNameList
+      }
+      cons
+    }
+
+    def getOperationNames(): List[String] = {
+      val ops: ListSet[OperationSpec] = getAllOpSpecs
+      var opNameList: List[String] = List[String]()
+
+      for (op<-ops) {
+        opNameList = opNameList :+ op.getOpName
+      }
+      opNameList
     }
   }
 
-  case class ADTSignatures(sigs:List[ADTSignature]) {
-    def toSexpr():String = {
-      var sexpr:String = ""
-      sigs.foreach((sig:ADTSignature) => sexpr+=sig.toSexpr)
+  case class ADTSignatures(sigs: List[ADTSignature]) {
+    def toSexpr(): String = {
+      var sexpr: String = ""
+      sigs.foreach((sig: ADTSignature) => sexpr+=sig.toSexpr)
       sexpr
     }
 
-    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
-      var sexpr:String = ""
-      sigs.foreach((sig:ADTSignature) => sexpr+=sig.toGeneratedSexpr(repMap))
+    def toGeneratedSexpr(repMap: HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]): String = {
+      var sexpr: String = ""
+      sigs.foreach((sig: ADTSignature) => sexpr+=sig.toGeneratedSexpr(repMap))
       sexpr
     }
 
-    def getAllTypeNames():ListSet[TypeName] = {
-        var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-        for (sig<-sigs) {
-            allTypeNames = allTypeNames ++ sig.getAllTypeNames
-        }
-        allTypeNames
+    def getAllTypeNames(): ListSet[TypeName] = {
+      var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
+      for (sig<-sigs) {
+        allTypeNames = allTypeNames ++ sig.getAllTypeNames
+      }
+      allTypeNames
     }
 
-    def getAllTypeLiterals():ListSet[TypeLiteral] = {
-        var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-        for (sig<-sigs) {
-            allTypeLits = allTypeLits ++ sig.getAllTypeLiterals
-        }
-        allTypeLits
+    def getAllTypeLiterals(): ListSet[TypeLiteral] = {
+      var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+      for (sig<-sigs) {
+        allTypeLits = allTypeLits ++ sig.getAllTypeLiterals
+      }
+      allTypeLits
     }
 
-    def getAllOpSpecs():ListSet[OperationSpec] = {
-        var AllOpSpecs:ListSet[OperationSpec] = new ListSet[OperationSpec]()
-        for (sig<-sigs) {
-            AllOpSpecs = AllOpSpecs ++ sig.getAllOpSpecs
-        }
-        AllOpSpecs
+    def getAllOpSpecs(): ListSet[OperationSpec] = {
+      var AllOpSpecs: ListSet[OperationSpec] = new ListSet[OperationSpec]()
+      for (sig<-sigs) {
+        AllOpSpecs = AllOpSpecs ++ sig.getAllOpSpecs
+      }
+      AllOpSpecs
     }
   }
 
-  case class ADTSignature(name:TypeName, opSpecs:OperationSpecs) {
-    def toSexpr():String = {
+  case class ADTSignature(name: TypeName, opSpecs: OperationSpecs) {
+    def toSexpr(): String = {
       opSpecs.toSexpr
     }
 
-    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
-        opSpecs.toGeneratedSexpr(repMap)
+    def toGeneratedSexpr(repMap: HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]): String = {
+      opSpecs.toGeneratedSexpr(repMap)
     }
 
-    def getAllTypeNames():ListSet[TypeName] = {
-      var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+    def getAllTypeNames(): ListSet[TypeName] = {
+      var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
       allTypeNames = allTypeNames + name ++ opSpecs.getAllTypeNames
       allTypeNames
     }
 
-    def getAllTypeLiterals():ListSet[TypeLiteral] = {
-      var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+    def getAllTypeLiterals(): ListSet[TypeLiteral] = {
+      var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
       allTypeLits = allTypeLits ++ opSpecs.getAllTypeLiterals
       allTypeLits
     }
 
-    def getAllOpSpecs():List[OperationSpec] = {
-        opSpecs.getOpSpecs
+    def getAllOpSpecs(): List[OperationSpec] = {
+      opSpecs.getOpSpecs
     }
   }
 
-  case class OperationSpecs(ops:List[OperationSpec]) {
-    def toSexpr():String = {
-      var sexpr:String = ""
-      ops.foreach((op:OperationSpec) => sexpr+= op.toSexpr + "\n")
+  case class OperationSpecs(ops: List[OperationSpec]) {
+    def toSexpr(): String = {
+      var sexpr: String = ""
+      ops.foreach((op: OperationSpec) => sexpr+= op.toSexpr + "\n")
       sexpr
     }
 
-    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
-      var sexpr:String = ""
-      ops.foreach((op:OperationSpec) => sexpr+= op.toGeneratedSexpr(repMap) + "\n")
+    def toGeneratedSexpr(repMap: HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]): String = {
+      var sexpr: String = ""
+      ops.foreach((op: OperationSpec) => sexpr+= op.toGeneratedSexpr(repMap) + "\n")
       sexpr
     }
 
-    def getAllTypeNames():ListSet[TypeName] = {
-      var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-      for(op<-ops) {
-         allTypeNames = allTypeNames ++ op.getAllTypeNames()
+    def getAllTypeNames(): ListSet[TypeName] = {
+      var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
+      for (op<-ops) {
+        allTypeNames = allTypeNames ++ op.getAllTypeNames()
       }
       allTypeNames
     }
 
-    def getAllTypeLiterals():ListSet[TypeLiteral] = {
-      var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-      for(op<-ops){
-         allTypeLits = allTypeLits ++ op.getAllTypeLiterals
+    def getAllTypeLiterals(): ListSet[TypeLiteral] = {
+      var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+      for (op<-ops){
+        allTypeLits = allTypeLits ++ op.getAllTypeLiterals
       }
       allTypeLits
     }
 
-    def getOpSpecs():List[OperationSpec] = {
-        ops
+    def getOpSpecs(): List[OperationSpec] = {
+      ops
     }
 
   }
 
-  case class OperationSpec(op:Operation, argTypes:ArgTypes, returnType:Terminal, basicCreator:Boolean) {
+  case class OperationSpec(op: Operation, argTypes: ArgTypes, returnType: Terminal, basicCreator: Boolean) {
 
-    def toSexpr():String = {
+    def toSexpr(): String = {
       "(test (" + op.toString + argTypes.toString + ") " + returnType.toString + ")"
     }
 
-    def toGeneratedSexpr(repMap:HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]):String = {
-      val newArgTypes:ArgTypes = repMap(this).head._1
-      val newReturnType:Terminal = repMap(this).head._2
+    def toGeneratedSexpr(repMap: HashMap[OperationSpec, List[((ArgTypes, TypeLiteral))]]): String = {
+      val newArgTypes: ArgTypes = repMap(this).head._1
+      val newReturnType: Terminal = repMap(this).head._2
       "(test (" + op.toString + newArgTypes.toString + ") " + newReturnType.toString + ")"
     }
 
-    def getAllTypeNames():ListSet[TypeName] = {
-        var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
-        returnType match {
-            case a:TypeName => allTypeNames = allTypeNames + a
-            case a:TypeLiteral =>
-            case a:Operation =>
-        }
-        allTypeNames = allTypeNames ++ argTypes.getAllTypeNames()
-        allTypeNames
+    def getAllTypeNames(): ListSet[TypeName] = {
+      var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
+      returnType match {
+        case a: TypeName => allTypeNames = allTypeNames + a
+        case a: TypeLiteral =>
+        case a: Operation =>
+      }
+      allTypeNames = allTypeNames ++ argTypes.getAllTypeNames()
+      allTypeNames
     }
 
-    def getAllTypeLiterals():ListSet[TypeLiteral] = {
-        var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-        returnType match {
-            case a:TypeLiteral => allTypeLits = allTypeLits + a
-            case a:TypeName =>
-            case a:Operation =>
-        }
-        allTypeLits = allTypeLits ++ argTypes.getAllTypeLiterals()
-        allTypeLits
+    def getAllTypeLiterals(): ListSet[TypeLiteral] = {
+      var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+      returnType match {
+        case a: TypeLiteral => allTypeLits = allTypeLits + a
+        case a: TypeName =>
+          case a: Operation =>
+      }
+      allTypeLits = allTypeLits ++ argTypes.getAllTypeLiterals()
+      allTypeLits
     }
 
-    def getOpName():String = {
-        op.toString
+    def getOpName(): String = {
+      op.toString
     }
-	
-	def getReturnType():Terminal = 
-	{
-		returnType
-	}
-	
 
-    def isBasicCreator():Boolean = {
+    def getReturnType(): Terminal = {
+      returnType
+    }
+
+    def getArgTypes(): List[Terminal] = {
+      argTypes.args
+    }
+
+    def isBasicCreator(): Boolean = {
       basicCreator
     }
 
   }
 
-  case class Operation(ident:String) extends Terminal {
-    override def toString():String = ident
+  case class Operation(ident: String) extends Terminal {
+    override def toString(): String = ident
   }
 
-  case class ArgTypes(args:List[Terminal]) {
-    override def toString():String = {
-      var whole:String = ""
-      args.foreach((arg:Terminal) => whole+= " " + arg.toString)
+  case class ArgTypes(args: List[Terminal]) {
+    override def toString(): String = {
+      var whole: String = ""
+      args.foreach((arg: Terminal) => whole+= " " + arg.toString)
       whole
     }
 
-    def getAllTypeNames():ListSet[TypeName] = {
-      var allTypeNames:ListSet[TypeName] = new ListSet[TypeName]()
+    def getAllTypeNames(): ListSet[TypeName] = {
+      var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
       for (a<-args) a match {
-        case a:TypeName => allTypeNames = allTypeNames + a
-        case a:TypeLiteral =>
-        case a:Operation =>
+        case a: TypeName => allTypeNames = allTypeNames + a
+        case a: TypeLiteral =>
+        case a: Operation =>
       }
       allTypeNames
     }
 
-    def getAllTypeLiterals():ListSet[TypeLiteral] = {
-      var allTypeLits:ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-        for (a<-args) a match {
-            case a:TypeLiteral => allTypeLits = allTypeLits + a
-            case a:TypeName =>
-            case a:Operation =>
-        }
-        allTypeLits
+    def getAllTypeLiterals(): ListSet[TypeLiteral] = {
+      var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
+      for (a<-args) a match {
+        case a: TypeLiteral => allTypeLits = allTypeLits + a
+        case a: TypeName =>
+          case a: Operation =>
+      }
+      allTypeLits
     }
   }
 
   abstract class TypeLiteral() extends Terminal
 
-  case class IntLiteral(value:String) extends TypeLiteral {
-    override def toString():String = value
+  case class IntLiteral(value: String) extends TypeLiteral {
+    override def toString(): String = value
   }
 
-  case class BooleanLiteral(value:String) extends TypeLiteral {
-    override def toString():String = value
+  case class BooleanLiteral(value: String) extends TypeLiteral {
+    override def toString(): String = value
   }
 
-  case class CharLiteral(value:String) extends TypeLiteral {
-    override def toString():String = value
+  case class CharLiteral(value: String) extends TypeLiteral {
+    override def toString(): String = value
   }
 
-  case class StringLiteral(value:String) extends TypeLiteral {
-    override def toString():String = value
+  case class StringLiteral(value: String) extends TypeLiteral {
+    override def toString(): String = value
   }
 
-  case class TypeName(value:String) extends Terminal {
-    override def toString():String = value
+  case class TypeName(value: String) extends Terminal {
+    override def toString(): String = value
   }
 
-  case class Equations(eqs:List[Equation])
+  case class Equations(eqs: List[Equation])
 
-  case class Equation(left:Term, right:Rhs)
+  case class Equation(left: Term, right: Rhs)
 
   abstract class Term
 
-  case class TermID(ident:String) extends Term
+  case class TermID(ident: String) extends Term
 
-  case class TermExpr(op:Operation, args:Arg) extends Term
+  case class TermExpr(op: Operation, args: Arg) extends Term
 
   // Lefthand side style Args
   trait Arg {
-    def isEmpty():Boolean = false
+    def isEmpty(): Boolean = false
   }
 
-  case class Args(term:Term, args:Arg) extends Arg
+  case class Args(term: Term, args: Arg) extends Arg
 
   case class EmptyArg() extends Arg {
-    override def isEmpty():Boolean = true
+    override def isEmpty(): Boolean = true
   }
 
   abstract class Rhs
@@ -319,24 +317,23 @@ package com.cpb.cs4500.parsing {
     val value = "#f"
   }
 
-  // TODO: WTF Is a UInt??!!
-  case class RhsUInt(value:String) extends Rhs
+  case class RhsUInt(value: String) extends Rhs
 
-  case class RhsID(ident:String) extends Rhs
+  case class RhsID(ident: String) extends Rhs
 
-  case class RhsExpr(op:Operation, args:RhsArg) extends Rhs
+  case class RhsExpr(op: Operation, args: RhsArg) extends Rhs
 
-  case class RhsPrimExpr(prim:Primitive, args:RhsArg) extends Rhs
+  case class RhsPrimExpr(prim: Primitive, args: RhsArg) extends Rhs
 
   // Righthand side style Args
   trait RhsArg {
-    def isEmpty():Boolean = false
+    def isEmpty(): Boolean = false
   }
 
-  case class RhsArgs(rhs:Rhs, args:RhsArg) extends RhsArg
+  case class RhsArgs(rhs: Rhs, args: RhsArg) extends RhsArg
 
   case class RhsEmptyArg() extends RhsArg {
-    override def isEmpty():Boolean = true
+    override def isEmpty(): Boolean = true
   }
 
   abstract class Primitive
