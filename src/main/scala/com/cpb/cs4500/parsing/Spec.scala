@@ -52,10 +52,9 @@ package com.cpb.cs4500.parsing {
           if (typeN.equals(opspec.getReturnType()))
             constructors = constructors + opspec
         }
-		if (!constructors.isEmpty)
-        {
-			allConstructors.put(typeN, constructors)
-		}
+        if (!constructors.isEmpty) {
+          allConstructors.put(typeN, constructors)
+        }
       }
       allConstructors
     }

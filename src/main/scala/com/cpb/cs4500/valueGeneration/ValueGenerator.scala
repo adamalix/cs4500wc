@@ -13,13 +13,37 @@ package com.cpb.cs4500.valueGeneration {
     // Identify basic creators for convenience
     val basicCreatorMap: Map[TypeName, List[OperationSpec]] = createBasicCreatorMap()
 
+    //val primopMap: Map[TypeName, List[OperationSpec]] = createPrimopMap()
+
     // Store the generated TypeLiterals here for replacement when rewriting
     val termIdMap = Map[TermID, TypeLiteral]()
+
+    // entry point, create all tests for a spec
+    def createAllTests(minTestsForSpec: Int): List[List[Term]] = {
+      var tests = List[List[Term]]()
+      for (opspec <- specification.getAllOpSpecs)
+        tests = createTestsForOpSpec(opspec, minTestsForSpec) :: tests
+
+      tests
+    }
 
     // Keep track of all generated TermIDs between test generation sessions so
     // we don't get duplicate data
     val generatedTermIds = HashSet[TermID]()
+/*
+    def createPrimopMap(): Map[TypeName, List[OperationSpec]] = {
+      val opspecList: ListSet[OperationSpec] = specification.getAllOpSpecs()
+      val destMap = Map[TypeName, List[OperationSpec]]()
 
+      for (opspec <- opspecList) {
+        var opspecListDest = List[OperationSpec]()
+        if (!opspec.getArgTypes.contains(opspec.returnType))
+          opspecListDest = opspec :: opspecListDest
+        destMap += (typeName -> opspecListDest)
+      }
+      destMap
+    }
+*/
     // Pull all constructors out of the specification
     def createConstructorMap(): Map[TypeName, List[OperationSpec]] = {
       val constructorsMap: Map[TypeName, ListSet[OperationSpec]] = specification.getAllConstructors()
@@ -53,18 +77,21 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     // create a term for this opspec
-    def createTestsForOpSpec(opspec: OperationSpec, numTests: Int): HashSet[Term] = {
+    def createTestsForOpSpec(opspec: OperationSpec, numTests: Int): List[Term] = {
       val argTypes: List[Terminal] = opspec.getArgTypes
 
       // bottom out immediately if we have no argTypes
       if (argTypes.isEmpty)
-          return HashSet(TermExpr(opspec.op, EmptyArg()))
+          return List(TermExpr(opspec.op, EmptyArg()))
 
       // Place to uniquely store tests
-      var tests = HashSet[Term]()
+      var tests = List[Term]()
 
-      // while loop
-      createTestForOp(opspec.op, argTypes)
+      while (tests.length < numTests) {
+        val test = createTestForOp(opspec.op, argTypes)
+        if (!tests.contains(test))
+          tests = test :: tests
+      }
 
       tests
     }

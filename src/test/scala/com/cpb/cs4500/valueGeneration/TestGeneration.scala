@@ -61,22 +61,50 @@ package com.cpb.cs4500.valueGeneration {
     // Correct values
     val emptyCatExpr:TermExpr = new TermExpr(makeCat, new EmptyArg())
 
-    var emptyCatList:ListSet[Term] = ListSet[Term]()
+    var emptyCatList:List[Term] = List[Term]()
 
-    emptyCatList = emptyCatList + emptyCatExpr
+    emptyCatList = emptyCatExpr :: emptyCatList
 
     valueGen.createBasicCreatorMap()
-
+    /*
     test("test createTestsforOp1") {
       expect(emptyCatList) { valueGen.createTestForOp(makeCat, notBaseCat.getArgTypes()) }
-    }
+    }*/
+
     test("testCreateTests3") {
       expect(emptyCatList) { valueGen.createTestsForOpSpec(emptyCat, 1) }
     }
 
     test("Test test1 Value Generation") {
+      println("********Printing test3 ValGen data: ***********")
       val spec3 = parser.parseAll(parser.spec, testFile1).get
+      val gen = new ValueGenerator(spec3)
+      val constructorMap = gen.constructorMap
+      val basicMap = gen.basicCreatorMap
+      //val primopMap = gen.primopMap
+      val emptyTest = TermExpr(Operation("empty"), EmptyArg())
       println(spec3)
+      println(constructorMap)
+      println(basicMap)
+      //println(primopMap)
+      // we know that there is only one basic creator
+      val emptyOpSpec: OperationSpec = basicMap(TypeName("StackInt"))(0)
+      expect(emptyTest) {
+        gen.createTestForOp(emptyOpSpec.op, emptyOpSpec.getArgTypes)
+      }
+      val creatorList = constructorMap(TypeName("StackInt"))
+
+      expect(true) {
+        val pushSpec = creatorList(1)
+        gen.createTestForOp(pushSpec.op, pushSpec.getArgTypes) match {
+          case termExpr: TermExpr => {
+            println(termExpr)
+            println(gen.termIdMap)
+            true
+          }
+          case _ => false
+        }
+      }
     }
 
   }
