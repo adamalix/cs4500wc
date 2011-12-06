@@ -267,16 +267,25 @@ package com.cpb.cs4500.parsing {
 
   abstract class TypeLiteral() extends Terminal
 
-  case class IntLiteral(value: String) extends TypeLiteral {
-    override def toString(): String = value
+  case class IntLiteral(value: Int, stringValue: String) extends TypeLiteral {
+    // additional constructors are for testing
+    def this(stringValue: String) = this(-6789, stringValue)
+    def this(value: Int) = this(value, value.toString)
+    override def toString(): String = stringValue
   }
 
-  case class BooleanLiteral(value: String) extends TypeLiteral {
-    override def toString(): String = value
+  case class BooleanLiteral(value: Boolean, stringValue: String) extends TypeLiteral {
+    // additional constructors are for testing
+    def this(stringValue: String) = this(false, stringValue)
+    def this(value: Boolean) = this(value, value.toString)
+    override def toString(): String = stringValue
   }
 
-  case class CharLiteral(value: String) extends TypeLiteral {
-    override def toString(): String = value
+  case class CharLiteral(value: Char, stringValue: String) extends TypeLiteral {
+    // additional constructors are for testing
+    def this(stringValue: String) = this(scala.util.Random.nextPrintableChar, stringValue)
+    def this(value: Char) = this(value, value.toString)
+    override def toString(): String = stringValue
   }
 
   case class StringLiteral(value: String) extends TypeLiteral {

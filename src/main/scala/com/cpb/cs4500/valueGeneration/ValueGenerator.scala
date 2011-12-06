@@ -13,12 +13,10 @@ package com.cpb.cs4500.valueGeneration {
 
     val basicCreatorMap: Map[TypeName, List[OperationSpec]] = createBasicCreatorMap()
 
-
-
     // Store the generated TypeLiterals here for replacement with the
-    val valMap = Map[TermID, Term]()
+    val termIdMap = Map[TermID, TypeLiteral]()
 
-    val generatedValues = HashSet[Term]()
+    val generatedTermIds = HashSet[TermID]()
 
     def createTestsForADT() = {
       null
@@ -84,7 +82,26 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     def createTermAndValueForTypeLit(typeLit: TypeLiteral): Term = {
-      null
+      // generate a random ID
+      val termId: TermID = generateRandomTermID()
+
+      // generate random value, map it to ID
+      typeLit match {
+        case intLit: IntLiteral => {
+          termIdMap += (termId -> generateRandomInt())
+        }
+        case boolLit: BooleanLiteral => {
+          termIdMap += (termId -> generateRandomBoolean())
+        }
+        case charLit: CharLiteral => {
+          termIdMap += (termId -> generateRandomChar())
+        }
+        case stringLit: StringLiteral => {
+          termIdMap += (termId -> generateRandomString())
+        }
+      }
+
+      termId
     }
 
     def createAllTests(): List[Terminal] = {
@@ -110,108 +127,33 @@ package com.cpb.cs4500.valueGeneration {
       destMap
     }
 
-    def generateRandomIntLiteral(): IntLiteral= {
-      IntLiteral(scala.util.Random.nextInt(1001).toString)
+    def generateRandomInt(): IntLiteral = {
+      new IntLiteral(scala.util.Random.nextInt(10))
     }
 
-    def generateRandomBooleanLiteral(): BooleanLiteral= {
-      BooleanLiteral(scala.util.Random.nextBoolean.toString)
+    def generateRandomBoolean(): BooleanLiteral = {
+      new BooleanLiteral(scala.util.Random.nextBoolean)
     }
 
-    def generateRandomCharLiteral(): CharLiteral= {
-      CharLiteral(scala.util.Random.nextPrintableChar.toString)
+    def generateRandomChar(): CharLiteral = {
+      new CharLiteral(scala.util.Random.nextPrintableChar)
     }
 
-    def generateRandomStringLiteral(): StringLiteral= {
+    def generateRandomString(): StringLiteral = {
       val strList = List("string1", "string2", "string3", "string4", "string5")
-      StringLiteral(strList(scala.util.Random.nextInt(5)))
+      new StringLiteral(strList(scala.util.Random.nextInt(5)))
     }
 
-    def generateRandomMapKey(): String = {
-      scala.util.Random.nextInt(10000000).toString()
-    }
-
-    def generateTerm(): TermID = {
-      new TermID(scala.util.Random.nextString(12))
+    def generateRandomTermID(): TermID = {
+      var term = TermID(scala.util.Random.nextString(12))
+      // check the set for the term
+      while (generatedTermIds.contains(term)) {
+        term = TermID(scala.util.Random.nextString(12))
+      }
+      generatedTermIds += term
+      term
     }
 
   }
 
 }
-
-/*
-    def generatedFunctionValues(opspec:OperationSpec) : GeneratedFunction = {
-      val operationName:String = opspec.getOpName
-      val returnLiteral:Terminal = opspec.returnType
-      val arguments:List[Terminal] = opspec.argTypes.args
-      var listGenValues:List[GeneratedValue] = List[GeneratedValue]()
-      for (arg<-arguments) {
-        arg match {
-          case intLit:IntLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomIntLiteral()))
-          case boolLit:BooleanLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomBooleanLiteral()))
-          case charLit:CharLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomCharLiteral()))
-          case stringLit:StringLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomStringLiteral()))
-          //case typeN:TypeName => generateTypeNameValues(typeN, listGenValues)
-        }
-      }
-      new GeneratedFunction(operationName, listGenValues, returnLiteral)
-    }
-
-    // Given an OperationSpec, figure out how many tests
-    // we need to make for it (based on the arguments).
-    def countNumberOfTests(opspec:OperationSpec):Int = {
-      var totalTests:Int = 1
-      val arguments:List[Terminal] = opspec.argTypes.args
-      for (arg<-arguments) {
-        arg match {
-          case typeN:TypeName => totalTests *= TypeToConstructer.get(typeN).size
-        }
-      }
-      totalTests
-    }
-
-    def createCorrectNumberOfTests(opspec:OperationSpec):List[GeneratedFunction] = {
-      val totalTestsToMake:Int = countNumberOfTests(opspec)
-      var generatedTests:List[GeneratedFunction] = List[GeneratedFunction]()
-      for (i <- 0 until totalTestsToMake) {
-        System.out.println("HNNNG")
-      }
-      generatedTests
-
-       val operationName:String = opspec.getOpName
-       val returnLiteral:Terminal = opspec.returnType
-       val arguments:List[Terminal] = opspec.argTypes.args
-       var listGenValues:List[GeneratedValue] = List[GeneratedValue]()
-       for (arg<-arguments)
-       {
-       arg match{
-       case intLit:IntLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomIntLiteral()))
-       case boolLit:BooleanLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomBooleanLiteral()))
-       case charLit:CharLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomCharLiteral()))
-       case stringLit:StringLiteral => listGenValues = listGenValues :+ (new GeneratedPrimitive(generateRandomStringLiteral()))
-       //case typeN:TypeName => generateTypeNameValues(typeN, listGenValues)
-       }
-       }
-       new GeneratedFunction(operationName, listGenValues, returnLiteral)
-
-    }
-    def generateRandomIntLiteral():IntLiteral= {
-      IntLiteral(scala.util.Random.nextInt(1001).toString)
-    }
-
-    def generateRandomBooleanLiteral():BooleanLiteral= {
-      BooleanLiteral(scala.util.Random.nextBoolean.toString)
-    }
-
-    def generateRandomCharLiteral():CharLiteral= {
-      CharLiteral(scala.util.Random.nextPrintableChar.toString)
-    }
-
-    def generateRandomStringLiteral():StringLiteral= {
-      val strList = List("string1", "string2", "string3", "string4", "string5")
-      StringLiteral(strList(scala.util.Random.nextInt(5)))
-    }
-
-  }
-}*/
-
