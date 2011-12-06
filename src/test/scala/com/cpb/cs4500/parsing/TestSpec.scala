@@ -3,7 +3,7 @@ package com.cpb.cs4500.parsing {
   import org.scalatest.FunSuite
   import com.cpb.cs4500.io.ReadWriter
   import com.cpb.cs4500.parsing._
-    import scala.collection.mutable.HashMap
+  import scala.collection.mutable.HashMap
   import scala.collection.immutable.ListSet
   
    class TestSpec extends FunSuite {
