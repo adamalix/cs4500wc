@@ -1,6 +1,7 @@
 package com.cpb.cs4500.valueGeneration {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.rewriting.Rewriter
+  import scala.collection.mutable.Map
   import scala.collection.mutable.HashMap
   import scala.collection.mutable.HashSet
   import scala.collection.immutable.ListSet
@@ -8,14 +9,14 @@ package com.cpb.cs4500.valueGeneration {
   class ValueGenerator(specification: Spec) {
 
     // Store the basic constructors so we can create them on the fly
-    val constructMap: HashMap[TypeName, ListSet[OperationSpec]] = createConstructorMap()
+    val constructMap: Map[TypeName, List[OperationSpec]] = createConstructorMap()
 
-    val basicCreatorMap: HashMap[TypeName, ListSet[OperationSpec]] = createBasicCreatorMap()
+    val basicCreatorMap: Map[TypeName, List[OperationSpec]] = createBasicCreatorMap()
 
 
 
-    // Store the generated TypeLiterals here for replacement with the 
-    val valMap = HashMap[TermID, Term]()
+    // Store the generated TypeLiterals here for replacement with the
+    val valMap = Map[TermID, Term]()
 
     val generatedValues = HashSet[Term]()
 
@@ -23,46 +24,66 @@ package com.cpb.cs4500.valueGeneration {
       null
     }
 
-    def createBasicCreatorMap(): HashMap[TypeName, ListSet[OperationSpec]] = {
-      val bcMap = HashMap[TypeName, ListSet[OperationSpec]]()
+    def createBasicCreatorMap(): Map[TypeName, List[OperationSpec]] = {
+      val bcMap = Map[TypeName, List[OperationSpec]]()
 
       for ((key, value) <- constructMap) {
-        val opSpecList: ListSet[OperationSpec] = value
-        var creatorList = ListSet[OperationSpec]()
+        val opSpecList: List[OperationSpec] = value
+        var creatorList = List[OperationSpec]()
 
         for (opspec <- opSpecList)
-          if (opspec.isBasicCreator()) creatorList = creatorList + opspec
+          if (opspec.isBasicCreator()) creatorList = opspec :: creatorList
 
-        bcMap.put(key, creatorList)
+        bcMap += (key -> creatorList)
       }
 
       bcMap
     }
 
     // create a term for this opspec
-    def createTestsForOpSpec(opspec: OperationSpec): ListSet[Term] = {
-      var tests = ListSet[Term]()
+    def createTestsForOpSpec(opspec: OperationSpec, numTests: Int): ListSet[Term] = {
       val argTypes: List[Terminal] = opspec.getArgTypes
+      if (argTypes.isEmpty)
+          return ListSet(TermExpr(opspec.op, EmptyArg()))
+      var tests = ListSet[Term]()
 
-      for (argType <- argTypes) {
-        tests = tests + createTermForArg(argType)
-      }
+      // while loop
+      createTestForOp(opspec.op, argTypes)
 
       tests
     }
 
-    def createTermForArg(argType: Terminal): Term = {
-      argType match {
+    def createTestForOp(op: Operation, argTypes: List[Terminal]): Term = {
+      TermExpr(op, createArgs(argTypes))
+    }
+
+    def createArgs(argTypes: List[Terminal]): Arg = {
+      if (argTypes.isEmpty)
+        return EmptyArg()
+
+      val term = argTypes.head match {
+        case literal: TypeLiteral => createTermAndValueForTypeLit(literal)
         case typeName: TypeName => createTermForTypeName(typeName)
-        case typeLit: TypeLiteral => createValueForTypeLit(typeLit)
       }
+
+      Args(term, createArgs(argTypes.tail))
     }
 
     def createTermForTypeName(typeName: TypeName): Term = {
-      null
+      val basicCreators: List[OperationSpec] = basicCreatorMap(typeName)
+
+      // wtf happens here
+      if (basicCreators.isEmpty)
+        throw new RuntimeException("Cannot instantiate ADT: " + typeName +
+                                   " because it has no basic creator")
+
+      // TODO: DONT DO THIS I NTHE FUTURE
+      val idx = scala.util.Random.nextInt(basicCreators.size)
+      val randomCreator = basicCreators(idx)
+      createTestForOp(randomCreator.op, randomCreator.getArgTypes())
     }
 
-    def createValueForTypeLit(typeLit: TypeLiteral): Term = {
+    def createTermAndValueForTypeLit(typeLit: TypeLiteral): Term = {
       null
     }
 
@@ -77,8 +98,16 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     // Get a map of all the Constructors
-    def createConstructorMap(): HashMap[TypeName, ListSet[OperationSpec]] = {
-      specification.getAllConstructors()
+    def createConstructorMap(): Map[TypeName, List[OperationSpec]] = {
+      val map: HashMap[TypeName, ListSet[OperationSpec]] = specification.getAllConstructors()
+      val destMap = Map[TypeName, List[OperationSpec]]()
+      for ((key, value) <- map) {
+        var list = List[OperationSpec]()
+        value.foreach((op: OperationSpec) => list = op :: list)
+        //var list: List[OperationSpec] = value ++: List[OperationSpec]()
+        destMap += (key -> list)
+      }
+      destMap
     }
 
     def generateRandomIntLiteral(): IntLiteral= {
