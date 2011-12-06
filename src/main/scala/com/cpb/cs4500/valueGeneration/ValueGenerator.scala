@@ -2,37 +2,50 @@ package com.cpb.cs4500.valueGeneration {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.rewriting.Rewriter
   import scala.collection.mutable.Map
-  import scala.collection.mutable.HashMap
   import scala.collection.mutable.HashSet
   import scala.collection.immutable.ListSet
 
   class ValueGenerator(specification: Spec) {
 
-    // Store the basic constructors so we can create them on the fly
-    val constructMap: Map[TypeName, List[OperationSpec]] = createConstructorMap()
+    // Initialize a map containing TypeNames and Lists of their constructors
+    val constructorMap: Map[TypeName, List[OperationSpec]] = createConstructorMap()
 
+    // Identify basic creators for convenience
     val basicCreatorMap: Map[TypeName, List[OperationSpec]] = createBasicCreatorMap()
 
-    // Store the generated TypeLiterals here for replacement with the
+    // Store the generated TypeLiterals here for replacement when rewriting
     val termIdMap = Map[TermID, TypeLiteral]()
 
+    // Keep track of all generated TermIDs between test generation sessions so
+    // we don't get duplicate data
     val generatedTermIds = HashSet[TermID]()
 
-    def createTestsForADT() = {
-      null
+    // Pull all constructors out of the specification
+    def createConstructorMap(): Map[TypeName, List[OperationSpec]] = {
+      val constructorsMap: Map[TypeName, ListSet[OperationSpec]] = specification.getAllConstructors()
+      // Temp destination map because we parse into ListSets
+      val destMap = Map[TypeName, List[OperationSpec]]()
+
+      // Key, Value
+      for ((typeName, opspecList) <- constructorsMap) {
+        var opspecListDest = List[OperationSpec]()
+        opspecList.foreach((op: OperationSpec) => opspecListDest = op :: opspecListDest)
+        destMap += (typeName -> opspecListDest)
+      }
+      destMap
     }
 
     def createBasicCreatorMap(): Map[TypeName, List[OperationSpec]] = {
       val bcMap = Map[TypeName, List[OperationSpec]]()
 
-      for ((key, value) <- constructMap) {
-        val opSpecList: List[OperationSpec] = value
-        var creatorList = List[OperationSpec]()
+      // Key, Value
+      for ((typeName, opspecList) <- constructorMap) {
+        var basicCreatorList = List[OperationSpec]()
 
-        for (opspec <- opSpecList)
-          if (opspec.isBasicCreator()) creatorList = opspec :: creatorList
+        for (opspec <- opspecList)
+          if (opspec.isBasicCreator()) basicCreatorList = opspec :: basicCreatorList
 
-        bcMap += (key -> creatorList)
+        bcMap += (typeName -> basicCreatorList)
       }
 
       bcMap
@@ -102,29 +115,6 @@ package com.cpb.cs4500.valueGeneration {
       }
 
       termId
-    }
-
-    def createAllTests(): List[Terminal] = {
-      var allTests: List[Terminal] = List[Terminal]()
-      allTests
-    }
-
-    def constructTests(opspec: OperationSpec): List[Term] = {
-      var generatedTests: List[Term] = List[Term]()
-      generatedTests
-    }
-
-    // Get a map of all the Constructors
-    def createConstructorMap(): Map[TypeName, List[OperationSpec]] = {
-      val map: HashMap[TypeName, ListSet[OperationSpec]] = specification.getAllConstructors()
-      val destMap = Map[TypeName, List[OperationSpec]]()
-      for ((key, value) <- map) {
-        var list = List[OperationSpec]()
-        value.foreach((op: OperationSpec) => list = op :: list)
-        //var list: List[OperationSpec] = value ++: List[OperationSpec]()
-        destMap += (key -> list)
-      }
-      destMap
     }
 
     def generateRandomInt(): IntLiteral = {
