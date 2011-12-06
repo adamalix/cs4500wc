@@ -7,11 +7,27 @@ package com.cpb.cs4500.valueGeneration {
 
   class ValueGenerator(specification: Spec) {
   
-	def createConstructorMap:HashMap[TypeName, ListSet[OperationSpec]] =
+	var constructMap:HashMap[TypeName, ListSet[OperationSpec]] = HashMap[TypeName, ListSet[OperationSpec]]()
+	// TODO create Base constructors
+	
+	
+	def createAllTests():List[Terminal] = 
 	{
-		specification.getAllConstructors()
+		var allTests:List[Terminal] = List[Terminal]()
+		createConstructorMap()
+		allTests
 	}
-	//def createBaseConstructorMap:
+	
+	def constructTests(opspec:OperationSpec):List[Term] =
+	{
+		var generatedTests:List[Term] = List[Term]()
+		generatedTests
+	}
+	
+	def createConstructorMap():Unit =
+	{
+		constructMap = specification.getAllConstructors()
+	}
 	
 	def generateRandomIntLiteral():IntLiteral= {
       IntLiteral(scala.util.Random.nextInt(1001).toString)
