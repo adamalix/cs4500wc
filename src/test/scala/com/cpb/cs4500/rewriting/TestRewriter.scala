@@ -6,13 +6,7 @@ package com.cpb.cs4500.rewriting {
   import com.cpb.cs4500.io._
 
   class TestRewriter extends FunSuite {
-    val testPhraseYay:String =  "Signatures: ADT: THISADT makeBool: int * int -> boolean " +
-                                                          "huh: -> boolean " +
-                                                          "yoyo: int * int * int -> int " +
-                                            "ADT: DATADT testWoop: string * int -> char " +
-                                            "ADT: coolStory Foobar: foo * lolz * kek * char -> WATISDIS " +
-                                "Equations:"
-   
+
     val parser = new ADTParser()
 //    val rewriter:Rewriter = new Rewriter()
     //val input:String = ReadWriter.inputFromFile("C:\\Users\\Paul\\Documents\\School\\Fall 2011\\Software Dev\\cs4500\\src\\main\\resources\\testInput.txt")
