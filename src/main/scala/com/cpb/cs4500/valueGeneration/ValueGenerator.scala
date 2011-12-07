@@ -56,7 +56,10 @@ package com.cpb.cs4500.valueGeneration {
       for (arg <- args) {
         arg match {
           case name: TypeName => allTermList = allTermList :+ typeMap(name)
-          case intLiteral: TypeLiteral => allTermList = allTermList :+ List[Term](new TermID(generateRandomInt().toString()))
+          case intLiteral: IntLiteral => allTermList = allTermList :+ List[Term](new TermID(generateRandomInt().toString()))
+          case boolLiteral: BooleanLiteral => allTermList :+ List[Term](new TermID(generateRandomBoolean().toString()))
+          case charLiteral: CharLiteral => allTermList :+ List[Term](new TermID(generateRandomChar().toString()))
+          case stringLiteral: StringLiteral => allTermList :+ List[Term](new TermID(generateRandomString().toString()))
         }
       }
       cart[Term](allTermList)
