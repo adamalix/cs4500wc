@@ -7,176 +7,126 @@ package com.cpb.cs4500.valueGeneration {
 
   class ValueGenerator(specification: Spec) {
 
-    // Initialize a map containing TypeNames and Lists of their constructors
-    val constructorMap: Map[TypeName, List[OperationSpec]] = createConstructorMap()
-
     // Identify basic creators for convenience
-    val basicCreatorMap: Map[TypeName, List[OperationSpec]] = createBasicCreatorMap()
-
-    //val primopMap: Map[TypeName, List[OperationSpec]] = createPrimopMap()
-
-    // Store the generated TypeLiterals here for replacement when rewriting
-    val termIdMap = Map[TermID, TypeLiteral]()
+    var typeMap: Map[TypeName, List[Term]] = createBasicCreatorMap()
 
     // entry point, create all tests for a spec
-    def createAllTests(minTestsForSpec: Int): List[List[Term]] = {
-      var tests = List[List[Term]]()
-      for (opspec <- specification.getAllOpSpecs)
-        tests = createTestsForOpSpec(opspec, minTestsForSpec) :: tests
-
+    def createAllTests(depth: Int): List[Term] = {
+      var allTests: List[Term] = List[Term]()
+      val allOpSpecs: ListSet[OperationSpec] = specification.getAllOpSpecs()
+      var currentDepth: Int = 0
+      while (currentDepth <= depth){
+        for (opSpec <- allOpSpecs) {
+          val testsForOpSpec: List[Term] = createTests(opSpec)
+          allTests = allTests ++ testsForOpSpec
+        }
+        currentDepth += 1
+      }
+      allTests
+    }
+    
+    def createTests(opspec: OperationSpec) : List[Term] = {
+      val args: List[Terminal] = opspec.argTypes.args
+      var generatedArgs: List[List[Term]] = makeListOfArgs(args)
+      var tests: List[Term] = List[Term]()
+      for (termArgs <- generatedArgs) {
+        var termExpr: TermExpr = new TermExpr(opspec.op, convertListToArgs(termArgs))
+        tests = tests :+ termExpr
+      }
       tests
     }
-
-    // Keep track of all generated TermIDs between test generation sessions so
-    // we don't get duplicate data
-    val generatedTermIds = HashSet[TermID]()
-/*
-    def createPrimopMap(): Map[TypeName, List[OperationSpec]] = {
-      val opspecList: ListSet[OperationSpec] = specification.getAllOpSpecs()
-      val destMap = Map[TypeName, List[OperationSpec]]()
-
-      for (opspec <- opspecList) {
-        var opspecListDest = List[OperationSpec]()
-        if (!opspec.getArgTypes.contains(opspec.returnType))
-          opspecListDest = opspec :: opspecListDest
-        destMap += (typeName -> opspecListDest)
+    
+    def convertListToArgs(list: List[Term]): Arg = {
+      var ArgObj: Arg = new EmptyArg()
+      if (list.isEmpty) {
+        new EmptyArg()
       }
-      destMap
+      else {
+        for (term <- list.reverse) {
+          ArgObj = new Args(term, ArgObj)  
+        }
+        ArgObj
+      }
+    
     }
-*/
-    // Pull all constructors out of the specification
-    def createConstructorMap(): Map[TypeName, List[OperationSpec]] = {
-      val constructorsMap: Map[TypeName, ListSet[OperationSpec]] = specification.getAllConstructors()
-      // Temp destination map because we parse into ListSets
-      val destMap = Map[TypeName, List[OperationSpec]]()
-
-      // Key, Value
-      for ((typeName, opspecList) <- constructorsMap) {
-        var opspecListDest = List[OperationSpec]()
-        opspecList.foreach((op: OperationSpec) => opspecListDest = op :: opspecListDest)
-        destMap += (typeName -> opspecListDest)
+    
+    // Cartesian products of the arguments (all possible arguments)
+    def makeListOfArgs(args: List[Terminal]): List[List[Term]] = {
+      var allTermList: List[List[Term]] = List[List[Term]]()
+      for (arg <- args) {
+        arg match {
+          case name: TypeName => allTermList = allTermList :+ typeMap(name)
+          case intLiteral: IntLiteral => allTermList = allTermList :+ List[Term](new TermID(generateRandomInt().toString()))
+          case boolLiteral: BooleanLiteral => allTermList :+ List[Term](new TermID(generateRandomBoolean().toString()))
+          case charLiteral: CharLiteral => allTermList :+ List[Term](new TermID(generateRandomChar().toString()))
+          case stringLiteral: StringLiteral => allTermList :+ List[Term](new TermID(generateRandomString().toString()))
+        }
       }
-      destMap
+      cart[Term](allTermList)
     }
-
-    // Store basic creators for convenient use later
-    def createBasicCreatorMap(): Map[TypeName, List[OperationSpec]] = {
-      val bcMap = Map[TypeName, List[OperationSpec]]()
-
-      // Key, Value
-      for ((typeName, opspecList) <- constructorMap) {
-        var basicCreatorList = List[OperationSpec]()
-
-        for (opspec <- opspecList)
-          if (opspec.isBasicCreator()) basicCreatorList = opspec :: basicCreatorList
-
-        bcMap += (typeName -> basicCreatorList)
+    // Written by: http://anders.janmyr.com/2009/10/lists-in-scala.html
+    def cart[T](listOfLists: List[List[T]]): List[List[T]] = listOfLists match {
+      case Nil => List(List())
+      case xs :: xss => for (y <- xs; ys <- cart(xss)) yield y :: ys
+    }
+    
+    
+    // Store basic creators for convenient use later. A basic creator
+    // is defined as an OperationSpec who's returnType returns a TypeName
+    // and it has no TypeName's in its arguments
+    def createBasicCreatorMap(): Map[TypeName, List[Term]] = {
+      val bcMap = Map[TypeName, List[Term]]()
+      val basicCreators: ListSet[OperationSpec] = specification.getAllBaseConstructors()
+      for (basicCreator <- basicCreators){
+        val arguments: List[Terminal] = basicCreator.argTypes.args
+        var termArguments: Arg = new EmptyArg()
+        
+        // TODO Make so that primitive arguments are generated.
+        for (arg <- arguments){
+          var arg: TermID = new TermID(generateRandomInt().toString())
+          termArguments = new Args(arg, termArguments)
+        }
+        
+        basicCreator.returnType match {
+          case rt: TypeName => {
+            var createdTerm: Term = new TermExpr(basicCreator.op, termArguments)
+            var termList: List[Term] = List[Term]()
+            if(bcMap.contains(rt))  {
+              termList = bcMap(rt) ++ List[Term](createdTerm)
+            }
+            else{
+              termList = List[Term](createdTerm)
+            }
+            bcMap += (rt -> termList)
+          }
+        }
       }
-
       bcMap
     }
 
-    // create a term for this opspec
-    def createTestsForOpSpec(opspec: OperationSpec, numTests: Int): List[Term] = {
-      val argTypes: List[Terminal] = opspec.getArgTypes
-
-      // bottom out immediately if we have no argTypes
-      if (argTypes.isEmpty)
-          return List(TermExpr(opspec.op, EmptyArg()))
-
-      // Place to uniquely store tests
-      var tests = List[Term]()
-
-      while (tests.length < numTests) {
-        val test = createTestForOp(opspec.op, argTypes)
-        if (!tests.contains(test))
-          tests = test :: tests
-      }
-
-      tests
-    }
-
-    // Create a single TermExpr for an Operation
-    // Individual test generation
-    def createTestForOp(op: Operation, argTypes: List[Terminal]): Term = {
-      if (argTypes.isEmpty)
-        return TermExpr(op, EmptyArg())
-
-      TermExpr(op, createArgs(argTypes))
-    }
-
-    // Recursively create args for the TermExpr
-    def createArgs(argTypes: List[Terminal]): Arg = {
-      // Base Case
-      if (argTypes.isEmpty)
-        return EmptyArg()
-
-      // Do we have a TypeLiteral or TypeName?
-      val term = argTypes.head match {
-        case literal: TypeLiteral => createTermAndValueForTypeLit(literal)
-        case typeName: TypeName => createTermForTypeName(typeName)
-      }
-
-      Args(term, createArgs(argTypes.tail))
-    }
-
-    // Create the term for a TypeName by using a basic creator
-    def createTermForTypeName(typeName: TypeName): Term = {
-      // get the list of basic creators for the TypeName
-      val basicCreators: List[OperationSpec] = basicCreatorMap(typeName)
-
-      // wtf happens here
-      if (basicCreators.isEmpty)
-        throw new RuntimeException("Cannot instantiate ADT: " + typeName +
-                                   " because it has no basic creator")
-
-      // TODO: DONT DO THIS IN THE FUTURE
-      // we should be choosing correct basic or attempting to guess at it
-      val idx = scala.util.Random.nextInt(basicCreators.size)
-      val randomCreator = basicCreators(idx)
-      createTestForOp(randomCreator.op, randomCreator.getArgTypes())
-    }
-
-    def createTermAndValueForTypeLit(typeLit: TypeLiteral): Term = {
-      // generate a random ID
-      val termId: TermID = generateRandomTermID()
-
-      // generate random value, map it to ID
-      typeLit match {
-        case intLit: IntLiteral => {
-          termIdMap += (termId -> generateRandomInt())
-        }
-        case boolLit: BooleanLiteral => {
-          termIdMap += (termId -> generateRandomBoolean())
-        }
-        case charLit: CharLiteral => {
-          termIdMap += (termId -> generateRandomChar())
-        }
-        case stringLit: StringLiteral => {
-          termIdMap += (termId -> generateRandomString())
-        }
-      }
-
-      termId
-    }
-
+          
+    // Creates a random intLiteral between 0-9
     def generateRandomInt(): IntLiteral = {
       new IntLiteral(scala.util.Random.nextInt(10))
     }
 
+    // Creates a random BooleanLiteral
     def generateRandomBoolean(): BooleanLiteral = {
       new BooleanLiteral(scala.util.Random.nextBoolean)
     }
 
+    // Creates a random CharLiteral
     def generateRandomChar(): CharLiteral = {
       new CharLiteral(scala.util.Random.nextPrintableChar)
     }
 
+    // Creates a random String literal from this list.
     def generateRandomString(): StringLiteral = {
       val strList = List("string1", "string2", "string3", "string4", "string5")
       new StringLiteral(strList(scala.util.Random.nextInt(5)))
     }
 
+    /*
     def generateRandomTermID(): TermID = {
       var term = TermID(scala.util.Random.nextString(12))
       // check the set for the term
@@ -186,6 +136,7 @@ package com.cpb.cs4500.valueGeneration {
       generatedTermIds += term
       term
     }
+    */
 
   }
 
