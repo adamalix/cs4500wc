@@ -7,6 +7,7 @@ package com.cpb.cs4500.valueGeneration {
   import scala.collection.immutable.ListSet
 
   class TestGeneration extends FunSuite {
+  
     val parser = new ADTParser()
 
     val testFileName1 = "src/test/resources/test1"
@@ -44,12 +45,13 @@ package com.cpb.cs4500.valueGeneration {
     val emptyArgs:ArgTypes = ArgTypes(emptyList)
 
     val baseCat:OperationSpec = new OperationSpec(makeCat, addBasicTypes, catType, true)
+    val baseCat2:OperationSpec = new OperationSpec(makeCat2, addBasicTypes, catType, true)
     val otherCat:OperationSpec = new OperationSpec(makeCat, addArgTypes, catType, true)
     val emptyCat:OperationSpec = new OperationSpec(makeCat, emptyArgs, catType, true)
     val emptyCat2:OperationSpec = new OperationSpec(makeCat2, emptyArgs, catType, true)
-    val notBaseCat:OperationSpec = new OperationSpec(makeDog, simpleArgTypes, dogType, false)
+    val notBaseCat:OperationSpec = new OperationSpec(makeDog, emptyArgs, dogType, true)
 
-    val catADTOperationSpecs:OperationSpecs = OperationSpecs(List(baseCat, otherCat, notBaseCat))
+    val catADTOperationSpecs:OperationSpecs = OperationSpecs(List(emptyCat, emptyCat2, notBaseCat))
     val sig:ADTSignature = ADTSignature(catType, catADTOperationSpecs)
 
     val sigs:ADTSignatures = ADTSignatures(List(sig))
@@ -57,6 +59,10 @@ package com.cpb.cs4500.valueGeneration {
     val testSpec:Spec = Spec(sigs, null)
 
     val valueGen:ValueGenerator = new ValueGenerator(testSpec)
+      /*  
+    test("testBasicCreator") {
+      expect("HNG") { valueGen.makeListOfArgs(addArgTypes.args) }
+    }
 
     // Correct values
     val emptyCatExpr:TermExpr = new TermExpr(makeCat, new EmptyArg())
@@ -71,8 +77,9 @@ package com.cpb.cs4500.valueGeneration {
       expect(emptyCatList) { valueGen.createTestForOp(makeCat, notBaseCat.getArgTypes()) }
     }*/
 
+  
     test("testCreateTests3") {
-      expect(emptyCatList) { valueGen.createTestsForOpSpec(emptyCat, 1) }
+      expect(emptyCatList) { valueGen.makeListOfArgs() }
     }
 
     test("Test test1 Value Generation") {
@@ -106,6 +113,6 @@ package com.cpb.cs4500.valueGeneration {
         }
       }
     }
-
+*/
   }
 }
