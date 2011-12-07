@@ -13,12 +13,41 @@ package com.cpb.cs4500.valueGeneration {
     // entry point, create all tests for a spec
     def createAllTests(depth: Int): List[Term] = {
       var allTests: List[Term] = List[Term]()
+      val allOpSpecs: ListSet[OperationSpec] = specification.getAllOpSpecs()
       var currentDepth: Int = 0
       while (currentDepth <= depth){
-        //createTests(
+        for (opSpec <- allOpSpecs) {
+          val testsForOpSpec: List[Term] = createTests(opSpec)
+          allTests = allTests ++ testsForOpSpec
+        }
         currentDepth += 1
       }
       allTests
+    }
+    
+    def createTests(opspec: OperationSpec) : List[Term] = {
+      val args: List[Terminal] = opspec.argTypes.args
+      var generatedArgs: List[List[Term]] = makeListOfArgs(args)
+      var tests: List[Term] = List[Term]()
+      for (termArgs <- generatedArgs) {
+        var termExpr: TermExpr = new TermExpr(opspec.op, convertListToArgs(termArgs))
+        tests = tests :+ termExpr
+      }
+      tests
+    }
+    
+    def convertListToArgs(list: List[Term]): Arg = {
+      var ArgObj: Arg = new EmptyArg()
+      if (list.isEmpty) {
+        new EmptyArg()
+      }
+      else {
+        for (term <- list.reverse) {
+          ArgObj = new Args(term, ArgObj)  
+        }
+        ArgObj
+      }
+    
     }
     
     // Cartesian products of the arguments (all possible arguments)
