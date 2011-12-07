@@ -10,11 +10,15 @@ package com.cpb.cs4500.valueGeneration {
     val parser = new ADTParser()
     val testFileName = "src/test/resources/test5"
     val testFile = ReadWriter.inputFromFile(testFileName)
-    val spec = parser.parseAll(parser.spec, testFile)
+    val spec = parser.parseAll(parser.spec, testFile).get
+
+    val valGen = new ValueGenerator(spec)
 
     /*
     Functions to test:
     - createAllTests
+    - createTests
+    - convertListToArgs
     - makeListOfArgs
     - cart
     - createBasicCreatorMap
@@ -29,7 +33,14 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     test("test createBasicCreatorMap"){
-        
+        //nat Basic Creator data
+        val natTypeName = TypeName("Nat")
+        val zeroOp = Operation("zero")
+        val natCreator = TermExpr(zeroOp, EmptyArg())
+        val testCreatorMap = Map(natTypeName -> List(natCreator))
+        expect(testCreatorMap) {
+            valGen.typeMap
+        }
     }
 
     test("test cart"){
