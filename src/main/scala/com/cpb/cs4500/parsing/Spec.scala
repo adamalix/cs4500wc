@@ -265,7 +265,7 @@ package com.cpb.cs4500.parsing {
   }
 
   abstract class TypeLiteral() extends Terminal {
-    def toString(): String 
+    def toString(): String
   }
 
   case class IntLiteral(value: Int, stringValue: String) extends TypeLiteral {
@@ -310,12 +310,11 @@ package com.cpb.cs4500.parsing {
       ident
     }
   }
-  
-  case class TermExpr(op: Operation, args: Arg) extends Term
-  {
+
+  case class TermExpr(op: Operation, args: Arg) extends Term {
     def toSexpr(): String = {
       var char = ""
-      if(args.length != 0) 
+      if(args.length != 0)
         char = " "
       "(" + op + char + args.toSexpr + ")"
     }
@@ -328,15 +327,12 @@ package com.cpb.cs4500.parsing {
     def toSexpr(): String
   }
 
-  case class Args(term: Term, args: Arg) extends Arg
-  {
-    def length(): Int = {
-        1 + args.length()
-    }
-    
+  case class Args(term: Term, args: Arg) extends Arg  {
+    def length(): Int = 1 + args.length()
+
     def toSexpr(): String = {
       var char = ""
-      if(args.length != 0) 
+      if(args.length != 0)
         char = " "
       term.toSexpr + char + args.toSexpr
     }
@@ -347,7 +343,7 @@ package com.cpb.cs4500.parsing {
     def length(): Int = {
         0
     }
-    
+
     def toSexpr(): String = {
       ""
     }
@@ -374,12 +370,16 @@ package com.cpb.cs4500.parsing {
   // Righthand side style Args
   trait RhsArg {
     def isEmpty(): Boolean = false
+    def length(): Int
   }
 
-  case class RhsArgs(rhs: Rhs, args: RhsArg) extends RhsArg
+  case class RhsArgs(rhs: Rhs, args: RhsArg) extends RhsArg {
+    def length(): Int = 1 + args.length()
+  }
 
   case class RhsEmptyArg() extends RhsArg {
     override def isEmpty(): Boolean = true
+    def length(): Int = 0
   }
 
   abstract class Primitive

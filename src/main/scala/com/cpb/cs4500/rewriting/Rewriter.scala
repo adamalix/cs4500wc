@@ -27,57 +27,66 @@ package com.cpb.cs4500.rewriting {
       term match {
         case termid: TermID => new RhsID(termIdMap(termid).toString())
         case termExpr: TermExpr => {
+          val rewrittenArgs = rewriteArgs(termExpr.args)
           for (rule <- eqs) {
-            if (doTermsMatch(termExpr, rule.left)) {
+            if (doTermsMatch(termExpr, rewrittenArgs, rule.left)) {
               // rewrite into the rhs
             }
           }
-          return null
-          //RhsExpr(termExpr.op, rewrittenArgs)
+
+          RhsExpr(termExpr.op, rewrittenArgs)
         }
       }
     }
 
     // match term to a rule to see if we can rewrite
-    def doTermsMatch(term: Term, rule: Term): Boolean = {
-      term match {
-        // we have an ID, is the rule is an ID
-        case id: TermID => rule match {
-          case ruleId: TermID => true
-          case _ => false
+    def doTermsMatch(termExpr: TermExpr, rewrittenArgs: RhsArg, rule: Term): Boolean = {
+      rule match {
+        // are the ops and args the same?
+        case ruleExpr: TermExpr => {
+          termExpr.op == ruleExpr.op &&
+          doArgsMatch(rewrittenArgs, ruleExpr.args)
         }
-        // we have an expr, make sure rule is an expr
-        case termExpr: TermExpr => rule match {
-          // are the ops and args the same?
-          case ruleExpr: TermExpr => {
-            termExpr.op == ruleExpr.op &&
-            doArgsMatch(termExpr.args, ruleExpr.args)
+        case _ => false
+      }
+    }
+
+    // compare rewritten args to the rule arguments
+    def doArgsMatch(rhsArg: RhsArg, ruleArg: Arg): Boolean = {
+      rhsArg match {
+        // rhsArg is empty, is the ruleArg empty?
+        case rhsEmpty: RhsEmptyArg => ruleArg.isEmpty
+        // we have an RhsArgs(Rhs, RhsArgs) and we need to
+        // determine if the Rhs is an Expr so we can match
+        // against the ruleArg since it isn't empty
+        case rhsArgs: RhsArgs => rhsArgs match {
+          case rhsExpr: RhsExpr => {
+            // match against the rule and determine if its
+            // args match the args of our RhsExpr
+            val argsMatch = ruleArg match {
+              case empty: EmptyArg => false
+              case args: Args => doArgsMatch(rhsExpr.args, args.args)
+            }
+            // Match the Op of the RhsExpr to the Rule
+            matchOp(rhsExpr.op, ruleArg) && argsMatch
           }
           case _ => false
         }
       }
     }
 
-    // helper for doTermsMatch to check Args in the case that
-    // we have a TermExpr
-    def doArgsMatch(termArg: Arg, ruleArg: Arg): Boolean = {
-      termArg match {
-        // termArgs is empty, is the ruleArg empty?
-        case termEmpty: EmptyArg => ruleArg match {
-          case ruleEmpty: EmptyArg => true
-          case _ => false
-        }
-
-        // we have an Args(Term, Args)
-        case termArgs: Args => ruleArg match {
-          // are the term and ruleTerm the same?
-          case ruleArgs: Args => {
-            doTermsMatch(termArgs.term, ruleArgs.term) &&
-            doArgsMatch(termArgs.args, ruleArgs.args)
-          }
-          case _ => false
+    def matchOp(op: Operation, arg: Arg): Boolean = {
+      arg match {
+        case empty: EmptyArg => false
+        case args: Args => args.term match {
+          case id: TermID => false
+          case expr: TermExpr => op == expr.op
         }
       }
+    }
+
+    def rewriteArgs(args: Arg): RhsArg = {
+      null
     }
 
     def ruleApplies(term: TermExpr, eq: Equation): Boolean = {
