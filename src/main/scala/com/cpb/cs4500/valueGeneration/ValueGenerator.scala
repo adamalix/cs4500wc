@@ -15,14 +15,35 @@ package com.cpb.cs4500.valueGeneration {
       var allTests: List[Term] = List[Term]()
       val allOpSpecs: ListSet[OperationSpec] = specification.getAllOpSpecs()
       var currentDepth: Int = 0
-      while (currentDepth <= depth){
+      while (currentDepth < depth){
         for (opSpec <- allOpSpecs) {
-          val testsForOpSpec: List[Term] = createTests(opSpec)
+          val testsForOpSpec: List[Term] = createTests(opSpec).reverse
           allTests = allTests ++ testsForOpSpec
+        }
+        var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)
+        for (test <- allTests) {
+          test match {
+            case testExpr:TermExpr => {
+              if (opToType.contains(testExpr.op) && !typeMap(opToType(testExpr.op)).contains(test)) {
+                typeMap(opToType(testExpr.op)) = typeMap(opToType(testExpr.op)) ++ List[Term](test)
+              }
+            }
+          }
         }
         currentDepth += 1
       }
       allTests
+    }
+    
+    def makeOpSpecMap(opspecs: ListSet[OperationSpec]): Map[Operation, TypeName] = {
+      var opSpecMap = Map[Operation, TypeName]()
+      for (opspec <- opspecs) {
+        opspec.returnType match {
+          case typeN: TypeName => opSpecMap += ( opspec.op -> typeN)
+          case _ => 
+        }
+      }
+      opSpecMap
     }
     
     def createTests(opspec: OperationSpec) : List[Term] = {
@@ -38,16 +59,10 @@ package com.cpb.cs4500.valueGeneration {
     
     def convertListToArgs(list: List[Term]): Arg = {
       var ArgObj: Arg = new EmptyArg()
-      if (list.isEmpty) {
-        new EmptyArg()
+      for (term <- list.reverse) {
+        ArgObj = new Args(term, ArgObj)  
       }
-      else {
-        for (term <- list.reverse) {
-          ArgObj = new Args(term, ArgObj)  
-        }
-        ArgObj
-      }
-    
+      ArgObj
     }
     
     // Cartesian products of the arguments (all possible arguments)
