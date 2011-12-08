@@ -300,15 +300,26 @@ package com.cpb.cs4500.parsing {
   case class Equation(left: Term, right: Rhs)
 
   abstract class Term
+    def toSexpr(): String
 
-  case class TermID(ident: String) extends Term
-
+  case class TermID(ident: String) extends Term {
+    def toSexpr(): String = {
+      ident
+    }
+  }
+  
   case class TermExpr(op: Operation, args: Arg) extends Term
+  {
+    def toSexpr(): String = {
+      "(" + op + args.toSexpr + ")"
+    }
+  }
 
   // Lefthand side style Args
   trait Arg {
     def isEmpty(): Boolean = false
     def length(): Int
+    def toSexpr(): String
   }
 
   case class Args(term: Term, args: Arg) extends Arg
@@ -316,12 +327,20 @@ package com.cpb.cs4500.parsing {
     def length(): Int = {
         1 + args.length()
     }
+    
+    def toSexpr(): String = {
+      term.toSexpr + args.toSexpr
+    }
   }
 
   case class EmptyArg() extends Arg {
     override def isEmpty(): Boolean = true
     def length(): Int = {
         0
+    }
+    
+    def toSexpr(): String = {
+      ""
     }
   }
 
