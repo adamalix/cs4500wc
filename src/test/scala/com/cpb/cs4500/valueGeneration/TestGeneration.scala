@@ -13,23 +13,18 @@ package com.cpb.cs4500.valueGeneration {
     val spec = parser.parseAll(parser.spec, testFile).get
 
     val valGen = new ValueGenerator(spec)
-    val termList = valGen.createAllTests(2)
 
     /*
     Functions to test:
-    - createAllTests
-    - createTests
-    - convertListToArgs
+    x convertListToArgs
     - makeListOfArgs
     x createBasicCreatorMap
     x cart
     */
 
-    test("test createAllTests"){
-        //this might not get tested, it's a ridiculous output
-    }   
+    val termList = valGen.
     
-    test("test makeListOfArgs"){
+    test("test convertListToArgs"){
         val emptyArg = EmptyArg()
         expect(emptyArg){ valGen.convertListToArgs(List()) }
 
@@ -38,6 +33,13 @@ package com.cpb.cs4500.valueGeneration {
         val listArgs = List(termID1, termID2)
         val argsArgs = Args(termID1, Args(termID2, emptyArg))
         expect(argsArgs) { valGen.convertListToArgs(listArgs) }
+    }
+
+    test("test makeListOfArgs"){
+        val input = List[Terminal](TypeName("Nat"))
+        val output = List(List(TermExpr(Operation("zero"), EmptyArg())))
+        
+        expect(output) { valGen.makeListOfArgs(input) }
     }
 
     test("test createBasicCreatorMap"){
