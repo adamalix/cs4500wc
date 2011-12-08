@@ -13,6 +13,7 @@ package com.cpb.cs4500.valueGeneration {
     val spec = parser.parseAll(parser.spec, testFile).get
 
     val valGen = new ValueGenerator(spec)
+    val termList = valGen.createAllTests(2)
 
     /*
     Functions to test:
@@ -24,9 +25,14 @@ package com.cpb.cs4500.valueGeneration {
     x cart
     */
     
+    for (term <- termList){
+        print(term + "\n")
+    }   
+    print(termList.size) 
+
     test("test createAllTests"){
         //this might not get tested, it's a ridiculous output
-    }
+    }   
     
     test("test makeListOfArgs"){
         val emptyArg = EmptyArg()
@@ -46,7 +52,7 @@ package com.cpb.cs4500.valueGeneration {
         val natCreator = TermExpr(zeroOp, EmptyArg())
         val testCreatorMap = Map(natTypeName -> List(natCreator))
         expect(testCreatorMap) {
-            valGen.typeMap
+            valGen.createBasicCreatorMap()
         }
     }
 
