@@ -156,6 +156,30 @@ package com.cpb.cs4500.rewriting {
     }
 
     test("test MapIds") {
+      val spec3 = parser.parseAll(parser.spec, testFile3).get
+      val rewriter = new Rewriter(spec3)
+
+      //ruleArg = (push s k)
+      val pushOp = Operation("push")
+      val emptyArgs = EmptyArg()
+      val sID = TermID("s")
+      val kID = TermID("k")
+      val pushArgs = Args(sID, Args(kID, emptyArgs))
+      val pushExpr = TermExpr(pushOp, pushArgs)
+      val ruleArg = Args(pushExpr, emptyArgs)
+
+      //rewrittenArgs = (push (empty) 1)
+      val emptyOp = Operation("empty")
+      val rhsEmptyArgs = RhsEmptyArg()
+      val emptyExpr = RhsExpr(emptyOp, rhsEmptyArgs)
+      val one = RhsUInt("1")
+      val argsArgs = RhsArgs(emptyExpr, RhsArgs(one, rhsEmptyArgs))
+
+      //expectedMap = Map(s -> (empty), k -> 1)
+      val expectedMap = Map(sID -> emptyExpr, kID -> one)
+      val inputMap = scala.collection.mutable.Map[TermID, Rhs]()
+
+      expect(expectedMap) { rewriter.mapIds(ruleArg, argsArgs, inputMap) }
       
     }
 

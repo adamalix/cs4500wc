@@ -78,17 +78,24 @@ package com.cpb.cs4500.rewriting {
     }
 
     def mapIds(ruleArg: Arg, rewrittenArgs: RhsArg, idMap: Map[TermID, Rhs]): Map[TermID, Rhs] = {
+      println("calling function on: ")
+      println("ruleArg: " + ruleArg)
+      println("rewrittenArgs: " + rewrittenArgs)
+      println("idMap: " + idMap)
       ruleArg match {
         // we have run out of pattern variables, return the map
-        case empty: EmptyArg => idMap
+        case empty: EmptyArg => { println("emptyArg"); idMap }
         // we may have more pattern variables, look at the args of the rule
         case ruleArgs: Args => {
+          println("ruleArgs is an Args")
           ruleArgs.term match {
             // we have a pattern variable, put it in the map
             case id: TermID => {
+              println("and it's term is an id")
               // mutate the map to contain the id mapped to the rhs
               rewrittenArgs match {
                 case rhsArgs: RhsArgs => {
+                  println("and so now the rewrittenArgs are rhsArgs")
                   idMap += (id -> rhsArgs.rhs)
                   println("ID Map inside mapIds: " + idMap)
                   mapIds(ruleArgs.args, rhsArgs.args, idMap)
@@ -101,8 +108,14 @@ package com.cpb.cs4500.rewriting {
             case _ => {
               rewrittenArgs match {
                 case rhsArgs: RhsArgs => {
+                  println("ruleID isn't a term ID, it's args, so run this shit again, but on the args of the term")
                   // nothing to put in the map
-                  mapIds(ruleArgs.args, rhsArgs.args, idMap)
+                  // match on ruleArgs.term if it's an ID, throw an exception
+                  // if it's a term, run this on it's args
+                  ruleArg.args.term match {
+                    case itsAnID: TermID => throw new RuntimeException("WTF IS GOING ON HERE")
+                    case itsATerm: TermExpr => mapIds(itsATerm.args, rhsArgs.args, idMap)
+                  }
                 }
                 case _ => throw new RuntimeException("WTF IS GOING ON HERE")
               }
