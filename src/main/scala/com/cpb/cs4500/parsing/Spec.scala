@@ -312,7 +312,7 @@ package com.cpb.cs4500.parsing {
   case class TermExpr(op: Operation, args: Arg) extends Term
   {
     def toSexpr(): String = {
-      "(" + op + args.toSexpr + ")"
+      "(" + op + " " + args.toSexpr + ")"
     }
   }
 
@@ -330,7 +330,7 @@ package com.cpb.cs4500.parsing {
     }
     
     def toSexpr(): String = {
-      term.toSexpr + args.toSexpr
+      term.toSexpr + " " + args.toSexpr
     }
   }
 

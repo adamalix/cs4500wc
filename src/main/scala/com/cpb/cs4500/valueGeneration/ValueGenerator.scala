@@ -17,7 +17,7 @@ package com.cpb.cs4500.valueGeneration {
       var currentDepth: Int = 0
       while (currentDepth < depth){
         for (opSpec <- allOpSpecs) {
-          val testsForOpSpec: List[Term] = createTests(opSpec).reverse
+          val testsForOpSpec: List[Term] = createTests(opSpec)
           allTests = allTests ++ testsForOpSpec
         }
         var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)

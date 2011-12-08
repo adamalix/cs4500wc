@@ -26,7 +26,7 @@ package com.cpb.cs4500.valueGeneration {
     */
     
     for (term <- termList){
-        print(term + "\n")
+        print(term.toSexpr + "\n")
     }   
     print(termList.size) 
 
