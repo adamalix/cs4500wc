@@ -13,7 +13,7 @@ package com.cpb.cs4500.rewriting {
     val spec = parser.parseAll(parser.spec, testFile).get
     val rewriter = new Rewriter(spec)
 
-    
+
     /*
     Functions to potentially test:
     - rewriteTerms
@@ -48,12 +48,14 @@ package com.cpb.cs4500.rewriting {
       val testTermExpr = TermExpr(op1, emptyArg)
       val args1 = Args(testTermExpr, emptyArg)
       val args2 = Args(testTermID, args1)
-        
+
       expect(false) { rewriter.matchOp(op1, emptyArg) }
       expect(true)  { rewriter.matchOp(op1, args1) }
       expect(false) { rewriter.matchOp(op2, args1) }
       expect(false) { rewriter.matchOp(op1, args2) }
-
     }
+
+
+
   }
 }

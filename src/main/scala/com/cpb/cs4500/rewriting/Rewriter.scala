@@ -62,10 +62,10 @@ package com.cpb.cs4500.rewriting {
       rhsArg match {
         // rhsArg is empty, is the ruleArg empty?
         case rhsEmpty: RhsEmptyArg => ruleArg.isEmpty
-        // we have an RhsArgs(Rhs, RhsArgs) and we need to
+        // we have an RhsArgs(Rhs, RhsArg) and we need to
         // determine if the Rhs is an Expr so we can match
         // against the ruleArg since it isn't empty
-        case rhsArgs: RhsArgs => rhsArgs match {
+        case rhsArgs: RhsArgs => rhsArgs.rhs match {
           case rhsExpr: RhsExpr => {
             // match against the rule and determine if its
             // args match the args of our RhsExpr
