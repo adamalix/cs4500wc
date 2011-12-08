@@ -40,6 +40,7 @@ package com.cpb.cs4500.valueGeneration {
       for (opspec <- opspecs) {
         opspec.returnType match {
           case typeN: TypeName => opSpecMap += ( opspec.op -> typeN)
+          case _ => 
         }
       }
       opSpecMap
