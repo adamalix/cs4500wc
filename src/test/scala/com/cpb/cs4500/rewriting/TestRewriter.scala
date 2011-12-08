@@ -24,23 +24,36 @@ package com.cpb.cs4500.rewriting {
     - rewriteArgs
     */
 
-    test("test doArgsMatch"){
+    test("test doArgsMatch") {
       //need rhsArg and Arg
       val emptyArg = EmptyArg()
       val rhsEmptyArg = RhsEmptyArg()
       val op1 = Operation("operation1")
+      val op2 = Operation("operation2")
+
+      // TermExpr(Operation("op1"), EmptyArg()
       val testTermExpr = TermExpr(op1, emptyArg)
+      // Args(TermExpr(Operation("op1"), EmptyArg()), EmptyArg())
       val testArgs1 = Args(testTermExpr, emptyArg)
-      val testRhsExpr = RhsExpr(op1, rhsEmptyArg)
-      val testRhsArgs1 = RhsArgs(testRhsExpr, rhsEmptyArg)
+      // TermExpr(Operation("op2"), Args(TermExpr(Operation("op1"), EmptyArg()), EmptyArg())
+      val testTermExpr2 = TermExpr(op2, testArgs1)
+      val testArgs2 = Args(testTermExpr2, testArgs1)
+
+      val testRhsExpr1 = RhsExpr(op1, rhsEmptyArg)
+      val testRhsArgs1 = RhsArgs(testRhsExpr1, rhsEmptyArg)
+      val testRhsExpr2 = RhsExpr(op2, testRhsArgs1)
+      val testRhsArgs2 = RhsArgs(testRhsExpr2, testRhsArgs1)
+
 
       expect(true)  { rewriter.doArgsMatch(rhsEmptyArg,  emptyArg)  }
       expect(false) { rewriter.doArgsMatch(testRhsArgs1, emptyArg)  }
       expect(false) { rewriter.doArgsMatch(rhsEmptyArg,  testArgs1) }
       expect(true)  { rewriter.doArgsMatch(testRhsArgs1, testArgs1) }
+      expect(true)  { rewriter.doArgsMatch(testRhsArgs2, testArgs2) }
+      //expect(true)  { rewriter.doTermsMatch(testTermExpr2, 
     }
 
-    test("test matchOp"){
+    test("test matchOp") {
       val op1 = Operation("operation1")
       val op2 = Operation("operation2")
       val emptyArg = EmptyArg()
