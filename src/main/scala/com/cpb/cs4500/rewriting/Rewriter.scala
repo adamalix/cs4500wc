@@ -27,20 +27,18 @@ package com.cpb.cs4500.rewriting {
       term match {
         case termid: TermID => new RhsID(termIdMap(termid).toString())
         case termExpr: TermExpr => {
-          val rewrittenArgs = rewriteArgs(termExpr.args)
-
           for (rule <- eqs) {
             if (doTermsMatch(termExpr, rule.left)) {
               // rewrite into the rhs
             }
           }
-
-          RhsExpr(termExpr.op, rewrittenArgs)
+          return null
+          //RhsExpr(termExpr.op, rewrittenArgs)
         }
       }
     }
 
-
+    // match term to a rule to see if we can rewrite
     def doTermsMatch(term: Term, rule: Term): Boolean = {
       term match {
         // we have an ID, is the rule is an ID
@@ -60,6 +58,8 @@ package com.cpb.cs4500.rewriting {
       }
     }
 
+    // helper for doTermsMatch to check Args in the case that
+    // we have a TermExpr
     def doArgsMatch(termArg: Arg, ruleArg: Arg): Boolean = {
       termArg match {
         // termArgs is empty, is the ruleArg empty?
