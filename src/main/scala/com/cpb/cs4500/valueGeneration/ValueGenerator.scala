@@ -35,6 +35,8 @@ package com.cpb.cs4500.valueGeneration {
       allTests
     }
     
+    // Creates a map that given given an Operation, will return the TypeName of its return type.
+    // It should be noted that if a operation spec's return Type is a literal we will simply ignore it.
     def makeOpSpecMap(opspecs: ListSet[OperationSpec]): Map[Operation, TypeName] = {
       var opSpecMap = Map[Operation, TypeName]()
       for (opspec <- opspecs) {
@@ -46,6 +48,8 @@ package com.cpb.cs4500.valueGeneration {
       opSpecMap
     }
     
+    // Given on function, create all possible tests for it.
+    // This function will produce different results based on the current depth.
     def createTests(opspec: OperationSpec) : List[Term] = {
       val args: List[Terminal] = opspec.argTypes.args
       var generatedArgs: List[List[Term]] = makeListOfArgs(args)
@@ -57,6 +61,9 @@ package com.cpb.cs4500.valueGeneration {
       tests
     }
     
+    
+    // Given a List[Term] converts it to an Arg.
+    // This is useful in converting from a OperationSpec to a Term
     def convertListToArgs(list: List[Term]): Arg = {
       var ArgObj: Arg = new EmptyArg()
       for (term <- list.reverse) {
@@ -66,6 +73,7 @@ package com.cpb.cs4500.valueGeneration {
     }
     
     // Cartesian products of the arguments (all possible arguments)
+    // This us allows us to generate exhaustive testing based on the depth.
     def makeListOfArgs(args: List[Terminal]): List[List[Term]] = {
       var allTermList: List[List[Term]] = List[List[Term]]()
       for (arg <- args) {
@@ -79,7 +87,10 @@ package com.cpb.cs4500.valueGeneration {
       }
       cart[Term](allTermList)
     }
+    
     // Written by: http://anders.janmyr.com/2009/10/lists-in-scala.html
+    // Given a List of Lists, creates the cartesian products for all lists 
+    // in the list. Simply a beautiful function.
     def cart[T](listOfLists: List[List[T]]): List[List[T]] = listOfLists match {
       case Nil => List(List())
       case xs :: xss => for (y <- xs; ys <- cart(xss)) yield y :: ys
@@ -95,13 +106,10 @@ package com.cpb.cs4500.valueGeneration {
       for (basicCreator <- basicCreators){
         val arguments: List[Terminal] = basicCreator.argTypes.args
         var termArguments: Arg = new EmptyArg()
-        
-        // TODO Make so that primitive arguments are generated.
         for (arg <- arguments){
           var arg: TermID = new TermID(generateRandomInt().toString())
           termArguments = new Args(arg, termArguments)
         }
-        
         basicCreator.returnType match {
           case rt: TypeName => {
             var createdTerm: Term = new TermExpr(basicCreator.op, termArguments)
@@ -139,19 +147,7 @@ package com.cpb.cs4500.valueGeneration {
     def generateRandomString(): StringLiteral = {
       val strList = List("string1", "string2", "string3", "string4", "string5")
       new StringLiteral(strList(scala.util.Random.nextInt(5)))
-    }
-
-    /*
-    def generateRandomTermID(): TermID = {
-      var term = TermID(scala.util.Random.nextString(12))
-      // check the set for the term
-      while (generatedTermIds.contains(term)) {
-        term = TermID(scala.util.Random.nextString(12))
-      }
-      generatedTermIds += term
-      term
-    }
-    */
+    }    
 
   }
 

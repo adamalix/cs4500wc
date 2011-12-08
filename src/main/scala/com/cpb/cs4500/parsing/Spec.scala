@@ -264,7 +264,9 @@ package com.cpb.cs4500.parsing {
     }
   }
 
-  abstract class TypeLiteral() extends Terminal
+  abstract class TypeLiteral() extends Terminal {
+    def toString(): String 
+  }
 
   case class IntLiteral(value: Int, stringValue: String) extends TypeLiteral {
     // additional constructors are for testing
