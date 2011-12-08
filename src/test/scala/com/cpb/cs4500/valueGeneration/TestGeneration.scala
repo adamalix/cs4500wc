@@ -24,11 +24,6 @@ package com.cpb.cs4500.valueGeneration {
     x createBasicCreatorMap
     x cart
     */
-    
-    for (term <- termList){
-        print(term.toSexpr + "\n")
-    }   
-    print(termList.size) 
 
     test("test createAllTests"){
         //this might not get tested, it's a ridiculous output
@@ -70,4 +65,3 @@ package com.cpb.cs4500.valueGeneration {
   }
 }
 
-//express the idea that using this update would result in making the software much more robust, save us work, and requires little effort on the part of the client (is package)
