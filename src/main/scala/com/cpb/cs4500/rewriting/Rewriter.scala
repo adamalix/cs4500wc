@@ -22,19 +22,25 @@ package com.cpb.cs4500.rewriting {
       rewrittenTerms
     }
 
-    //this function is called under the pretense that the rule applies to the term
     def rewriteTerm(term: Term): Rhs = {
       term match {
         case termid: TermID => new RhsID(termIdMap(termid).toString())
         case termExpr: TermExpr => {
           val rewrittenArgs = rewriteArgs(termExpr.args)
           for (rule <- eqs) {
+            // Deterministic, we assume that only one rule will apply
+            // because we will break and return on succesful match
             if (doTermsMatch(termExpr, rewrittenArgs, rule.left)) {
-              // rewrite into the rhs
+              // rewriting magic happens here
+
+              
+
+              return RhsExpr(termExpr.op, rewrittenArgs)
             }
           }
-
-          RhsExpr(termExpr.op, rewrittenArgs)
+          // if we reach this point, we can't apply a rule and we throw
+          // away the test value
+          null
         }
       }
     }
@@ -65,10 +71,10 @@ package com.cpb.cs4500.rewriting {
             // args match the args of our RhsExpr
             val argsMatch = ruleArg match {
               case empty: EmptyArg => false
-              case args: Args => doArgsMatch(rhsExpr.args, args.args)
+              case ruleArgs: Args => doArgsMatch(rhsExpr.args, ruleArgs.args)
             }
             // Match the Op of the RhsExpr to the Rule
-            matchOp(rhsExpr.op, ruleArg) && argsMatch
+            argsMatch && matchOp(rhsExpr.op, ruleArg)
           }
           case _ => false
         }
@@ -85,56 +91,14 @@ package com.cpb.cs4500.rewriting {
       }
     }
 
-    def rewriteArgs(args: Arg): RhsArg = {
-      null
-    }
-
-    def ruleApplies(term: TermExpr, eq: Equation): Boolean = {
-      val eqLeft: Term = eq.left
-      eqLeft match {
-        case leftIdent: TermID => false
-        case leftExpr: TermExpr => term.op.equals(leftExpr.op) && term.args.length().equals(leftExpr.args.length())
+    def rewriteArgs(arg: Arg): RhsArg = {
+      arg match {
+        case empty: EmptyArg => RhsEmptyArg()
+        case args: Args => {
+          RhsArgs(rewriteTerm(args.term), rewriteArgs(args.args))
+        }
       }
     }
 
-/*
-    def checkIfArgsEqual(termArgs: Arg, patternArgs: Arg): Boolean = {
-        if (termArgs.isEmpty() && patternArgs.isEmpty())
-            true
-        termArgs match {
-            case emptyTermArgs: EmptyArg => false
-            case termArguments: Args => {
-                patternArgs match {
-                    case emptyPatternArgs: EmptyArg => false
-                    case patternArguments: Args => {
-                         termEqual(termArguments.term, patternArguments.term) &&
-                         checkIfArgsEqual(termArguments.args, patternArguments.args)
-                    }
-                }
-            }
-        }
-    }
-
-    def termEqual(t1: Term, t2: Term): Boolean = {
-        t1 match {
-            case t1Ident:TermID => {
-                t2 match {
-                    case t2Ident:TermID => true
-                    case t2Expr:TermExpr => false
-                }
-            }
-            case t1Expr:TermExpr => {
-                t2 match {
-                    case t2Ident:TermID => false
-                    case t2Expr:TermExpr => true
-                }
-            }
-        }
-    }
-
-    def termExprEqual(t1: TermExpr, t2: TermExpr): Boolean = {
-        t1.op.equals(t2.op) && t1.args.length().equals(t2.args.length())
-    }
-    */
   }
 }

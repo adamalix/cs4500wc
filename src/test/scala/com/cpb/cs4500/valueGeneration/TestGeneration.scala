@@ -21,8 +21,6 @@ package com.cpb.cs4500.valueGeneration {
     x createBasicCreatorMap
     x cart
     */
-    
-    ReadWriter.outputToFile("/Users/phil/Desktop/test.scm")    
 
     test("test convertListToArgs"){
         val emptyArg = EmptyArg()
