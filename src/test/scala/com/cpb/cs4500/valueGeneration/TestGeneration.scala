@@ -20,16 +20,23 @@ package com.cpb.cs4500.valueGeneration {
     - createTests
     - convertListToArgs
     - makeListOfArgs
-    - cart
-    - createBasicCreatorMap
+    x createBasicCreatorMap
+    x cart
     */
-
+    
     test("test createAllTests"){
-        
+        //this might not get tested, it's a ridiculous output
     }
     
     test("test makeListOfArgs"){
-        
+        val emptyArg = EmptyArg()
+        expect(emptyArg){ valGen.convertListToArgs(List()) }
+
+        val termID1 = TermID("lol")
+        val termID2 = TermID("lol2")
+        val listArgs = List(termID1, termID2)
+        val argsArgs = Args(termID1, Args(termID2, emptyArg))
+        expect(argsArgs) { valGen.convertListToArgs(listArgs) }
     }
 
     test("test createBasicCreatorMap"){
@@ -44,7 +51,15 @@ package com.cpb.cs4500.valueGeneration {
     }
 
     test("test cart"){
-        
+        val list1 = List(1, 2)
+        val list2 = List(3, 4)
+        val list12 = List(List(1, 3), List(1, 4), List(2, 3), List(2, 4))
+        val list3 = List(1, 3)
+        val list4 = List(2, 4)
+        val list34 = List(List(1, 2), List(1, 4), List(3, 2), List(3, 4))
+
+        expect(list12){ valGen.cart(List(list1, list2))}
+        expect(list34){ valGen.cart(List(list3, list4))}
     }
   }
 }
