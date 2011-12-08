@@ -58,16 +58,10 @@ package com.cpb.cs4500.valueGeneration {
     
     def convertListToArgs(list: List[Term]): Arg = {
       var ArgObj: Arg = new EmptyArg()
-      if (list.isEmpty) {
-        new EmptyArg()
+      for (term <- list.reverse) {
+        ArgObj = new Args(term, ArgObj)  
       }
-      else {
-        for (term <- list.reverse) {
-          ArgObj = new Args(term, ArgObj)  
-        }
-        ArgObj
-      }
-    
+      ArgObj
     }
     
     // Cartesian products of the arguments (all possible arguments)
