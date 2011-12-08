@@ -21,8 +21,6 @@ package com.cpb.cs4500.valueGeneration {
     x createBasicCreatorMap
     x cart
     */
-
-    val termList = valGen.
     
     test("test convertListToArgs"){
         val emptyArg = EmptyArg()
