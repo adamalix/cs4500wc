@@ -35,8 +35,9 @@ package com.cpb.cs4500.valueGeneration {
       allTests
     }
     
-    // Creates a map that given given an Operation, will return the TypeName of its return type.
-    // It should be noted that if a operation spec's return Type is a literal we will simply ignore it.
+    // Creates a map that given given an Operation, will return the TypeName
+    // of its return type. It should be noted that if a operation 
+    // spec's return Type is a literal we will simply ignore it.
     def makeOpSpecMap(opspecs: ListSet[OperationSpec]): Map[Operation, TypeName] = {
       var opSpecMap = Map[Operation, TypeName]()
       for (opspec <- opspecs) {
@@ -49,7 +50,8 @@ package com.cpb.cs4500.valueGeneration {
     }
     
     // Given on function, create all possible tests for it.
-    // This function will produce different results based on the current depth.
+    // This function will produce different results based 
+    // on the current depth.
     def createTests(opspec: OperationSpec) : List[Term] = {
       val args: List[Terminal] = opspec.argTypes.args
       var generatedArgs: List[List[Term]] = makeListOfArgs(args)
@@ -79,10 +81,22 @@ package com.cpb.cs4500.valueGeneration {
       for (arg <- args) {
         arg match {
           case name: TypeName => allTermList = allTermList :+ typeMap(name)
-          case intLiteral: IntLiteral => allTermList = allTermList :+ List[Term](new TermID(generateRandomInt().toString()))
-          case boolLiteral: BooleanLiteral => allTermList :+ List[Term](new TermID(generateRandomBoolean().toString()))
-          case charLiteral: CharLiteral => allTermList :+ List[Term](new TermID(generateRandomChar().toString()))
-          case stringLiteral: StringLiteral => allTermList :+ List[Term](new TermID(generateRandomString().toString()))
+          case intLiteral: IntLiteral =>  {
+            allTermList = allTermList :+ 
+                          List[Term](new TermID(generateRandomInt().toString()))
+          }
+          case boolLiteral: BooleanLiteral =>  {
+            allTermList = allTermList :+ 
+                          List[Term](new TermID(generateRandomBoolean().toString()))
+          }
+          case charLiteral: CharLiteral => { 
+            allTermList = allTermList :+ 
+                          List[Term](new TermID(generateRandomChar().toString()))
+          }
+          case stringLiteral: StringLiteral => { 
+            allTermList = allTermList :+ 
+                          List[Term](new TermID(generateRandomString().toString()))
+          }
         }
       }
       cart[Term](allTermList)

@@ -24,7 +24,7 @@ package com.cpb.cs4500.valueGeneration {
     x createBasicCreatorMap
     x cart
     */
-
+          print(termList.size)
     test("test createAllTests"){
         //this might not get tested, it's a ridiculous output
     }   
