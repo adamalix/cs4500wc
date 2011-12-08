@@ -3,16 +3,27 @@ package com.cpb.cs4500.rewriting {
   import org.scalatest.FunSuite
   import com.cpb.cs4500.rewriting._
   import com.cpb.cs4500.parsing._
-  import com.cpb.cs4500.io._
+  import com.cpb.cs4500.io.ReadWriter
 
   class TestRewriter extends FunSuite {
 
     val parser = new ADTParser()
-    val testFileName = "src/test/resources/test5"
-    val testFile = ReadWriter.inputFromFile(testFileName)
-    val spec = parser.parseAll(parser.spec, testFile).get
-    val rewriter = new Rewriter(spec)
 
+    val testFileName1 = "src/test/resources/test1"
+    val testFileName2 = "src/test/resources/test2"
+    val testFileName3 = "src/test/resources/test3"
+    val testFileName4 = "src/test/resources/test4"
+    val testFileName5 = "src/test/resources/test5"
+    val testFileName6 = "src/test/resources/test6"
+    val testFileName7 = "src/test/resources/test7"
+
+    val testFile1 = ReadWriter.inputFromFile(testFileName1)
+    val testFile2 = ReadWriter.inputFromFile(testFileName2)
+    val testFile3 = ReadWriter.inputFromFile(testFileName3)
+    val testFile4 = ReadWriter.inputFromFile(testFileName4)
+    val testFile5 = ReadWriter.inputFromFile(testFileName5)
+    val testFile6 = ReadWriter.inputFromFile(testFileName6)
+    val testFile7 = ReadWriter.inputFromFile(testFileName7)
 
     /*
     Functions to potentially test:
@@ -25,6 +36,9 @@ package com.cpb.cs4500.rewriting {
     */
 
     test("test doArgsMatch") {
+      val spec5 = parser.parseAll(parser.spec, testFile5).get
+      val rewriter = new Rewriter(spec5)
+
       //need rhsArg and Arg
       val emptyArg = EmptyArg()
       val rhsEmptyArg = RhsEmptyArg()
@@ -50,10 +64,12 @@ package com.cpb.cs4500.rewriting {
       expect(false) { rewriter.doArgsMatch(rhsEmptyArg,  testArgs1) }
       expect(true)  { rewriter.doArgsMatch(testRhsArgs1, testArgs1) }
       expect(true)  { rewriter.doArgsMatch(testRhsArgs2, testArgs2) }
-      //expect(true)  { rewriter.doTermsMatch(testTermExpr2, 
     }
 
     test("test matchOp") {
+      val spec5 = parser.parseAll(parser.spec, testFile5).get
+      val rewriter = new Rewriter(spec5)
+
       val op1 = Operation("operation1")
       val op2 = Operation("operation2")
       val emptyArg = EmptyArg()
@@ -68,6 +84,80 @@ package com.cpb.cs4500.rewriting {
       expect(false) { rewriter.matchOp(op1, args2) }
     }
 
+    test("teset doTermsMatch") {
+      val spec3 = parser.parseAll(parser.spec, testFile3).get
+      val rewriter = new Rewriter(spec3)
+
+      val popOp = Operation("pop")
+      val emptyOp = Operation("empty")
+      val pushOp = Operation("push")
+      val topOp = Operation("top")
+      val emptyArg = EmptyArg()
+      val emptyExpr = TermExpr(emptyOp, emptyArg)
+      val emptyExprAsArgs = Args(emptyExpr, emptyArg)
+      val rewrittenEmptyExpr = rewriter.rewriteArgs(emptyExprAsArgs)
+      // TermExpr(pop, Args(TermExpr(empty, EmptyArg()), EmptyArg()))
+      val term1 = TermExpr(popOp, emptyExprAsArgs)
+
+      val pushArgs = Args(TermID("s"), Args(TermID("k"), EmptyArg()))
+      val pushSKExpr = TermExpr(pushOp, pushArgs)
+      val pushSKExprArgs = Args(pushSKExpr, EmptyArg())
+      val rewrittenPushSKExprArgs = rewriter.rewriteArgs(pushSKExprArgs)
+      val topPushSKExpr = TermExpr(topOp, pushSKExprArgs)
+
+      /*println(pushSKExpr)
+      println(pushSKExprArgs)
+      println(rewrittenPushSKExprArgs)
+      println(topPushSKExpr)*/
+
+      // (pop (push s k)) = s
+      val popPushRule = spec3.equations.eqs(1)
+      // (top (push s k)) = k
+      val topPushRule = spec3.equations.eqs(0)
+      /*
+      println("PopPushRule: ")
+      println(popPushRule)
+      println("TopPushRule: ")
+      println(topPushRule)
+
+      println("********** STARTING TEST OUTPUT **********")*/
+
+      expect(false) {
+        rewriter.doTermsMatch(term1, rewrittenEmptyExpr, topPushRule.left)
+      }
+
+      expect(false) {
+        rewriter.doTermsMatch(term1, rewrittenEmptyExpr, popPushRule.left)
+      }
+
+      expect(true) {
+        rewriter.doTermsMatch(topPushSKExpr, rewrittenPushSKExprArgs, topPushRule.left)
+      }
+
+    }
+
+    test("test hasEq") {
+      val spec3 = parser.parseAll(parser.spec, testFile3).get
+      val rewriter = new Rewriter(spec3)
+      val emptyOp = Operation("empty")
+      val emptyArg = EmptyArg()
+      val emptyExpr = TermExpr(emptyOp, emptyArg)
+
+      val popOp = Operation("pop")
+      val emptyExprAsArgs = Args(emptyExpr, emptyArg)
+      val term1 = TermExpr(popOp, emptyExprAsArgs)
+      expect(false) {
+        rewriter.hasEq(emptyExpr)
+      }
+
+      expect(true) {
+        rewriter.hasEq(term1)
+      }
+    }
+
+    test("test MapIds") {
+      
+    }
 
 
   }
