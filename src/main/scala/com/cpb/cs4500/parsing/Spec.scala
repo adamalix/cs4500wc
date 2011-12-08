@@ -299,8 +299,9 @@ package com.cpb.cs4500.parsing {
 
   case class Equation(left: Term, right: Rhs)
 
-  abstract class Term
+  abstract class Term {
     def toSexpr(): String
+  }
 
   case class TermID(ident: String) extends Term {
     def toSexpr(): String = {
