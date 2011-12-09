@@ -96,14 +96,14 @@ package com.cpb.cs4500.rewriting {
       val emptyArg = EmptyArg()
       val emptyExpr = TermExpr(emptyOp, emptyArg)
       val emptyExprAsArgs = Args(emptyExpr, emptyArg)
-      val rewrittenEmptyExpr = rewriter.rewriteArgs(emptyExprAsArgs)
+      val rewrittenEmptyExpr = rewriter.rewriteArgs(emptyExprAsArgs, 0)
       // TermExpr(pop, Args(TermExpr(empty, EmptyArg()), EmptyArg()))
       val term1 = TermExpr(popOp, emptyExprAsArgs)
 
       val pushArgs = Args(TermID("s"), Args(TermID("k"), EmptyArg()))
       val pushSKExpr = TermExpr(pushOp, pushArgs)
       val pushSKExprArgs = Args(pushSKExpr, EmptyArg())
-      val rewrittenPushSKExprArgs = rewriter.rewriteArgs(pushSKExprArgs)
+      val rewrittenPushSKExprArgs = rewriter.rewriteArgs(pushSKExprArgs, 0)
       val topPushSKExpr = TermExpr(topOp, pushSKExprArgs)
 
       /*println(pushSKExpr)
@@ -210,7 +210,7 @@ package com.cpb.cs4500.rewriting {
       val one = RhsUInt("1")
       val argsArgs = RhsArgs(emptyExpr, RhsArgs(one, rhsEmptyArgs))
 
-      val something = rewriter.rewriteTerm(pushExpr)
+      val something = rewriter.rewriteTerm(pushExpr, 0)
       println("rewriteterm running: ")
       println(pushExpr)
       println(something)
@@ -219,7 +219,7 @@ package com.cpb.cs4500.rewriting {
 
       expect(true) {
         try {
-          val bullstuff = rewriter.rewriteTerm(bullshit)
+          val bullstuff = rewriter.rewriteTerm(bullshit, 0)
           println("BULLSTUFF: ")
           println(bullshit)
           println(bullstuff)
