@@ -26,12 +26,23 @@ package com.cpb.cs4500 {
       }
     }
 
+    //the generate magic happens here
     def generateTerms(spec: Spec) = {
       val valGen = new ValueGenerator(spec)
       val rewriter = new Rewriter(spec)
       var termValuePairs = ListSet[Tuple2[Term, Rhs]]()
       //PQ: commented this line out because i changed the implementation of rewrite
       //termList.foreach((term: Term) => termList += (term, rewriter.rewriteTerm(term)))
+
+      //need to rewrite terms into scheme expressions as strings and then send them to the file outputter
+      var exprList = List[String]()
+      for (pair <- termValuePairs) {
+        exprList = exprList :+ toTestSexpr(pair)
+      }
+    }
+
+    def toTestSexpr(pair: Tuple2[Term, Rhs]): String = {
+      "(= " + pair._2.toSexpr + " " + pair._1.toSexpr + ")"
     }
 
     def fail(failureMessage: String) = {
