@@ -98,7 +98,8 @@ package com.cpb.cs4500.rewriting {
               // now, we need to check the args of rewrittenArgs, so
               // we know that need to move right
               rewrittenArgs match {
-                case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
+                //case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
+                case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs, idMap)
                 case _ =>
                   throw new RuntimeException("we should never get Empty when moving right at this point")
               }
@@ -106,7 +107,11 @@ package com.cpb.cs4500.rewriting {
             // we don't have an ID, check the termArgs and rewrittenArgs.args for IDs
             case termArgs: TermExpr => {
               rewrittenArgs match {
-                case rwArgs: RhsArgs => mapIds(termArgs.args, rwArgs.args, idMap)
+                // this should rwArgs.rhs.args
+                case rwArgs: RhsArgs => {
+                  val rhs = getRhsArgsRhsArgs(rwArgs.rhs)
+                  mapIds(termArgs.args, rhs, idMap)
+                }
                 case _ =>
                   throw new RuntimeException("never get an empty when moving towards both args")
               }
@@ -115,6 +120,15 @@ package com.cpb.cs4500.rewriting {
         }
         // there is nothing else to add to the map!
         case ruleEmpty: EmptyArg => idMap
+      }
+    }
+
+    // get rhArgs.rhs.args
+    def getRhsArgsRhsArgs(rhs: Rhs): RhsArg = {
+      rhs match {
+        case rhs: RhsExpr => rhs.args
+        case rhs: RhsPrimExpr => rhs.args
+        case _ => throw new RuntimeException("IDUNNO")
       }
     }
 
