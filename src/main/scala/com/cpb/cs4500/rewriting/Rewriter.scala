@@ -99,7 +99,7 @@ package com.cpb.cs4500.rewriting {
               // we know that need to move right
               rewrittenArgs match {
                 //case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
-                case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs, idMap)
+                case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
                 case _ =>
                   throw new RuntimeException("we should never get Empty when moving right at this point")
               }
@@ -141,63 +141,7 @@ package com.cpb.cs4500.rewriting {
         case rhsArg: RhsArgs => (termId, rhsArg.rhs)
       }
     }
-/*
-    def mapIds(ruleArg: Arg, rewrittenArgs: RhsArg, idMap: Map[TermID, Rhs]): Map[TermID, Rhs] = {
-      /*println("calling function on: ")
-      println("ruleArg: " + ruleArg)
-      println("rewrittenArgs: " + rewrittenArgs)
-      println("idMap: " + idMap)*/
-      ruleArg match {
-        // we have run out of pattern variables, return the map
-        case empty: EmptyArg => {
-          //println("emptyArg")
-          idMap
-        }
-        // we may have more pattern variables, look at the args of the rule
-        case ruleArgs: Args => {
-          //println("ruleArgs is an Args")
-          ruleArgs.term match {
-            // we have a pattern variable, put it in the map
-            case id: TermID => {
-              //println("and it's term is an id")
-              // mutate the map to contain the id mapped to the rhs
-              rewrittenArgs match {
-                case rhsArgs: RhsArgs => {
-                  //println("and so now the rewrittenArgs are rhsArgs")
-                  idMap += (id -> rhsArgs.rhs)
-                  //println("ID Map inside mapIds: " + idMap)
-                  mapIds(ruleArgs.args, rhsArgs.args, idMap)
-                }
-                case rhsEmpty: RhsEmptyArg => ruleArgs match {
-                  case empty: EmptyArg => idMap
-                  case args: Args => {
-                    idMap += (id -> null)
-                    //throw new RuntimeException("WTF IS GOING ON HERE 4")
-                  }
-                }
-              }
-            }
 
-            // we don't have a pattern in the ruleArgs, we have a term.
-            // look at its args
-            case expr: TermExpr => {
-              rewrittenArgs match {
-                case rhsArgs: RhsArgs => {
-                  rhsArgs.rhs match {
-                    case rhsId: RhsID => throw new RuntimeException("WTF IS GOING ON HERE 3")
-                    case rhsExpr: RhsExpr => {
-                      mapIds(expr.args, rhsArgs, idMap)
-                    }
-                  }
-                }
-                case _ => throw new RuntimeException("WTF IS GOING ON HERE 2")
-              }
-            }
-          }
-        }
-      }
-    }
-*/
     def rewriteToRhs(rhsRule: Rhs, idMap: Map[TermID, Rhs]): Rhs = {
       rhsRule match {
         case trueVal: RhsTrue => trueVal
@@ -220,7 +164,6 @@ package com.cpb.cs4500.rewriting {
           val rhsArg = resolveArgs(primExpr.args, idMap)
           RhsPrimExpr(primExpr.prim, rhsArg)
         }
-
       }
     }
 
