@@ -20,29 +20,32 @@ package com.cpb.cs4500 {
       val parser = new ADTParser()
 
       parser.parseAll(parser.spec, input) match {
-        case parser.Success(result, _) => generateTerms(result)
+        case parser.Success(result, _) => generateTerms(result, args(1))
         case parser.Failure(msg, _) => fail(msg)
         case parser.Error(msg, _) => error(msg)
       }
+
+
     }
 
     //the generate magic happens here
-    def generateTerms(spec: Spec) = {
+    def generateTerms(spec: Spec, outfile: String) = {
       val valGen = new ValueGenerator(spec)
       val rewriter = new Rewriter(spec)
       var termValuePairs = ListSet[Tuple2[Term, Rhs]]()
-      //PQ: commented this line out because i changed the implementation of rewrite
-      //termList.foreach((term: Term) => termList += (term, rewriter.rewriteTerm(term)))
-
-      //need to rewrite terms into scheme expressions as strings and then send them to the file outputter
+      //generate the test strings
       var exprList = List[String]()
+      var testCount = 0
       for (pair <- termValuePairs) {
-        exprList = exprList :+ toTestSexpr(pair)
+        exprList = exprList :+ toTestSexpr(pair, testCount)
+        testCount += 1
       }
+      ReadWriter.outputToFile(outfile, exprList, getAllADTNames(spec.getAllTypeNames)) 
     }
 
-    def toTestSexpr(pair: Tuple2[Term, Rhs]): String = {
-      "(= " + pair._2.toSexpr + " " + pair._1.toSexpr + ")"
+    def toTestSexpr(pair: Tuple2[Term, Rhs], count: Int): String = {
+      "(test " + "\"test" + count + "\" " + 
+        "(= " + pair._2.toSexpr + " " + pair._1.toSexpr + "))"
     }
 
     def fail(failureMessage: String) = {
@@ -53,5 +56,12 @@ package com.cpb.cs4500 {
       println("error, sorry:\n" + errorMessage)
     }
 
+    def getAllADTNames(names: ListSet[TypeName]): List[String] = {
+      var out = List[String]()
+      for (name <- names) {
+        out = out :+ name.toString
+      }
+      out
+    }
   }
 }
