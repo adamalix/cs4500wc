@@ -55,38 +55,29 @@ package com.cpb.cs4500.rewriting {
             for (rule <- eqs) {
               // Deterministic, we assume that only one rule will apply
               // because we will break and return on succesful match
-              /*println("testing to see if these terms match: ")
-              println("Term: " + termExpr)
-              println("Rewritten Args: " + rewrittenArgs)
-              println("Left Rule: " + rule.left)*/
               if (doTermsMatch(termExpr, rewrittenArgs, rule.left)) {
                 // rewriting magic happens here.  we find the ids
                 // in the args of the rule and replace them with the
                 // corresponding rewritten args
-                //println("termExpr.args: " + termExpr.args)
-                //println("rewrittenArgs: " + rewrittenArgs)
                 val idMap = rule.left match {
                   case ruleExpr: TermExpr => mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
                   case id: TermID => throw new RuntimeException("YOU FUCKED UP AGAIN")
                 }
-                println("ID Map: ")
-                println(idMap)
                 return rewriteToRhs(rule.right, idMap)
               }
             }
             // if we reach this point, we can't apply a rule and we throw
             // away the test value
-            //println("No rule applies")
             throw new IllegalArgumentException
           }
-          val shitty = RhsExpr(termExpr.op, rewrittenArgs)
+          val noRuleExpr = RhsExpr(termExpr.op, rewrittenArgs)
           println("Rule doesn't exist for: " + termExpr.op + ", on: " + rewrittenArgs)
-          println(shitty)
-          return shitty
+          println(noRuleExpr)
+          return noRuleExpr
         }
       }
     }
-  
+
 
 
     // Map the IDs from the left hand side of a rule (ruleArg)
@@ -157,10 +148,6 @@ package com.cpb.cs4500.rewriting {
           case uInt: RhsUInt => uInt
           // get the value from the map and return it
           case id: RhsID => {
-            /*println("Inside ID case of rewriteToRhs")
-            println(idMap)
-            println(rhsRule)
-            println(id)*/
             idMap(TermID(id.ident))
           }
           // recursive cases
@@ -174,7 +161,7 @@ package com.cpb.cs4500.rewriting {
           }
         }
       }
-    
+
       else {
         throw new InfiniteRewriteException
       }
@@ -192,10 +179,6 @@ package com.cpb.cs4500.rewriting {
 
     // match term to a rule to see if we can rewrite
     def doTermsMatch(termExpr: TermExpr, rewrittenArgs: RhsArg, rule: Term): Boolean = {
-      /*println("DoTermsMatch called on:")
-      println("TermExpr: " + termExpr)
-      println("RhsArg: " + rewrittenArgs)
-      println("With rule: " + rule)*/
       rule match {
         // are the ops and args the same?
         case ruleExpr: TermExpr => {
@@ -208,9 +191,6 @@ package com.cpb.cs4500.rewriting {
 
     // compare rewritten args to the rule arguments
     def doArgsMatch(rhsArg: RhsArg, ruleArg: Arg): Boolean = {
-      /*println("DoArgsMatch called on:")
-      println("RhsArg: " + rhsArg)
-      println("RuleArg: " + ruleArg)*/
       rhsArg match {
         // rhsArg is empty, is the ruleArg empty?
         case rhsEmpty: RhsEmptyArg => ruleArg.isEmpty
@@ -236,9 +216,6 @@ package com.cpb.cs4500.rewriting {
     }
 
     def matchOp(op: Operation, arg: Arg): Boolean = {
-      /*println("MatchOp called on: ")
-      println("Operation: " + op)
-      println("Arg: " + arg)*/
       arg match {
         case empty: EmptyArg => false
         case args: Args => args.term match {
@@ -249,7 +226,6 @@ package com.cpb.cs4500.rewriting {
     }
 
     def rewriteArgs(arg: Arg): RhsArg = {
-      //println("Rewriting args: " + arg)
       arg match {
         case empty: EmptyArg => RhsEmptyArg()
         case args: Args => {
@@ -278,7 +254,7 @@ package com.cpb.cs4500.rewriting {
       val rewrittenTuples1 = rewriter.rewriteTerms(terms1) ;
       for ((left, right) <- rewrittenTuples1) { println(left); println(right) }
       } catch {
-        case ex: RuntimeException => 
+        case ex: RuntimeException =>
       }
     }
   }
