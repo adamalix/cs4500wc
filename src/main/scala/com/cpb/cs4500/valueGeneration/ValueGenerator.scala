@@ -14,13 +14,15 @@ package com.cpb.cs4500.valueGeneration {
     def createAllTests(depth: Int): List[Term] = {
       var allTests: List[Term] = List[Term]()
       val allOpSpecs: ListSet[OperationSpec] = specification.getAllOpSpecs()
+      var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)
       var currentDepth: Int = 0
+      
       while (currentDepth < depth){
         for (opSpec <- allOpSpecs) {
           val testsForOpSpec: List[Term] = createTests(opSpec)
           allTests = allTests ++ testsForOpSpec
         }
-        var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)
+        
         for (test <- allTests) {
           test match {
             case testExpr:TermExpr => {
@@ -30,7 +32,7 @@ package com.cpb.cs4500.valueGeneration {
             }
           }
         }
-        currentDepth += 1
+        currentDepth = currentDepth + 1
       }
       allTests
     }
@@ -99,7 +101,14 @@ package com.cpb.cs4500.valueGeneration {
           }
         }
       }
-      cart[Term](allTermList)
+      val fullList: List[List[Term]] = cart[Term](allTermList)
+      var reducedList: List[List[Term]] = List[List[Term]]()
+      var count = 0
+      while (fullList.size > count && count < 100) {
+        reducedList = reducedList :+ fullList(count)
+        count = count + 1
+      }
+      reducedList
     }
     
     // Written by: http://anders.janmyr.com/2009/10/lists-in-scala.html
