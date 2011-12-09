@@ -180,7 +180,7 @@ package com.cpb.cs4500.rewriting {
       val expectedMap = Map(sID -> emptyExpr, kID -> one)
       val inputMap = scala.collection.mutable.Map[TermID, Rhs]()
 
-      expect(expectedMap) { rewriter.mapIds(ruleArg, argsArgs, inputMap) }
+      expect(expectedMap) { rewriter.mapIds(pushArgs, argsArgs, inputMap) }
       
     }
 
