@@ -19,6 +19,7 @@ package com.cpb.cs4500 {
       val input:String = ReadWriter.inputFromFile(args(0))
       val parser = new ADTParser()
 
+      // parse the input, if it passes, generate the tests and write to the file
       parser.parseAll(parser.spec, input) match {
         case parser.Success(result, _) => generateTerms(result, args(1))
         case parser.Failure(msg, _) => fail(msg)
@@ -43,6 +44,7 @@ package com.cpb.cs4500 {
       ReadWriter.outputToFile(outfile, exprList, getAllADTNames(spec.getAllTypeNames)) 
     }
 
+    // converts the term and it's rewritten counterpart into a test expression
     def toTestSexpr(pair: Tuple2[Term, Rhs], count: Int): String = {
       "(test " + "\"test" + count + "\" " + 
         "(= " + pair._2.toSexpr + " " + pair._1.toSexpr + "))"
@@ -56,6 +58,7 @@ package com.cpb.cs4500 {
       println("error, sorry:\n" + errorMessage)
     }
 
+    // helper function to get all the differnt ADT names from a spec
     def getAllADTNames(names: ListSet[TypeName]): List[String] = {
       var out = List[String]()
       for (name <- names) {
