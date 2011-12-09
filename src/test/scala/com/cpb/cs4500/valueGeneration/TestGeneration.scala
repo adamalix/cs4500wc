@@ -14,6 +14,8 @@ package com.cpb.cs4500.valueGeneration {
 
     val valGen = new ValueGenerator(spec)
 
+    val listTerms = valGen.createAllTests(3)
+
     /*
     Functions to test:
     x convertListToArgs
