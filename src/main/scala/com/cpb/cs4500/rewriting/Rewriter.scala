@@ -5,6 +5,7 @@
 package com.cpb.cs4500.rewriting {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.valueGeneration._
+  import com.cpb.cs4500.util._
 
   import scala.collection.mutable.Map
 
@@ -12,7 +13,7 @@ package com.cpb.cs4500.rewriting {
     val spec = specification
     val eqs = this.spec.equations.eqs
     val termIdMap = Map[TermID, TypeLiteral]()
-
+    var counter = 0
     // Rewrite this list of terms into a list of Rhs
     def rewriteTerms(terms: List[Term]): List[(Term, Rhs)] = {
       var rewrittenTerms = List[(Term, Rhs)]()
@@ -20,9 +21,11 @@ package com.cpb.cs4500.rewriting {
       // terms
       for (term <- terms) {
         try {
+          counter = 0
           rewrittenTerms = rewrittenTerms :+ (term, rewriteTerm(term))
         } catch {
           case ex: IllegalArgumentException =>
+          case inf: InfiniteRewriteException => println("Rewrote infinitly for an expression")
         }
       }
       rewrittenTerms
@@ -66,7 +69,7 @@ package com.cpb.cs4500.rewriting {
                 }
                 println("ID Map: ")
                 println(idMap)
-                return rewriteToRhs(rule.right, idMap)
+                rewriteToRhs(rule.right, idMap)
               }
             }
             // if we reach this point, we can't apply a rule and we throw
@@ -75,12 +78,13 @@ package com.cpb.cs4500.rewriting {
             throw new IllegalArgumentException
           }
           val shitty = RhsExpr(termExpr.op, rewrittenArgs)
-          /*println("Rule doesn't exist for: " + termExpr.op + ", on: " + rewrittenArgs)
-          println(shitty)*/
+          println("Rule doesn't exist for: " + termExpr.op + ", on: " + rewrittenArgs)
+          println(shitty)
           return shitty
         }
       }
     }
+  
 
 
     // Map the IDs from the left hand side of a rule (ruleArg)
@@ -143,30 +147,35 @@ package com.cpb.cs4500.rewriting {
     }
 
     def rewriteToRhs(rhsRule: Rhs, idMap: Map[TermID, Rhs]): Rhs = {
-      rhsRule match {
-        case trueVal: RhsTrue => trueVal
-        case falseVal: RhsFalse => falseVal
-        case uInt: RhsUInt => uInt
-        // get the value from the map and return it
-        case id: RhsID => {
-          /*println("Inside ID case of rewriteToRhs")
-          println(idMap)
-          println(rhsRule)
-          println(id)*/
-          idMap(TermID(id.ident))
-        }
-        // recursive cases
-        case rhsExpr: RhsExpr => {
-          val rhsArg = resolveArgs(rhsExpr.args, idMap)
-          RhsExpr(rhsExpr.op, rhsArg)
-        }
-        case primExpr: RhsPrimExpr => {
-          val rhsArg = resolveArgs(primExpr.args, idMap)
-          RhsPrimExpr(primExpr.prim, rhsArg)
+      if (counter < 50) {
+        rhsRule match {
+          case trueVal: RhsTrue => trueVal
+          case falseVal: RhsFalse => falseVal
+          case uInt: RhsUInt => uInt
+          // get the value from the map and return it
+          case id: RhsID => {
+            /*println("Inside ID case of rewriteToRhs")
+            println(idMap)
+            println(rhsRule)
+            println(id)*/
+            idMap(TermID(id.ident))
+          }
+          // recursive cases
+          case rhsExpr: RhsExpr => {
+            val rhsArg = resolveArgs(rhsExpr.args, idMap)
+            RhsExpr(rhsExpr.op, rhsArg)
+          }
+          case primExpr: RhsPrimExpr => {
+            val rhsArg = resolveArgs(primExpr.args, idMap)
+            RhsPrimExpr(primExpr.prim, rhsArg)
+          }
         }
       }
+    
+      else {
+        throw new InfiniteRewriteException
+      }
     }
-
     def resolveArgs(rhsArg: RhsArg, idMap: Map[TermID, Rhs]): RhsArg = {
       rhsArg match {
         case empty: RhsEmptyArg => empty
