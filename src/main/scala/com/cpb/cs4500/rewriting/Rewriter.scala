@@ -66,7 +66,7 @@ package com.cpb.cs4500.rewriting {
                 }
                 println("ID Map: ")
                 println(idMap)
-                rewriteToRhs(rule.right, idMap)
+                return rewriteToRhs(rule.right, idMap)
               }
             }
             // if we reach this point, we can't apply a rule and we throw
