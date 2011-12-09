@@ -165,7 +165,10 @@ package com.cpb.cs4500.rewriting {
       val emptyArgs = EmptyArg()
       val sID = TermID("s")
       val kID = TermID("k")
-      val pushArgs = Args(sID, Args(kID, emptyArgs))
+      val mID = TermID("m")
+      val zID = TermID("z")
+      
+      val pushArgs = Args(sID, Args(kID, Args(mID, Args(zID, emptyArgs))))
       val pushExpr = TermExpr(pushOp, pushArgs)
       val ruleArg = Args(pushExpr, emptyArgs)
 
@@ -174,13 +177,15 @@ package com.cpb.cs4500.rewriting {
       val rhsEmptyArgs = RhsEmptyArg()
       val emptyExpr = RhsExpr(emptyOp, rhsEmptyArgs)
       val one = RhsUInt("1")
-      val argsArgs = RhsArgs(emptyExpr, RhsArgs(one, rhsEmptyArgs))
+      val two = RhsUInt("2")
+      val three = RhsUInt("3")
+      val argsArgs = RhsArgs(emptyExpr, RhsArgs(one, RhsArgs(two, RhsArgs(three, rhsEmptyArgs))))
 
       //expectedMap = Map(s -> (empty), k -> 1)
-      val expectedMap = Map(sID -> emptyExpr, kID -> one)
+      val expectedMap = Map(sID -> emptyExpr, kID -> one, mID -> two, zID -> three)
       val inputMap = scala.collection.mutable.Map[TermID, Rhs]()
 
-      expect(expectedMap) { rewriter.mapIds(ruleArg, argsArgs, inputMap) }
+      expect(expectedMap) { rewriter.mapIds(pushArgs, argsArgs, inputMap) }
       
     }
 
