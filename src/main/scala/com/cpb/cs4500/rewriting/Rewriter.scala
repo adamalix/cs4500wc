@@ -45,6 +45,8 @@ package com.cpb.cs4500.rewriting {
     }
 
     def rewriteTerm(term: Term): Rhs = {
+      println("Attempting to rewrite term: ")
+      println(term)
       term match {
         case termid: TermID => new RhsID(termid.ident)
         case termExpr: TermExpr => {
@@ -69,7 +71,7 @@ package com.cpb.cs4500.rewriting {
                 }
                 println("ID Map: ")
                 println(idMap)
-                rewriteToRhs(rule.right, idMap)
+                return rewriteToRhs(rule.right, idMap)
               }
             }
             // if we reach this point, we can't apply a rule and we throw
@@ -147,7 +149,7 @@ package com.cpb.cs4500.rewriting {
     }
 
     def rewriteToRhs(rhsRule: Rhs, idMap: Map[TermID, Rhs]): Rhs = {
-      if (counter < 50) {
+      if (counter < 100) {
         counter = counter + 1
         rhsRule match {
           case trueVal: RhsTrue => trueVal
