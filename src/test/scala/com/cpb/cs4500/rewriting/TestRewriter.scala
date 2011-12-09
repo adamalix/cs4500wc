@@ -3,6 +3,7 @@ package com.cpb.cs4500.rewriting {
   import org.scalatest.FunSuite
   import com.cpb.cs4500.rewriting._
   import com.cpb.cs4500.parsing._
+  import com.cpb.cs4500.valueGeneration.ValueGenerator
   import com.cpb.cs4500.io.ReadWriter
 
   class TestRewriter extends FunSuite {
@@ -181,6 +182,49 @@ package com.cpb.cs4500.rewriting {
 
       expect(expectedMap) { rewriter.mapIds(ruleArg, argsArgs, inputMap) }
       
+    }
+
+    test("test rewriteTerm") {
+
+      val spec3 = parser.parseAll(parser.spec, testFile3).get
+      val gen = new ValueGenerator(spec3)
+      val rewriter = new Rewriter(spec3)
+      //ruleArg = (push s k)
+      val pushOp = Operation("push")
+      val emptyArgs = EmptyArg()
+      val sID = TermID("s")
+      val kID = TermID("k")
+      val pushArgs = Args(sID, Args(kID, emptyArgs))
+      val pushExpr = TermExpr(pushOp, pushArgs)
+      val ruleArg = Args(pushExpr, emptyArgs)
+
+      //rewrittenArgs = (push (empty) 1)
+      val emptyOp = Operation("empty")
+      val rhsEmptyArgs = RhsEmptyArg()
+      val emptyExpr = RhsExpr(emptyOp, rhsEmptyArgs)
+      val one = RhsUInt("1")
+      val argsArgs = RhsArgs(emptyExpr, RhsArgs(one, rhsEmptyArgs))
+
+      val something = rewriter.rewriteTerm(pushExpr)
+      println("rewriteterm running: ")
+      println(pushExpr)
+      println(something)
+
+      val bullshit = TermExpr(pushOp,Args(TermExpr(emptyOp,EmptyArg()),Args(TermID("8"),EmptyArg())))
+
+      expect(true) {
+        try {
+          val bullstuff = rewriter.rewriteTerm(bullshit)
+          println("BULLSTUFF: ")
+          println(bullshit)
+          println(bullstuff)
+          bullstuff
+        } catch {
+          case ex: RuntimeException => false
+        }
+      }
+
+
     }
 
 

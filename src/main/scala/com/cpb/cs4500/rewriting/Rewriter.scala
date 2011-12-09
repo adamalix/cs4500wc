@@ -58,7 +58,12 @@ package com.cpb.cs4500.rewriting {
                 // rewriting magic happens here.  we find the ids
                 // in the args of the rule and replace them with the
                 // corresponding rewritten args
-                val idMap = mapIds(termExpr.args, rewrittenArgs, Map[TermID, Rhs]())
+                //println("termExpr.args: " + termExpr.args)
+                //println("rewrittenArgs: " + rewrittenArgs)
+                val idMap = rule.left match {
+                  case ruleExpr: TermExpr => mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
+                  case id: TermID => throw new RuntimeException("YOU FUCKED UP AGAIN")
+                }
                 println("ID Map: ")
                 println(idMap)
                 rewriteToRhs(rule.right, idMap)
@@ -66,7 +71,7 @@ package com.cpb.cs4500.rewriting {
             }
             // if we reach this point, we can't apply a rule and we throw
             // away the test value
-            println("No rule applies")
+            //println("No rule applies")
             throw new IllegalArgumentException
           }
           val shitty = RhsExpr(termExpr.op, rewrittenArgs)
@@ -77,61 +82,121 @@ package com.cpb.cs4500.rewriting {
       }
     }
 
+
+    // Map the IDs from the left hand side of a rule (ruleArg)
+    // to values inside the rewrittenArgs
     def mapIds(ruleArg: Arg, rewrittenArgs: RhsArg, idMap: Map[TermID, Rhs]): Map[TermID, Rhs] = {
-      println("calling function on: ")
+      ruleArg match {
+        // Args(Term, Arg)
+        // check the term for pattern variables
+        case ruleArgs: Args => {
+          // moving left
+          ruleArgs.term match {
+            case termId: TermID => {
+              val termRhsTuple = mapIdToRhs(termId, rewrittenArgs)
+              idMap += (termRhsTuple._1 -> termRhsTuple._2)
+              // now, we need to check the args of rewrittenArgs, so
+              // we know that need to move right
+              rewrittenArgs match {
+                case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
+                case _ =>
+                  throw new RuntimeException("we should never get Empty when moving right at this point")
+              }
+            }
+            // we don't have an ID, check the termArgs and rewrittenArgs.args for IDs
+            case termArgs: TermExpr => {
+              rewrittenArgs match {
+                case rwArgs: RhsArgs => mapIds(termArgs.args, rwArgs.args, idMap)
+                case _ =>
+                  throw new RuntimeException("never get an empty when moving towards both args")
+              }
+            }
+          }
+        }
+        // there is nothing else to add to the map!
+        case ruleEmpty: EmptyArg => idMap
+      }
+    }
+
+    // get the rhs of this arg and return a tuple with the termid and rhs
+    def mapIdToRhs(termId: TermID, rewrittenArgs: RhsArg): (TermID, Rhs) = {
+      rewrittenArgs match {
+        // impossible
+        case empty: RhsEmptyArg =>
+          throw new RuntimeException("When getting a Rhs for TermID we shouldn't get RhsEmptyArg")
+        case rhsArg: RhsArgs => (termId, rhsArg.rhs)
+      }
+    }
+/*
+    def mapIds(ruleArg: Arg, rewrittenArgs: RhsArg, idMap: Map[TermID, Rhs]): Map[TermID, Rhs] = {
+      /*println("calling function on: ")
       println("ruleArg: " + ruleArg)
       println("rewrittenArgs: " + rewrittenArgs)
-      println("idMap: " + idMap)
+      println("idMap: " + idMap)*/
       ruleArg match {
         // we have run out of pattern variables, return the map
-        case empty: EmptyArg => { println("emptyArg"); idMap }
+        case empty: EmptyArg => {
+          //println("emptyArg")
+          idMap
+        }
         // we may have more pattern variables, look at the args of the rule
         case ruleArgs: Args => {
-          println("ruleArgs is an Args")
+          //println("ruleArgs is an Args")
           ruleArgs.term match {
             // we have a pattern variable, put it in the map
             case id: TermID => {
-              println("and it's term is an id")
+              //println("and it's term is an id")
               // mutate the map to contain the id mapped to the rhs
               rewrittenArgs match {
                 case rhsArgs: RhsArgs => {
-                  println("and so now the rewrittenArgs are rhsArgs")
+                  //println("and so now the rewrittenArgs are rhsArgs")
                   idMap += (id -> rhsArgs.rhs)
-                  println("ID Map inside mapIds: " + idMap)
+                  //println("ID Map inside mapIds: " + idMap)
                   mapIds(ruleArgs.args, rhsArgs.args, idMap)
                 }
-                case _ => throw new RuntimeException("WTF IS GOING ON HERE")
-              }
-            }
-            // we don't have a pattern variable, recur and look for more until
-            // we have empty ruleArgs
-            case _ => {
-              rewrittenArgs match {
-                case rhsArgs: RhsArgs => {
-                  println("ruleID isn't a term ID, it's args, so run this shit again, but on the args of the term")
-                  // nothing to put in the map
-                  // match on ruleArgs.term if it's an ID, throw an exception
-                  // if it's a term, run this on it's args
-                  ruleArg.args.term match {
-                    case itsAnID: TermID => throw new RuntimeException("WTF IS GOING ON HERE")
-                    case itsATerm: TermExpr => mapIds(itsATerm.args, rhsArgs.args, idMap)
+                case rhsEmpty: RhsEmptyArg => ruleArgs match {
+                  case empty: EmptyArg => idMap
+                  case args: Args => {
+                    idMap += (id -> null)
+                    //throw new RuntimeException("WTF IS GOING ON HERE 4")
                   }
                 }
-                case _ => throw new RuntimeException("WTF IS GOING ON HERE")
+              }
+            }
+
+            // we don't have a pattern in the ruleArgs, we have a term.
+            // look at its args
+            case expr: TermExpr => {
+              rewrittenArgs match {
+                case rhsArgs: RhsArgs => {
+                  rhsArgs.rhs match {
+                    case rhsId: RhsID => throw new RuntimeException("WTF IS GOING ON HERE 3")
+                    case rhsExpr: RhsExpr => {
+                      mapIds(expr.args, rhsArgs, idMap)
+                    }
+                  }
+                }
+                case _ => throw new RuntimeException("WTF IS GOING ON HERE 2")
               }
             }
           }
         }
       }
     }
-
+*/
     def rewriteToRhs(rhsRule: Rhs, idMap: Map[TermID, Rhs]): Rhs = {
       rhsRule match {
         case trueVal: RhsTrue => trueVal
         case falseVal: RhsFalse => falseVal
         case uInt: RhsUInt => uInt
         // get the value from the map and return it
-        case id: RhsID => idMap(TermID(id.ident))
+        case id: RhsID => {
+          /*println("Inside ID case of rewriteToRhs")
+          println(idMap)
+          println(rhsRule)
+          println(id)*/
+          idMap(TermID(id.ident))
+        }
         // recursive cases
         case rhsExpr: RhsExpr => {
           val rhsArg = resolveArgs(rhsExpr.args, idMap)
@@ -226,4 +291,27 @@ package com.cpb.cs4500.rewriting {
     }
 
   }
+
+  object Rewriter {
+    def main(args: Array[String]): Unit = {
+      try {
+      import com.cpb.cs4500.parsing.ADTParser ;
+      import com.cpb.cs4500.parsing.Spec ;
+      import com.cpb.cs4500.io.ReadWriter ;
+      import com.cpb.cs4500.valueGeneration.ValueGenerator ;
+      val testFileName3 = "src/test/resources/test3" ;
+      val testFile3 = ReadWriter.inputFromFile(testFileName3) ;
+      val parser = new ADTParser() ;
+      val spec3 = parser.parseAll(parser.spec, testFile3).get ;
+      val gen = new ValueGenerator(spec3) ;
+      val rewriter = new Rewriter(spec3) ;
+      val terms1 = gen.createAllTests(3);
+      val rewrittenTuples1 = rewriter.rewriteTerms(terms1) ;
+      for ((left, right) <- rewrittenTuples1) { println(left); println(right) }
+      } catch {
+        case ex: RuntimeException => 
+      }
+    }
+  }
+
 }
