@@ -148,6 +148,7 @@ package com.cpb.cs4500.rewriting {
 
     def rewriteToRhs(rhsRule: Rhs, idMap: Map[TermID, Rhs]): Rhs = {
       if (counter < 50) {
+        counter = counter + 1
         rhsRule match {
           case trueVal: RhsTrue => trueVal
           case falseVal: RhsFalse => falseVal
