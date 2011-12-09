@@ -349,67 +349,106 @@ package com.cpb.cs4500.parsing {
     }
   }
 
-  abstract class Rhs
+  abstract class Rhs {
+    def toSexpr(): String  
+  }
 
   case class RhsTrue() extends Rhs {
     val value = "#t"
+    def toSexpr(): String = { value }
   }
 
   case class RhsFalse() extends Rhs {
     val value = "#f"
+    def toSexpr(): String = { value }
   }
 
-  case class RhsUInt(value: String) extends Rhs
+  case class RhsUInt(value: String) extends Rhs {
+    def toSexpr(): String = { value }
+  }
 
-  case class RhsID(ident: String) extends Rhs
+  case class RhsID(ident: String) extends Rhs {
+    def toSexpr(): String = { ident }
+  }
 
-  case class RhsExpr(op: Operation, args: RhsArg) extends Rhs
+  case class RhsExpr(op: Operation, args: RhsArg) extends Rhs {
+    def toSexpr(): String = {
+      var char = ""
+      if(args.length != 0)
+        char = " "
+      "(" + op + char + args.toSexpr + ")" 
+    }
+  }
 
-  case class RhsPrimExpr(prim: Primitive, args: RhsArg) extends Rhs
+  case class RhsPrimExpr(prim: Primitive, args: RhsArg) extends Rhs {
+    def toSexpr(): String = {
+      var char = ""
+      if(args.length != 0)
+        char = " "
+      "(" + prim.toSexpr + char + args.toSexpr + ")" 
+    }    
+  }
 
   // Righthand side style Args
   trait RhsArg {
     def isEmpty(): Boolean = false
     def length(): Int
+    def toSexpr(): String
   }
 
   case class RhsArgs(rhs: Rhs, args: RhsArg) extends RhsArg {
     def length(): Int = 1 + args.length()
+    def toSexpr(): String = {
+      var char = ""
+      if(args.length != 0)
+        char = " "
+      rhs.toSexpr + char + args.toSexpr
+    }
   }
 
   case class RhsEmptyArg() extends RhsArg {
     override def isEmpty(): Boolean = true
     def length(): Int = 0
+    def toSexpr(): String = { "" }
   }
 
-  abstract class Primitive
+  abstract class Primitive {
+    def toSexpr(): String
+  }
 
   case class Not() extends Primitive {
     val value = "not"
+    def toSexpr(): String = { value }
   }
 
   case class Plus() extends Primitive {
     val value = "+"
+    def toSexpr(): String = { value }
   }
 
   case class Minus() extends Primitive {
     val value = "-"
+    def toSexpr(): String = { value }
   }
 
   case class Star() extends Primitive {
     val value = "*"
+    def toSexpr(): String = { value }
   }
 
   case class Eq() extends Primitive {
     val value = "="
+    def toSexpr(): String = { value }
   }
 
   case class GreaterThan extends Primitive {
     val value = ">"
+    def toSexpr(): String = { value }
   }
 
   case class LessThan extends Primitive {
     val value = "<"
+    def toSexpr(): String = { value }
   }
 
 }
