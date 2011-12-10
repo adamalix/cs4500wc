@@ -44,7 +44,6 @@ package com.cpb.cs4500.rewriting {
     }
 
     def rewriteTerm(term: Term): Rhs = {
-      println("Attempting to rewrite term: " + term.toSexpr)
       term match {
         case termid: TermID => new RhsID(termid.ident)
         case termExpr: TermExpr => {
@@ -53,11 +52,7 @@ package com.cpb.cs4500.rewriting {
             for (rule <- eqs) {
               // Deterministic, we assume that only one rule will apply
               // because we will break and return on succesful match
-              println("attempting to match: " +
-                      termExpr.toSexpr + " " + rewrittenArgs.toSexpr + " " + rule.left.toSexpr)
               if (doTermsMatch(termExpr, rewrittenArgs, rule.left)) {
-                println("just matched: " +
-                        termExpr.toSexpr + " " + rewrittenArgs.toSexpr + " " + rule.left.toSexpr)
                 // rewriting magic happens here.  we find the ids
                 // in the args of the rule and replace them with the
                 // corresponding rewritten args
@@ -65,14 +60,12 @@ package com.cpb.cs4500.rewriting {
                   case ruleExpr: TermExpr => mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
                   case id: TermID => throw new RuntimeException("YOU FUCKED UP AGAIN")
                 }
-                println("MAP: ")
-                println(idMap)
                 return rewriteToRhs(rule.right, idMap)
               }
             }
             // if we reach this point, we can't apply a rule and we throw
             // away the test value
-            println("Throwing away: " + term.toSexpr)
+            //println("Throwing away: " + term.toSexpr)
             throw new IllegalArgumentException
           }
           val noRuleExpr = RhsExpr(termExpr.op, rewrittenArgs)
@@ -85,6 +78,10 @@ package com.cpb.cs4500.rewriting {
 
     // Map the IDs from the left hand side of a rule (ruleArg)
     // to values inside the rewrittenArgs
+    // mutates the input map and then returns it.
+    // TODO: Make this less retarded, AKA stop mutating and then returning, return a new map
+    // at each time.  This will need to be a change to mapIds and have a
+    // var map = scala.collection.immutable.HashMap
     def mapIds(ruleArg: Arg, rewrittenArgs: RhsArg, idMap: Map[TermID, Rhs]): Map[TermID, Rhs] = {
       ruleArg match {
         // Args(Term, Arg)
@@ -98,27 +95,23 @@ package com.cpb.cs4500.rewriting {
               idMap += (termRhsTuple._1 -> termRhsTuple._2)
               // now, we need to check the args of rewrittenArgs, so
               // we know that need to move right
-              println("mapIds: " + ruleArgs.args.toSexpr + " " + rewrittenArgs.toSexpr + " " + idMap)
               rewrittenArgs match {
                 case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
-                /*ruleArgs.args match {
-                  case ruleArgsArgs: Args => mapIds(ruleArgsArgs.args, rwArgs.args, idMap)
-                  case _ => throw new RuntimeException("what were we thinking???")
-                }*/
                 case _ =>
                   throw new RuntimeException("we should never get Empty when moving right at this point")
               }
             }
             // ruleargs.term is a termExpr
             // we don't have an ID, so now we need to map the ruleargs.term.args against
-            // rewrittenArgs.args and termArgs.args against rewrittenargs.args
+            // rewrittenArgs.args and ruleArgs.args against rewrittenargs.args
             // we don't care about the ruleArgsTermExpr.op because it's not a pattern
             // variable
             case ruleArgsTermExpr: TermExpr => {
-              println("going crazy " + ruleArgsTermExpr + " " + rewrittenArgs)
               rewrittenArgs match {
-                case rewrittenArgsRhsArgs: RhsArgs =>
+                case rewrittenArgsRhsArgs: RhsArgs => {
                   mapIds(ruleArgsTermExpr.args, getRhsArgsRhsArgs(rewrittenArgsRhsArgs.rhs), idMap)
+                  mapIds(ruleArgs.args, rewrittenArgsRhsArgs.args, idMap)
+                }
                 case _ => throw new RuntimeException("we might be retarded")
               }
             }
