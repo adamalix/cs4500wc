@@ -204,9 +204,7 @@ package com.cpb.cs4500.rewriting {
       val ruleArg = Args(pushExpr, emptyArgs)
       
       val createdTests = gen.createAllTests(2);
-      for (t <- createdTests) {
-        println(t.toSexpr)
-      }
+
 
       //rewrittenArgs = (push (empty) 1)
       val emptyOp = Operation("empty")
