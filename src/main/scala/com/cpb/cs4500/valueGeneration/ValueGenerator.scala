@@ -1,8 +1,12 @@
+/**
+ * Class used to generate tests for a specification
+ * Entry point: createAllTests(test-depth: Int)
+ */
+
 package com.cpb.cs4500.valueGeneration {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.rewriting.Rewriter
   import scala.collection.mutable.Map
-  import scala.collection.mutable.HashSet
   import scala.collection.immutable.ListSet
 
   class ValueGenerator(specification: Spec) {
@@ -16,13 +20,13 @@ package com.cpb.cs4500.valueGeneration {
       val allOpSpecs: ListSet[OperationSpec] = specification.getAllOpSpecs()
       var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)
       var currentDepth: Int = 0
-      
+
       while (currentDepth < depth){
         for (opSpec <- allOpSpecs) {
           val testsForOpSpec: List[Term] = createTests(opSpec)
           allTests = allTests ++ testsForOpSpec
         }
-        
+
         for (test <- allTests) {
           test match {
             case testExpr:TermExpr => {
@@ -36,23 +40,23 @@ package com.cpb.cs4500.valueGeneration {
       }
       allTests
     }
-    
+
     // Creates a map that given given an Operation, will return the TypeName
-    // of its return type. It should be noted that if a operation 
+    // of its return type. It should be noted that if a operation
     // spec's return Type is a literal we will simply ignore it.
     def makeOpSpecMap(opspecs: ListSet[OperationSpec]): Map[Operation, TypeName] = {
       var opSpecMap = Map[Operation, TypeName]()
       for (opspec <- opspecs) {
         opspec.returnType match {
           case typeN: TypeName => opSpecMap += ( opspec.op -> typeN)
-          case _ => 
+          case _ =>
         }
       }
       opSpecMap
     }
-    
+
     // Given on function, create all possible tests for it.
-    // This function will produce different results based 
+    // This function will produce different results based
     // on the current depth.
     def createTests(opspec: OperationSpec) : List[Term] = {
       val args: List[Terminal] = opspec.argTypes.args
@@ -64,18 +68,18 @@ package com.cpb.cs4500.valueGeneration {
       }
       tests
     }
-    
-    
+
+
     // Given a List[Term] converts it to an Arg.
     // This is useful in converting from a OperationSpec to a Term
     def convertListToArgs(list: List[Term]): Arg = {
       var ArgObj: Arg = new EmptyArg()
       for (term <- list.reverse) {
-        ArgObj = new Args(term, ArgObj)  
+        ArgObj = new Args(term, ArgObj)
       }
       ArgObj
     }
-    
+
     // Cartesian products of the arguments (all possible arguments)
     // This us allows us to generate exhaustive testing based on the depth.
     def makeListOfArgs(args: List[Terminal]): List[List[Term]] = {
@@ -84,19 +88,19 @@ package com.cpb.cs4500.valueGeneration {
         arg match {
           case name: TypeName => allTermList = allTermList :+ typeMap(name)
           case intLiteral: IntLiteral =>  {
-            allTermList = allTermList :+ 
+            allTermList = allTermList :+
                           List[Term](new TermID(generateRandomInt().toString()))
           }
           case boolLiteral: BooleanLiteral =>  {
-            allTermList = allTermList :+ 
+            allTermList = allTermList :+
                           List[Term](new TermID(generateRandomBoolean().toString()))
           }
-          case charLiteral: CharLiteral => { 
-            allTermList = allTermList :+ 
+          case charLiteral: CharLiteral => {
+            allTermList = allTermList :+
                           List[Term](new TermID(generateRandomChar().toString()))
           }
-          case stringLiteral: StringLiteral => { 
-            allTermList = allTermList :+ 
+          case stringLiteral: StringLiteral => {
+            allTermList = allTermList :+
                           List[Term](new TermID(generateRandomString().toString()))
           }
         }
@@ -111,14 +115,14 @@ package com.cpb.cs4500.valueGeneration {
       }
       reducedList
     }
-    
+
     def optimize(list: List[List[Term]]) : List[List[Term]]  = {
       var totalComp = 1;
       var optimizedList = list
       for (l <- list) {
         totalComp = totalComp * l.size
       }
-      if ( totalComp > 1000000) { 
+      if ( totalComp > 1000000) {
         optimizedList = List[List[Term]]()
         for (individualList <- list) {
           var count = 0
@@ -136,16 +140,16 @@ package com.cpb.cs4500.valueGeneration {
       }
       optimizedList
     }
-    
+
     // Written by: http://anders.janmyr.com/2009/10/lists-in-scala.html
-    // Given a List of Lists, creates the cartesian products for all lists 
+    // Given a List of Lists, creates the cartesian products for all lists
     // in the list. Simply a beautiful function.
     def cart[T](listOfLists: List[List[T]]): List[List[T]] = listOfLists match {
       case Nil => List(List())
       case xs :: xss => for (y <- xs; ys <- cart(xss)) yield y :: ys
     }
-    
-    
+
+
     // Store basic creators for convenient use later. A basic creator
     // is defined as an OperationSpec who's returnType returns a TypeName
     // and it has no TypeName's in its arguments
@@ -176,7 +180,7 @@ package com.cpb.cs4500.valueGeneration {
       bcMap
     }
 
-          
+
     // Creates a random intLiteral between 0-9
     def generateRandomInt(): IntLiteral = {
       new IntLiteral(scala.util.Random.nextInt(10))
@@ -196,7 +200,7 @@ package com.cpb.cs4500.valueGeneration {
     def generateRandomString(): StringLiteral = {
       val strList = List("string1", "string2", "string3", "string4", "string5")
       new StringLiteral(strList(scala.util.Random.nextInt(5)))
-    }    
+    }
 
   }
 

@@ -1,10 +1,10 @@
-/*
-ADTParser.scala
-Parses the given ADT and converts the tokens into readable data based on the case classes
-*/
+/**
+ * ADTParser.scala
+ * Parses the given ADT and converts the tokens into readable data based on the
+ * case classes.  See Spec.scala for case class definition and helpers
+ */
 
 package com.cpb.cs4500.parsing {
-
   import scala.util.parsing.combinator._
 
   class ADTParser extends JavaTokenParsers {
@@ -48,7 +48,6 @@ package com.cpb.cs4500.parsing {
       }
 
       OperationSpec(op, args, returnType, isBasicCreator)
-
     }
 
     def operation: Parser[Operation] = ident ^^ { case op => Operation(op) }

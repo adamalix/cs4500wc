@@ -9,6 +9,7 @@ all:
 	src/main/scala/com/cpb/cs4500/parsing/ADTParser.scala \
 	src/main/scala/com/cpb/cs4500/parsing/Spec.scala \
 	src/main/scala/com/cpb/cs4500/rewriting/Rewriter.scala \
+	src/main/scala/com/cpb/cs4500/util/InfiniteRewriteException.scala \
 	src/main/scala/com/cpb/cs4500/valueGeneration/ValueGenerator.scala
 	cd build && jar -cfm ../bin/cs4500.jar ../src/main/resources/MANIFEST.MF *
 	cd ..

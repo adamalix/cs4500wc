@@ -1,14 +1,13 @@
-/*
- Spec.scala is the home of many of our internal representations.
- After our parser goes through the input, it inserts them into their
- appropriate internal representation. Many of these have toStrings/toSexprs
- in order to be used in the Rewriter.
+/**
+ * Spec.scala is the home of many of our internal representations.
+ * After our parser goes through the input, it inserts them into their
+ * appropriate internal representation. Many of these have toStrings/toSexprs
+ * in order to be used in the Rewriter.
  */
 
 package com.cpb.cs4500.parsing {
   import scala.collection.mutable.HashMap
-  import scala.collection.immutable._
-
+  import scala.collection.immutable.ListSet
 
   trait Terminal {
     override def toString(): String
@@ -52,6 +51,7 @@ package com.cpb.cs4500.parsing {
           if (typeN.equals(opspec.getReturnType()))
             constructors = constructors + opspec
         }
+
         if (!constructors.isEmpty) {
           allConstructors.put(typeN, constructors)
         }
@@ -62,7 +62,8 @@ package com.cpb.cs4500.parsing {
     def getAllBaseConstructors(): ListSet[OperationSpec] = {
       var ops: ListSet[OperationSpec] = getAllOpSpecs
       var cons: ListSet[OperationSpec] = ListSet[OperationSpec]()
-      for (op<-ops) {
+
+      for (op <- ops) {
         if (op.isBasicCreator) {
           cons = cons + op
         }
@@ -74,7 +75,7 @@ package com.cpb.cs4500.parsing {
       val ops: ListSet[OperationSpec] = getAllOpSpecs
       var opNameList: List[String] = List[String]()
 
-      for (op<-ops) {
+      for (op <- ops) {
         opNameList = opNameList :+ op.getOpName
       }
       opNameList
@@ -96,7 +97,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeNames(): ListSet[TypeName] = {
       var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
-      for (sig<-sigs) {
+      for (sig <- sigs) {
         allTypeNames = allTypeNames ++ sig.getAllTypeNames
       }
       allTypeNames
@@ -104,7 +105,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeLiterals(): ListSet[TypeLiteral] = {
       var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-      for (sig<-sigs) {
+      for (sig <- sigs) {
         allTypeLits = allTypeLits ++ sig.getAllTypeLiterals
       }
       allTypeLits
@@ -112,7 +113,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllOpSpecs(): ListSet[OperationSpec] = {
       var AllOpSpecs: ListSet[OperationSpec] = new ListSet[OperationSpec]()
-      for (sig<-sigs) {
+      for (sig <- sigs) {
         AllOpSpecs = AllOpSpecs ++ sig.getAllOpSpecs
       }
       AllOpSpecs
@@ -160,7 +161,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeNames(): ListSet[TypeName] = {
       var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
-      for (op<-ops) {
+      for (op <- ops) {
         allTypeNames = allTypeNames ++ op.getAllTypeNames()
       }
       allTypeNames
@@ -168,7 +169,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeLiterals(): ListSet[TypeLiteral] = {
       var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-      for (op<-ops){
+      for (op <- ops){
         allTypeLits = allTypeLits ++ op.getAllTypeLiterals
       }
       allTypeLits
@@ -208,7 +209,7 @@ package com.cpb.cs4500.parsing {
       returnType match {
         case a: TypeLiteral => allTypeLits = allTypeLits + a
         case a: TypeName =>
-          case a: Operation =>
+        case a: Operation =>
       }
       allTypeLits = allTypeLits ++ argTypes.getAllTypeLiterals()
       allTypeLits
@@ -245,7 +246,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeNames(): ListSet[TypeName] = {
       var allTypeNames: ListSet[TypeName] = new ListSet[TypeName]()
-      for (a<-args) a match {
+      for (a <- args) a match {
         case a: TypeName => allTypeNames = allTypeNames + a
         case a: TypeLiteral =>
         case a: Operation =>
@@ -255,7 +256,7 @@ package com.cpb.cs4500.parsing {
 
     def getAllTypeLiterals(): ListSet[TypeLiteral] = {
       var allTypeLits: ListSet[TypeLiteral] = new ListSet[TypeLiteral]()
-      for (a<-args) a match {
+      for (a <- args) a match {
         case a: TypeLiteral => allTypeLits = allTypeLits + a
         case a: TypeName =>
           case a: Operation =>
@@ -332,7 +333,7 @@ package com.cpb.cs4500.parsing {
 
     def toSexpr(): String = {
       var char = ""
-      if(args.length != 0)
+      if (args.length != 0)
         char = " "
       term.toSexpr + char + args.toSexpr
     }
@@ -350,7 +351,7 @@ package com.cpb.cs4500.parsing {
   }
 
   abstract class Rhs {
-    def toSexpr(): String  
+    def toSexpr(): String
   }
 
   case class RhsTrue() extends Rhs {
@@ -374,19 +375,19 @@ package com.cpb.cs4500.parsing {
   case class RhsExpr(op: Operation, args: RhsArg) extends Rhs {
     def toSexpr(): String = {
       var char = ""
-      if(args.length != 0)
+      if (args.length != 0)
         char = " "
-      "(" + op + char + args.toSexpr + ")" 
+      "(" + op + char + args.toSexpr + ")"
     }
   }
 
   case class RhsPrimExpr(prim: Primitive, args: RhsArg) extends Rhs {
     def toSexpr(): String = {
       var char = ""
-      if(args.length != 0)
+      if (args.length != 0)
         char = " "
-      "(" + prim.toSexpr + char + args.toSexpr + ")" 
-    }    
+      "(" + prim.toSexpr + char + args.toSexpr + ")"
+    }
   }
 
   // Righthand side style Args
@@ -400,7 +401,7 @@ package com.cpb.cs4500.parsing {
     def length(): Int = 1 + args.length()
     def toSexpr(): String = {
       var char = ""
-      if(args.length != 0)
+      if (args.length != 0)
         char = " "
       rhs.toSexpr + char + args.toSexpr
     }

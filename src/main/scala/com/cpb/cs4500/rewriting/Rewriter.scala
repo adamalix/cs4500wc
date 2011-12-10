@@ -1,11 +1,12 @@
-/*
- Rewrites the parsed data into Scheme tests.
+/**
+ * Rewrites the parsed data into Scheme tests.
+ * Entry point: rewriteTerms(terms: List[Term])
  */
 
 package com.cpb.cs4500.rewriting {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.valueGeneration._
-  import com.cpb.cs4500.util._
+  import com.cpb.cs4500.util.InfiniteRewriteException
 
   import scala.collection.mutable.Map
 
@@ -14,6 +15,7 @@ package com.cpb.cs4500.rewriting {
     val eqs = this.spec.equations.eqs
     val termIdMap = Map[TermID, TypeLiteral]()
     var counter = 0
+
     // Rewrite this list of terms into a list of Rhs
     def rewriteTerms(terms: List[Term]): List[(Term, Rhs)] = {
       var rewrittenTerms = List[(Term, Rhs)]()
@@ -65,7 +67,6 @@ package com.cpb.cs4500.rewriting {
             }
             // if we reach this point, we can't apply a rule and we throw
             // away the test value
-            //println("Throwing away: " + term.toSexpr)
             throw new IllegalArgumentException
           }
           val noRuleExpr = RhsExpr(termExpr.op, rewrittenArgs)
@@ -175,6 +176,7 @@ package com.cpb.cs4500.rewriting {
         throw new InfiniteRewriteException
       }
     }
+
     def resolveArgs(rhsArg: RhsArg, idMap: Map[TermID, Rhs]): RhsArg = {
       rhsArg match {
         case empty: RhsEmptyArg => empty
@@ -251,21 +253,21 @@ package com.cpb.cs4500.rewriting {
   object Rewriter {
     def main(args: Array[String]): Unit = {
       try {
-      import com.cpb.cs4500.parsing.ADTParser ;
-      import com.cpb.cs4500.parsing.Spec ;
-      import com.cpb.cs4500.io.ReadWriter ;
-      import com.cpb.cs4500.valueGeneration.ValueGenerator ;
-      val testFileName3 = "src/test/resources/test3" ;
-      val testFile3 = ReadWriter.inputFromFile(testFileName3) ;
-      val parser = new ADTParser() ;
-      val spec3 = parser.parseAll(parser.spec, testFile3).get ;
-      val gen = new ValueGenerator(spec3) ;
-      val rewriter = new Rewriter(spec3) ;
-      val terms1 = gen.createAllTests(3);
-      val rewrittenTuples1 = rewriter.rewriteTerms(terms1) ;
-      for ((left, right) <- rewrittenTuples1) { println(left); println(right) }
+        import com.cpb.cs4500.parsing.ADTParser ;
+        import com.cpb.cs4500.parsing.Spec ;
+        import com.cpb.cs4500.io.ReadWriter ;
+        import com.cpb.cs4500.valueGeneration.ValueGenerator ;
+        val testFileName3 = "src/test/resources/test3" ;
+        val testFile3 = ReadWriter.inputFromFile(testFileName3) ;
+        val parser = new ADTParser() ;
+        val spec3 = parser.parseAll(parser.spec, testFile3).get ;
+        val gen = new ValueGenerator(spec3) ;
+        val rewriter = new Rewriter(spec3) ;
+        val terms1 = gen.createAllTests(3);
+        val rewrittenTuples1 = rewriter.rewriteTerms(terms1) ;
+        for ((left, right) <- rewrittenTuples1) { println(left); println(right) }
       } catch {
-        case ex: RuntimeException =>
+        case ex: RuntimeException => println(ex)
       }
     }
   }
