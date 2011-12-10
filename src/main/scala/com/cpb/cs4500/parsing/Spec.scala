@@ -442,12 +442,12 @@ package com.cpb.cs4500.parsing {
     def toSexpr(): String = { value }
   }
 
-  case class GreaterThan extends Primitive {
+  case class GreaterThan() extends Primitive {
     val value = ">"
     def toSexpr(): String = { value }
   }
 
-  case class LessThan extends Primitive {
+  case class LessThan() extends Primitive {
     val value = "<"
     def toSexpr(): String = { value }
   }
