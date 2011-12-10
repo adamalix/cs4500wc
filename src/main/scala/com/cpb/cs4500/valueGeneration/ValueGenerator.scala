@@ -119,7 +119,20 @@ package com.cpb.cs4500.valueGeneration {
         totalComp = totalComp * l.size
       }
       if ( totalComp > 1000000) { 
-        optimizedList = list - (list(0))
+        optimizedList = List[List[Term]]()
+        for (individualList <- list) {
+          var count = 0
+          var redoneList = List[Term]()
+          while (count < 25) {
+            var randomElement = individualList(scala.util.Random.nextInt(individualList.size))
+            while (redoneList.contains(randomElement)) {
+              randomElement = individualList(scala.util.Random.nextInt(individualList.size))
+            }
+            redoneList = redoneList :+ randomElement
+            count = count + 1
+          }
+          optimizedList = optimizedList :+ redoneList
+        }
       }
       optimizedList
     }
