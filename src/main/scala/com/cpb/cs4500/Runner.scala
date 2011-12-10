@@ -32,8 +32,9 @@ package com.cpb.cs4500 {
     // Generate tests for this spec and write them to a file
     def generateTerms(spec: Spec, outfile: String) = {
       val valGen = new ValueGenerator(spec)
+      val generatedValues = valGen.createAllTests(3)
       val rewriter = new Rewriter(spec)
-      var termValuePairs = ListSet[Tuple2[Term, Rhs]]()
+      val termValuePairs = rewriter.rewriteTerms(generatedValues)
       // Generate the test strings
       var exprList = List[String]()
       var testCount = 0
