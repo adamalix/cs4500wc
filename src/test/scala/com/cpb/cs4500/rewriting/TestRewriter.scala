@@ -37,7 +37,7 @@ package com.cpb.cs4500.rewriting {
     */
 
     test("test doArgsMatch") {
-      val spec5 = parser.parseAll(parser.spec, testFile5).get
+      val spec5 = parser.parseAll(parser.spec, testFile7).get
       val rewriter = new Rewriter(spec5)
 
       //need rhsArg and Arg
@@ -191,7 +191,7 @@ package com.cpb.cs4500.rewriting {
 
     test("test rewriteTerm") {
 
-      val spec3 = parser.parseAll(parser.spec, testFile3).get
+      val spec3 = parser.parseAll(parser.spec, testFile7).get
       val gen = new ValueGenerator(spec3)
       val rewriter = new Rewriter(spec3)
       //ruleArg = (push s k)
@@ -202,6 +202,8 @@ package com.cpb.cs4500.rewriting {
       val pushArgs = Args(sID, Args(kID, emptyArgs))
       val pushExpr = TermExpr(pushOp, pushArgs)
       val ruleArg = Args(pushExpr, emptyArgs)
+      
+      val createdTests = gen.createAllTests(2);
 
       //rewrittenArgs = (push (empty) 1)
       val emptyOp = Operation("empty")

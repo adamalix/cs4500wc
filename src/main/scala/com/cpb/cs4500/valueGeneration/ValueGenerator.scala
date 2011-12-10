@@ -101,6 +101,7 @@ package com.cpb.cs4500.valueGeneration {
           }
         }
       }
+      allTermList = optimize(allTermList)
       val fullList: List[List[Term]] = cart[Term](allTermList)
       var reducedList: List[List[Term]] = List[List[Term]]()
       var count = 0
@@ -109,6 +110,18 @@ package com.cpb.cs4500.valueGeneration {
         count = count + 1
       }
       reducedList
+    }
+    
+    def optimize(list: List[List[Term]]) : List[List[Term]]  = {
+      var totalComp = 1;
+      var optimizedList = list
+      for (l <- list) {
+        totalComp = totalComp * l.size
+      }
+      if ( totalComp > 1000000) { 
+        optimizedList = list - (list(0))
+      }
+      optimizedList
     }
     
     // Written by: http://anders.janmyr.com/2009/10/lists-in-scala.html
