@@ -38,15 +38,13 @@ package com.cpb.cs4500.rewriting {
             if (ruleExpr.op == term.op)
               return true
           }
-          case _ =>
         }
       }
       false
     }
 
     def rewriteTerm(term: Term): Rhs = {
-      println("Attempting to rewrite term: ")
-      println(term)
+      println("Attempting to rewrite term: " + term.toSexpr)
       term match {
         case termid: TermID => new RhsID(termid.ident)
         case termExpr: TermExpr => {
@@ -55,7 +53,11 @@ package com.cpb.cs4500.rewriting {
             for (rule <- eqs) {
               // Deterministic, we assume that only one rule will apply
               // because we will break and return on succesful match
+              println("attempting to match: " +
+                      termExpr.toSexpr + " " + rewrittenArgs.toSexpr + " " + rule.left.toSexpr)
               if (doTermsMatch(termExpr, rewrittenArgs, rule.left)) {
+                println("just matched: " +
+                        termExpr.toSexpr + " " + rewrittenArgs.toSexpr + " " + rule.left.toSexpr)
                 // rewriting magic happens here.  we find the ids
                 // in the args of the rule and replace them with the
                 // corresponding rewritten args
@@ -63,16 +65,17 @@ package com.cpb.cs4500.rewriting {
                   case ruleExpr: TermExpr => mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
                   case id: TermID => throw new RuntimeException("YOU FUCKED UP AGAIN")
                 }
+                println("MAP: ")
+                println(idMap)
                 return rewriteToRhs(rule.right, idMap)
               }
             }
             // if we reach this point, we can't apply a rule and we throw
             // away the test value
+            println("Throwing away: " + term.toSexpr)
             throw new IllegalArgumentException
           }
           val noRuleExpr = RhsExpr(termExpr.op, rewrittenArgs)
-          println("Rule doesn't exist for: " + termExpr.op + ", on: " + rewrittenArgs)
-          println(noRuleExpr)
           return noRuleExpr
         }
       }
@@ -89,34 +92,47 @@ package com.cpb.cs4500.rewriting {
         case ruleArgs: Args => {
           // moving left
           ruleArgs.term match {
+            // we have an ID, map it!
             case termId: TermID => {
               val termRhsTuple = mapIdToRhs(termId, rewrittenArgs)
               idMap += (termRhsTuple._1 -> termRhsTuple._2)
               // now, we need to check the args of rewrittenArgs, so
               // we know that need to move right
+              println("mapIds: " + ruleArgs.args.toSexpr + " " + rewrittenArgs.toSexpr + " " + idMap)
               rewrittenArgs match {
-                //case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
                 case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
+                /*ruleArgs.args match {
+                  case ruleArgsArgs: Args => mapIds(ruleArgsArgs.args, rwArgs.args, idMap)
+                  case _ => throw new RuntimeException("what were we thinking???")
+                }*/
                 case _ =>
                   throw new RuntimeException("we should never get Empty when moving right at this point")
               }
             }
-            // we don't have an ID, check the termArgs and rewrittenArgs.args for IDs
-            case termArgs: TermExpr => {
+            // ruleargs.term is a termExpr
+            // we don't have an ID, so now we need to map the ruleargs.term.args against
+            // rewrittenArgs.args and termArgs.args against rewrittenargs.args
+            // we don't care about the ruleArgsTermExpr.op because it's not a pattern
+            // variable
+            case ruleArgsTermExpr: TermExpr => {
+              println("going crazy " + ruleArgsTermExpr + " " + rewrittenArgs)
               rewrittenArgs match {
-                // this should rwArgs.rhs.args
-                case rwArgs: RhsArgs => {
-                  val rhs = getRhsArgsRhsArgs(rwArgs.rhs)
-                  mapIds(termArgs.args, rhs, idMap)
-                }
-                case _ =>
-                  throw new RuntimeException("never get an empty when moving towards both args")
+                case rewrittenArgsRhsArgs: RhsArgs =>
+                  mapIds(ruleArgsTermExpr.args, getRhsArgsRhsArgs(rewrittenArgsRhsArgs.rhs), idMap)
+                case _ => throw new RuntimeException("we might be retarded")
               }
             }
           }
         }
         // there is nothing else to add to the map!
         case ruleEmpty: EmptyArg => idMap
+      }
+    }
+
+    def getTermArgsTermArgs(term: Term): Arg = {
+      term match {
+        case termExpr: TermExpr => termExpr.args
+        case _ => throw new RuntimeException("IDUNNO")
       }
     }
 
@@ -148,16 +164,16 @@ package com.cpb.cs4500.rewriting {
           case uInt: RhsUInt => uInt
           // get the value from the map and return it
           case id: RhsID => {
-            idMap(TermID(id.ident))
+            return idMap(TermID(id.ident))
           }
           // recursive cases
           case rhsExpr: RhsExpr => {
             val rhsArg = resolveArgs(rhsExpr.args, idMap)
-            RhsExpr(rhsExpr.op, rhsArg)
+            return RhsExpr(rhsExpr.op, rhsArg)
           }
           case primExpr: RhsPrimExpr => {
             val rhsArg = resolveArgs(primExpr.args, idMap)
-            RhsPrimExpr(primExpr.prim, rhsArg)
+            return RhsPrimExpr(primExpr.prim, rhsArg)
           }
         }
       }
@@ -171,7 +187,7 @@ package com.cpb.cs4500.rewriting {
         case empty: RhsEmptyArg => empty
         case rhsArgs: RhsArgs => {
           val rhs = rewriteToRhs(rhsArgs.rhs, idMap)
-          val args = resolveArgs(rhsArgs, idMap)
+          val args = resolveArgs(rhsArgs.args, idMap)
           RhsArgs(rhs, args)
         }
       }
@@ -185,7 +201,9 @@ package com.cpb.cs4500.rewriting {
           termExpr.op == ruleExpr.op &&
           doArgsMatch(rewrittenArgs, ruleExpr.args)
         }
-        case _ => false
+        // We have a TermID, we must match if it isn't!
+        // empty!
+        case ruleId: TermID => !rewrittenArgs.isEmpty
       }
     }
 
