@@ -190,9 +190,9 @@ package com.cpb.cs4500.valueGeneration {
     }
 
 
-    // Creates a random intLiteral between 0-1500
+    // Creates a random intLiteral between 0-25
     def generateRandomInt(): IntLiteral = {
-      new IntLiteral(scala.util.Random.nextInt(1501))
+      new IntLiteral(scala.util.Random.nextInt(26))
     }
 
     // Creates a random BooleanLiteral
