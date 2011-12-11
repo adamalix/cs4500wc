@@ -3,10 +3,10 @@
  Holds the test cases for the parsing mechanism of our software
  */
 package com.cpb.cs4500.parsing {
-
-  import org.scalatest.FunSuite
   import com.cpb.cs4500.io.ReadWriter
   import com.cpb.cs4500.parsing._
+
+  import org.scalatest.FunSuite
 
   class TestParse extends FunSuite {
     //thingy vals

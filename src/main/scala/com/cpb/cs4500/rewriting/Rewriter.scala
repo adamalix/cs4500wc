@@ -27,7 +27,8 @@ package com.cpb.cs4500.rewriting {
           rewrittenTerms = rewrittenTerms :+ (term, rewriteTerm(term))
         } catch {
           case ex: IllegalArgumentException =>
-          case inf: InfiniteRewriteException => println("Rewrote infinitly for an expression")
+          case inf: InfiniteRewriteException =>
+            println("Rewrote infinitly for an expression")
         }
       }
       rewrittenTerms
@@ -59,8 +60,11 @@ package com.cpb.cs4500.rewriting {
                 // in the args of the rule and replace them with the
                 // corresponding rewritten args
                 val idMap = rule.left match {
-                  case ruleExpr: TermExpr => mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
-                  case id: TermID => throw new RuntimeException("YOU FUCKED UP AGAIN")
+                  case ruleExpr: TermExpr =>
+                    mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
+
+                  case id: TermID =>
+                    throw new RuntimeException("YOU FUCKED UP AGAIN")
                 }
                 return rewriteToRhs(rule.right, idMap)
               }
@@ -97,7 +101,9 @@ package com.cpb.cs4500.rewriting {
               // now, we need to check the args of rewrittenArgs, so
               // we know that need to move right
               rewrittenArgs match {
-                case rwArgs: RhsArgs => mapIds(ruleArgs.args, rwArgs.args, idMap)
+                case rwArgs: RhsArgs =>
+                  mapIds(ruleArgs.args, rwArgs.args, idMap)
+
                 case _ =>
                   throw new RuntimeException("we should never get Empty when moving right at this point")
               }

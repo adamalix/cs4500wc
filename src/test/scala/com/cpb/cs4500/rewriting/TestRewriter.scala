@@ -1,10 +1,10 @@
 package com.cpb.cs4500.rewriting {
-
-  import org.scalatest.FunSuite
+  import com.cpb.cs4500.io.ReadWriter
   import com.cpb.cs4500.rewriting._
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.valueGeneration.ValueGenerator
-  import com.cpb.cs4500.io.ReadWriter
+
+  import org.scalatest.FunSuite
 
   class TestRewriter extends FunSuite {
 
@@ -27,14 +27,14 @@ package com.cpb.cs4500.rewriting {
     val testFile7 = ReadWriter.inputFromFile(testFileName7)
 
     /*
-    Functions to potentially test:
-    - rewriteTerms
-    - rewriteTerm
-    - doTermsMatch
-    - doArgsMatch
-    x matchOp
-    - rewriteArgs
-    */
+     Functions to potentially test:
+     - rewriteTerms
+     x rewriteTerm
+     x doTermsMatch
+     x doArgsMatch
+     x matchOp
+     - rewriteArgs
+     */
 
     test("test doArgsMatch") {
       val spec5 = parser.parseAll(parser.spec, testFile7).get
@@ -106,22 +106,10 @@ package com.cpb.cs4500.rewriting {
       val rewrittenPushSKExprArgs = rewriter.rewriteArgs(pushSKExprArgs)
       val topPushSKExpr = TermExpr(topOp, pushSKExprArgs)
 
-      /*println(pushSKExpr)
-      println(pushSKExprArgs)
-      println(rewrittenPushSKExprArgs)
-      println(topPushSKExpr)*/
-
       // (pop (push s k)) = s
       val popPushRule = spec3.equations.eqs(1)
       // (top (push s k)) = k
       val topPushRule = spec3.equations.eqs(0)
-      /*
-      println("PopPushRule: ")
-      println(popPushRule)
-      println("TopPushRule: ")
-      println(topPushRule)
-
-      println("********** STARTING TEST OUTPUT **********")*/
 
       expect(false) {
         rewriter.doTermsMatch(term1, rewrittenEmptyExpr, topPushRule.left)
@@ -167,7 +155,7 @@ package com.cpb.cs4500.rewriting {
       val kID = TermID("k")
       val mID = TermID("m")
       val zID = TermID("z")
-      
+
       val pushArgs = Args(sID, Args(kID, Args(mID, Args(zID, emptyArgs))))
       val pushExpr = TermExpr(pushOp, pushArgs)
       val ruleArg = Args(pushExpr, emptyArgs)
@@ -186,11 +174,10 @@ package com.cpb.cs4500.rewriting {
       val inputMap = scala.collection.mutable.Map[TermID, Rhs]()
 
       expect(expectedMap) { rewriter.mapIds(pushArgs, argsArgs, inputMap) }
-      
+
     }
 
     test("test rewriteTerm") {
-
       val spec3 = parser.parseAll(parser.spec, testFile7).get
       val gen = new ValueGenerator(spec3)
       val rewriter = new Rewriter(spec3)
@@ -202,37 +189,38 @@ package com.cpb.cs4500.rewriting {
       val pushArgs = Args(sID, Args(kID, emptyArgs))
       val pushExpr = TermExpr(pushOp, pushArgs)
       val ruleArg = Args(pushExpr, emptyArgs)
-      
+
       val createdTests = gen.createAllTests(2);
 
 
-      //rewrittenArgs = (push (empty) 1)
+      // (top (push empty 8))
+      val topOp = Operation("top")
       val emptyOp = Operation("empty")
+      val eight = TermID("8")
+      val eightArgs = Args(eight, emptyArgs)
+      val emptyExpr = TermExpr(emptyOp, emptyArgs)
+      val emptyExprEightArgs = Args(emptyExpr, eightArgs)
+      val pushEmptyEight = TermExpr(pushOp, emptyExprEightArgs)
+      val pushEmptyEightArgs = Args(pushEmptyEight, emptyArgs)
+      val topPushEmptyEight = TermExpr(topOp, pushEmptyEightArgs)
+
+      // 8
+      val rhsEight = RhsID("8")
       val rhsEmptyArgs = RhsEmptyArg()
-      val emptyExpr = RhsExpr(emptyOp, rhsEmptyArgs)
-      val one = RhsUInt("1")
-      val argsArgs = RhsArgs(emptyExpr, RhsArgs(one, rhsEmptyArgs))
+      val rhsEightArgs = RhsArgs(rhsEight, rhsEmptyArgs)
+      val rhsEmptyExpr = RhsExpr(emptyOp, rhsEmptyArgs)
+      val rhsEmptyExprEightArgs = RhsArgs(rhsEmptyExpr, rhsEightArgs)
+      val rhsPushEmptyEight = RhsExpr(pushOp, rhsEmptyExprEightArgs)
+      val rhsPushEmptyEightArgs = RhsArgs(rhsPushEmptyEight, rhsEmptyArgs)
+      val rhsTopPushEmptyEight = RhsExpr(topOp, rhsPushEmptyEightArgs)
 
-      val something = rewriter.rewriteTerm(pushExpr)
-      println("rewriteterm running: ")
-      println(pushExpr)
-      println(something)
-
-      val bullshit = TermExpr(pushOp,Args(TermExpr(emptyOp,EmptyArg()),Args(TermID("8"),EmptyArg())))
-
-      expect(true) {
+      expect(rhsTopPushEmptyEight) {
         try {
-          val bullstuff = rewriter.rewriteTerm(bullshit)
-          println("BULLSTUFF: ")
-          println(bullshit)
-          println(bullstuff)
-          bullstuff
+          rewriter.rewriteTerm(topPushEmptyEight)
         } catch {
           case ex: RuntimeException => false
         }
       }
-
-
     }
 
 
