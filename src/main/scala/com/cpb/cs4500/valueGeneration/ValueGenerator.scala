@@ -97,7 +97,7 @@ package com.cpb.cs4500.valueGeneration {
           }
           case charLiteral: CharLiteral => {
             allTermList = allTermList :+
-                          List[Term](new TermID(generateRandomChar().toString()))
+                          List[Term](new TermID("#\\" +generateRandomChar().toString()))
           }
           case stringLiteral: StringLiteral => {
             allTermList = allTermList :+

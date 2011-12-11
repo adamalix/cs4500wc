@@ -4,11 +4,13 @@
  */
 
 package com.cpb.cs4500 {
-  import scala.collection.immutable.ListSet
   import com.cpb.cs4500.io._
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.rewriting._
+  import com.cpb.cs4500.util.SchTestConverter
   import com.cpb.cs4500.valueGeneration.ValueGenerator
+
+  import scala.collection.immutable.ListSet
 
   object Runner {
 
@@ -25,8 +27,6 @@ package com.cpb.cs4500 {
         case parser.Failure(msg, _) => fail(msg)
         case parser.Error(msg, _) => error(msg)
       }
-
-
     }
 
     // Generate tests for this spec and write them to a file
@@ -38,24 +38,21 @@ package com.cpb.cs4500 {
       // Generate the test strings
       var exprList = List[String]()
       var testCount = 0
+      val opspecs = spec.getAllOpSpecs
       for (pair <- termValuePairs) {
-        exprList = exprList :+ toTestSexpr(pair, testCount)
+        exprList = exprList :+ SchTestConverter.createTestSexpr(pair, testCount, opspecs)
         testCount += 1
       }
       ReadWriter.outputToFile(outfile, exprList, getAllADTNames(spec.getAllTypeNames))
     }
 
-    // converts the term and it's rewritten counterpart into a test expression
-    def toTestSexpr(pair: Tuple2[Term, Rhs], count: Int): String = {
-      "(test " + "\"test" + count + getOpName(pair._1)  + "\" " +
-        "(= " + pair._2.toSexpr + " " + pair._1.toSexpr + "))"
-    }
 
-    def getOpName(term: Term): String = {
-      term match {
-        case termExpr: TermExpr => termExpr.op.toString
-        case termID: TermID => ""
+    def findOpSpecForOp(op: Operation, opSpecs: ListSet[OperationSpec]): OperationSpec = {
+      for (opSpec <- opSpecs) {
+        if (opSpec.op == op)
+          return opSpec
       }
+      throw new RuntimeException("Couldn't find OperationSpec for Operation")
     }
 
     def fail(failureMessage: String) = {

@@ -233,7 +233,7 @@ package com.cpb.cs4500.parsing {
 
   }
 
-  case class Operation(ident: String) extends Terminal {
+  case class Operation(ident: String) {
     override def toString(): String = ident
   }
 
