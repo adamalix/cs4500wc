@@ -21,12 +21,14 @@ package com.cpb.cs4500.valueGeneration {
       var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)
       var currentDepth: Int = 0
 
+      // Continously create tests until we hit the required depth.
       while (currentDepth < depth){
         for (opSpec <- allOpSpecs) {
           val testsForOpSpec: List[Term] = createTests(opSpec)
           allTests = allTests ++ testsForOpSpec
         }
 
+        // Put the generated values in a map, so they can be used in further depths.
         for (test <- allTests) {
           test match {
             case testExpr:TermExpr => {
@@ -116,6 +118,13 @@ package com.cpb.cs4500.valueGeneration {
       reducedList
     }
 
+    
+    // Optimize shrinks a list if the total members of a Cart of said list
+    // is greater than 1,000,000. If that is the case optimize will randomly
+    // shrink the size of each list (until the size is 25), ensuring that 
+    // the cartesian product of the list will shrink to a managable size.
+    // We choose which values to keep randomly, so there is a loss of some data,
+    // but due to the randomness we still ensure that we get quality tests.
     def optimize(list: List[List[Term]]) : List[List[Term]]  = {
       var totalComp = 1;
       var optimizedList = list
@@ -181,9 +190,9 @@ package com.cpb.cs4500.valueGeneration {
     }
 
 
-    // Creates a random intLiteral between 0-15
+    // Creates a random intLiteral between 0-1500
     def generateRandomInt(): IntLiteral = {
-      new IntLiteral(scala.util.Random.nextInt(16))
+      new IntLiteral(scala.util.Random.nextInt(1501))
     }
 
     // Creates a random BooleanLiteral
