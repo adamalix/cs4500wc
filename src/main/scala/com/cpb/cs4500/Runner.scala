@@ -32,7 +32,7 @@ package com.cpb.cs4500 {
     // Generate tests for this spec and write them to a file
     def generateTerms(spec: Spec, outfile: String) = {
       val valGen = new ValueGenerator(spec)
-      val generatedValues = valGen.createAllTests(3)
+      val generatedValues = valGen.createAllTests(4)
       val rewriter = new Rewriter(spec)
       val termValuePairs = rewriter.rewriteTerms(generatedValues)
       // Generate the test strings
@@ -47,8 +47,15 @@ package com.cpb.cs4500 {
 
     // converts the term and it's rewritten counterpart into a test expression
     def toTestSexpr(pair: Tuple2[Term, Rhs], count: Int): String = {
-      "(test " + "\"test" + count + "\" " +
+      "(test " + "\"test" + count + getOpName(pair._1)  + "\" " +
         "(= " + pair._2.toSexpr + " " + pair._1.toSexpr + "))"
+    }
+
+    def getOpName(term: Term): String = {
+      term match {
+        case termExpr: TermExpr => termExpr.op.toString
+        case termID: TermID => ""
+      }
     }
 
     def fail(failureMessage: String) = {
