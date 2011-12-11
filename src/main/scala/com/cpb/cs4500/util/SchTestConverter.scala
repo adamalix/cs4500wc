@@ -31,7 +31,8 @@ package com.cpb.cs4500.util {
           case lt: LessThan => return pair._2.toSexpr
           case eq: Eq => return pair._2.toSexpr
           case not: Not => return pair._2.toSexpr
-          // default to wrapping in "(= "
+          // default to wrapping in "(= " because these compre scheme
+          // int values
           case star: Star => "(= " + pair._2.toSexpr
           case minus: Minus => "(= " + pair._2.toSexpr
           case plus: Plus => "(= " + pair._2.toSexpr
@@ -44,7 +45,7 @@ package com.cpb.cs4500.util {
 
       val leftSide = pair._1 match {
         case expr: TermExpr => {
-          findWrapperForOp(expr.op, opspecs).toString
+          findWrapperForOp(expr.op, opspecs)
         }
         case id: TermID => throw new RuntimeException("broken tuple")
       }
@@ -67,13 +68,32 @@ package com.cpb.cs4500.util {
     def findSchConverter(returnType: Terminal, opSpecs: ListSet[OperationSpec]): String = {
       for (opSpec <- opSpecs) {
         if (opSpec.returnType == returnType) {
+          println("matching returntype: " + returnType + " with: " + opSpec)
           returnType match {
+
             case lit: TypeLiteral => lit match {
               case num: IntLiteral => return "(= "
               // hack
-              case bool: BooleanLiteral => "bool"
-              case char: CharLiteral => "(char=? "
-              case str: StringLiteral => "(string=? "
+              case bool: BooleanLiteral => return "bool"
+              case char: CharLiteral => return "(char=? "
+              case str: StringLiteral => return "(string=? "
+            }
+            // we need to check if there is an opSpec whose returnType is
+            // a TypeLiteral, has an ags length of 1, and argument is
+            // the returnType that we want
+            case typeName: TypeName => {
+              println("got a typename: " + typeName)
+              for (opSpec <- opSpecs) {
+                opSpec.returnType match {
+                  case lit: TypeLiteral => {
+                    val opArgs = opSpec.getArgTypes
+                    if (opArgs.length == 1 && opArgs.contains(typeName)) {
+                      return findWrapperForOp(opSpec.op, opSpecs)
+                    }
+                  }
+                  case _ =>
+                }
+              }
             }
           }
         }
