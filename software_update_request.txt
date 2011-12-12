@@ -21,11 +21,11 @@ Aside:
 
 To perform the software update you can invoke the download-scala script in the
 software_update folder.  This is a shell script that will download, and unpack
-the latest release of scala to:
+the latest release of scala and scalac to:
 
 /course/cs4500wc/bin
 
-It will also place the library and runtime in:
+It will also place the library and compiler in:
 
 /course/cs4500wc/lib
 
@@ -33,6 +33,10 @@ To ensure that you can execute the download script, please perform the
 following at a terminal, from the project's root directory:
 
 $ chmod +x software_update/download-scala
+
+To execute the download script:
+$ cd <project-root>/software_update
+$ ./download-scala
 
 Despite having written this request, we have included the scala compiler and
 runtime in case you do not feel like running this.  To prove that it will work,
@@ -43,3 +47,9 @@ version downloaded from the internet.
 It will also delete `Makefile' in the project's root, and replace it with the
 one found in `.../project_root/software_update'.  You can then follow the
 instructions found in the project's README to build and run the software.
+
+The download script will not be able to put the executables in the course
+directory unless the user executing the script has write permissions on it.
+
+The download script uses the users `/scratch' folder as a temporary place to
+store the downloaded files and immediately deletes them when it finishes.
