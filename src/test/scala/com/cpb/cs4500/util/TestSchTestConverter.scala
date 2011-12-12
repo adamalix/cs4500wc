@@ -29,10 +29,30 @@ package com.cpb.cs4500.util {
      Functions to potentially test:
      * - createTestSexpr
      * - tupleToTest
-     * - findWrapperForOp
-     * - findSchConverter
+     * - evaluatePrimExpr
+     * - wrapRhsExpr
+     * - wrapTerm
+     * - getReturnType (term and rhs)
+     * - findRhsWrapper
+     * - findTermWrapper
      * - getOpName
     */
+
+    test("test evaluatePrimExpr") {
+      val rhsEmpty = RhsEmptyArg()
+      val notExpr = RhsPrimExpr(Not(), rhsEmpty)
+      val eqExpr = RhsPrimExpr(Eq(), rhsEmpty)
+      val plusExpr = RhsPrimExpr(Plus(), rhsEmpty)
+      val starExpr = RhsPrimExpr(Star(), rhsEmpty)
+      val minusExpr = RhsPrimExpr(Minus(), rhsEmpty)
+      val greaterThanExpr = RhsPrimExpr(GreaterThan(), rhsEmpty)
+      val lessThanExpr = RhsPrimExpr(LessThan(), rhsEmpty)
+
+      expect("(not)") { SchTestConverter.evaluatePrimExpr(notExpr)         }
+      expect("(eq)")  { SchTestConverter.evaluatePrimExpr(eqExpr)          }
+      expect("(>)")   { SchTestConverter.evaluatePrimExpr(greaterThanExpr) }
+      expect("(<)")   { SchTestConverter.evaluatePrimExpr(lessThanExpr)    }
+    }
 
     // this function is pretty simple so i'm not going to test it
     // too exhaustively
