@@ -123,8 +123,9 @@ package com.cpb.cs4500.parsing {
     // Modified version of Scala's JavaTokenParser.stringLiteral
     // Removed requirement of enclosing in double quotes, and ability to
     // read white space. now reads strings containing unicode characters
-    def schIdent : Parser[String] = (
-      """[a-zA-Z=*+/<>!\?\\u[a-fA-F0-9]{4}][a-zA-Z0-9=*+/<>!\?\\u[a-fA-F0-9]{4}]*""".r ^^
+    // don't begin with - or : to avoid ambiguities
+    def schIdent: Parser[String] = (
+      """([a-zA-Z=*+/<>!\?]|[_\p{L}][_\p{L}\p{Nd}]*)([a-zA-Z0-9=*+/<>!\?\-]|[_\p{L}][_\p{L}\p{Nd}]*)*""".r ^^
       { case schemeIdent => schemeIdent }
     )
 

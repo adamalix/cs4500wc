@@ -1,7 +1,7 @@
 // CPB.cs4500 build settings
 name    := "cs4500"
 
-version := "0.1"
+version := "0.8"
 
 organization := "com.cpb"
 

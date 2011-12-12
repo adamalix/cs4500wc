@@ -309,6 +309,50 @@ package com.cpb.cs4500.parsing {
       }
     }
 
+    test("test schIdent") {
+      expect(true) {
+        val weird1 = "\u00FDasdf-asdf"
+        val weird2 = "?a"
+        val weird3 = "!b?"
+        val weird4 = "c--"
+        val weird5 = "asdf\u0173asfd"
+        val weird6 = "d-8"
+        val weird7 = "asdf8-a?\u00FD"
+        val weirdStrings = List(weird1, weird2, weird3, weird4, weird5, weird6, weird7)
+        for (weird <- weirdStrings) {
+          parser.parseAll(parser.schIdent, weird) match {
+            case parser.Success(result, _) =>
+            case parser.Failure(msg, _) =>
+              throw new RuntimeException("failed parsing: " + weird)
+            case parser.Error(_, _) =>
+              throw new RuntimeException("error parsing: " + weird)
+          }
+        }
+        true
+      }
+
+      expect(true) {
+        val fail1 = "-a"
+        val fail2 = "8b"
+        val fail3 = "88b"
+        val fail4 = "->"
+        val fail5 = ":"
+        val fail6 = "-?asdf8-a?"
+        val failStrings = List(fail1, fail2, fail3, fail4, fail5, fail6)
+        for (fail <- failStrings) {
+          parser.parseAll(parser.schIdent, fail) match {
+            case parser.Success(result, _) =>
+              throw new RuntimeException("Succeeded parsing: " + fail)
+            case parser.Failure(msg, _) =>
+            case parser.Error(_, _) =>
+              throw new RuntimeException("error parsing: " + fail)
+          }
+        }
+        true
+      }
+
+    }
+
     test("parseTestSpecs") {
       for (testFile <- testFileList) {
         expect(true) {
