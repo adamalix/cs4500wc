@@ -1,6 +1,7 @@
 package com.cpb.cs4500.util {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.io.ReadWriter
+  import scala.collection.immutable.ListSet
 
   import org.scalatest.FunSuite
 
@@ -29,13 +30,13 @@ package com.cpb.cs4500.util {
      Functions to potentially test:
      * - createTestSexpr
      * - tupleToTest
-     * - evaluatePrimExpr
+     * x evaluatePrimExpr
      * - wrapRhsExpr
      * - wrapTerm
-     * - getReturnType (term and rhs)
+     * x getReturnType (term and rhs)
      * - findRhsWrapper
      * - findTermWrapper
-     * - getOpName
+     * x getOpName
     */
 
     test("test evaluatePrimExpr") {
@@ -48,10 +49,59 @@ package com.cpb.cs4500.util {
       val greaterThanExpr = RhsPrimExpr(GreaterThan(), rhsEmpty)
       val lessThanExpr = RhsPrimExpr(LessThan(), rhsEmpty)
 
-      expect("(not)") { SchTestConverter.evaluatePrimExpr(notExpr)         }
-      expect("(eq)")  { SchTestConverter.evaluatePrimExpr(eqExpr)          }
-      expect("(>)")   { SchTestConverter.evaluatePrimExpr(greaterThanExpr) }
-      expect("(<)")   { SchTestConverter.evaluatePrimExpr(lessThanExpr)    }
+      expect("(not)")  { SchTestConverter.evaluatePrimExpr(notExpr)         }
+      expect("(=)")    { SchTestConverter.evaluatePrimExpr(eqExpr)          }
+      expect("(>)")    { SchTestConverter.evaluatePrimExpr(greaterThanExpr) }
+      expect("(<)")    { SchTestConverter.evaluatePrimExpr(lessThanExpr)    }
+      expect("(= (+)") { SchTestConverter.evaluatePrimExpr(plusExpr)        }
+      expect("(= (-)") { SchTestConverter.evaluatePrimExpr(minusExpr)       }
+      expect("(= (*)") { SchTestConverter.evaluatePrimExpr(starExpr)        }
+    }
+
+    test("test term getReturnType") {
+      val op1 = Operation("op1")
+      val op2 = Operation("op2")
+      val op3 = Operation("op3")
+      val op1ret = IntLiteral(1, "1")
+      val op2ret = BooleanLiteral(true, "true")
+      val op3ret = TypeName("type")
+      val argTypes = ArgTypes(List())
+      val opSpec1 = OperationSpec(op1, argTypes, op1ret, false)
+      val opSpec2 = OperationSpec(op2, argTypes, op2ret, false)
+      val opSpec3 = OperationSpec(op3, argTypes, op3ret, false)
+      val opSpecs = ListSet(opSpec1, opSpec2, opSpec3)
+
+      val emptyArgs = EmptyArg()
+      val term1 = TermExpr(op1, emptyArgs)
+      val term2 = TermExpr(op2, emptyArgs)
+      val term3 = TermExpr(op3, emptyArgs)
+
+      expect(op1ret) { SchTestConverter.getReturnType(term1, opSpecs) }
+      expect(op2ret) { SchTestConverter.getReturnType(term2, opSpecs) }
+      expect(op3ret) { SchTestConverter.getReturnType(term3, opSpecs) }
+    }
+
+    test("test rhs getReturnType") {
+      val op1 = Operation("op1")
+      val op2 = Operation("op2")
+      val op3 = Operation("op3")
+      val op1ret = IntLiteral(1, "1")
+      val op2ret = BooleanLiteral(true, "true")
+      val op3ret = TypeName("type")
+      val argTypes = ArgTypes(List())
+      val opSpec1 = OperationSpec(op1, argTypes, op1ret, false)
+      val opSpec2 = OperationSpec(op2, argTypes, op2ret, false)
+      val opSpec3 = OperationSpec(op3, argTypes, op3ret, false)
+      val opSpecs = ListSet(opSpec1, opSpec2, opSpec3)
+
+      val emptyArgs = RhsEmptyArg()
+      val term1 = RhsExpr(op1, emptyArgs)
+      val term2 = RhsExpr(op2, emptyArgs)
+      val term3 = RhsExpr(op3, emptyArgs)
+
+      expect(op1ret) { SchTestConverter.getReturnType(term1, opSpecs) }
+      expect(op2ret) { SchTestConverter.getReturnType(term2, opSpecs) }
+      expect(op3ret) { SchTestConverter.getReturnType(term3, opSpecs) }
     }
 
     // this function is pretty simple so i'm not going to test it
@@ -67,51 +117,5 @@ package com.cpb.cs4500.util {
       expect("testOp") { SchTestConverter.getOpName(testTerm)   }
       expect("")       { SchTestConverter.getOpName(testTermID) }
     }
-
-    test("test findWrapperForOp") {
-      // takes and op and a listset of opspecs and returns a string
-    }
-
-    test("test findSchConverter") {
-      // takes a return type(terminal) and a listset of opSpecs
-      // returns a string that represents the proper scheme converter
-      val spec5 = parser.parseAll(parser.spec, testFile5).get
-      val opspecsListSet = spec5.getAllOpSpecs
-      val opspecs = opspecsListSet.toList
-      val zeroSpec = opspecs.last
-
-      // construct each literal
-      val boolRet = BooleanLiteral(true, "true")
-      val charRet = CharLiteral('c', "c")
-      val stringRet = StringLiteral("str")
-      val intRet = IntLiteral(1, "1")
-
-      val natType = TypeName("Nat")
-
-      expect("(asInt ") {
-       // SchTestConverter.findSchConverter(zeroSpec.returnType, opspecsListSet)
-      }
-
-      expect("(= ") {
-       // SchTestConverter.findSchConverter(intRet, opspecsListSet)
-      }
-
-      expect("bool") {
-       // SchTestConverter.findSchConverter(boolRet, opspecsListSet)
-      }
-
-      expect("(char=? ") {
-        // SchTestConverter.findSchConverter(charRet, opspecsListSet)
-      }
-
-      expect("(string=? ") {
-        // SchTestConverter.findSchConverter(stringRet, opspecsListSet)
-      }
-
-      expect("(asInt ") {
-        // SchTestConverter.findSchConverter(natType, opspecsListSet)
-      }
-    }
-
   }
 }
