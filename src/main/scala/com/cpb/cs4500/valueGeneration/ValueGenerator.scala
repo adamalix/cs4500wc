@@ -7,7 +7,6 @@ package com.cpb.cs4500.valueGeneration {
   import com.cpb.cs4500.parsing._
   import com.cpb.cs4500.rewriting.Rewriter
   import scala.collection.mutable.Map
-  import scala.collection.immutable.ListSet
 
   class ValueGenerator(specification: Spec) {
 
@@ -17,12 +16,12 @@ package com.cpb.cs4500.valueGeneration {
     // entry point, create all tests for a spec
     def createAllTests(depth: Int): List[Term] = {
       var allTests: List[Term] = List[Term]()
-      val allOpSpecs: ListSet[OperationSpec] = specification.getAllOpSpecs()
+      val allOpSpecs: List[OperationSpec] = specification.getAllOpSpecs().toList
       var opToType: Map[Operation, TypeName] = makeOpSpecMap(allOpSpecs)
       var currentDepth: Int = 0
 
       // Continously create tests until we hit the required depth.
-      while (currentDepth < depth){
+      while (currentDepth < depth) {
         for (opSpec <- allOpSpecs) {
           val testsForOpSpec: List[Term] = createTests(opSpec)
           allTests = allTests ++ testsForOpSpec
@@ -46,7 +45,7 @@ package com.cpb.cs4500.valueGeneration {
     // Creates a map that given given an Operation, will return the TypeName
     // of its return type. It should be noted that if a operation
     // spec's return Type is a literal we will simply ignore it.
-    def makeOpSpecMap(opspecs: ListSet[OperationSpec]): Map[Operation, TypeName] = {
+    def makeOpSpecMap(opspecs: List[OperationSpec]): Map[Operation, TypeName] = {
       var opSpecMap = Map[Operation, TypeName]()
       for (opspec <- opspecs) {
         opspec.returnType match {
@@ -118,10 +117,10 @@ package com.cpb.cs4500.valueGeneration {
       reducedList
     }
 
-    
+
     // Optimize shrinks a list if the total members of a Cart of said list
     // is greater than 1,000,000. If that is the case optimize will randomly
-    // shrink the size of each list (until the size is 25), ensuring that 
+    // shrink the size of each list (until the size is 25), ensuring that
     // the cartesian product of the list will shrink to a managable size.
     // We choose which values to keep randomly, so there is a loss of some data,
     // but due to the randomness we still ensure that we get quality tests.
@@ -131,7 +130,7 @@ package com.cpb.cs4500.valueGeneration {
       for (l <- list) {
         totalComp = totalComp * l.size
       }
-      if ( totalComp > 1000000) {
+      if (totalComp > 1000000) {
         optimizedList = List[List[Term]]()
         for (individualList <- list) {
           var count = 0
@@ -150,22 +149,20 @@ package com.cpb.cs4500.valueGeneration {
       optimizedList
     }
 
-    // Written by: http://anders.janmyr.com/2009/10/lists-in-scala.html
     // Given a List of Lists, creates the cartesian products for all lists
-    // in the list. Simply a beautiful function.
+    // in the list.
     def cart[T](listOfLists: List[List[T]]): List[List[T]] = listOfLists match {
       case Nil => List(List())
       case xs :: xss => for (y <- xs; ys <- cart(xss)) yield y :: ys
     }
-
 
     // Store basic creators for convenient use later. A basic creator
     // is defined as an OperationSpec who's returnType returns a TypeName
     // and it has no TypeName's in its arguments
     def createBasicCreatorMap(): Map[TypeName, List[Term]] = {
       val bcMap = Map[TypeName, List[Term]]()
-      val basicCreators: ListSet[OperationSpec] = specification.getAllBaseConstructors()
-      for (basicCreator <- basicCreators){
+      val basicCreators: List[OperationSpec] = specification.getAllBaseConstructors().toList
+      for (basicCreator <- basicCreators) {
         val arguments: List[Terminal] = basicCreator.argTypes.args
         var termArguments: Arg = new EmptyArg()
         for (arg <- arguments){
@@ -189,7 +186,6 @@ package com.cpb.cs4500.valueGeneration {
       bcMap
     }
 
-
     // Creates a random intLiteral between 0-25
     def generateRandomInt(): IntLiteral = {
       new IntLiteral(scala.util.Random.nextInt(26))
@@ -212,5 +208,4 @@ package com.cpb.cs4500.valueGeneration {
     }
 
   }
-
 }

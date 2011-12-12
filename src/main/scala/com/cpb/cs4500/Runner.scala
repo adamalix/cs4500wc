@@ -43,7 +43,7 @@ package com.cpb.cs4500 {
         exprList = exprList :+ SchTestConverter.createTestSexpr(pair, testCount, opspecs)
         testCount += 1
       }
-      ReadWriter.outputToFile(outfile, exprList, getAllADTNames(spec.getAllTypeNames))
+      ReadWriter.outputToFile(outfile, exprList, spec.getAllADTNames)
     }
 
 
@@ -63,13 +63,5 @@ package com.cpb.cs4500 {
       println("error, sorry:\n" + errorMessage)
     }
 
-    // helper function to get all the differnt ADT names from a spec
-    def getAllADTNames(names: ListSet[TypeName]): List[String] = {
-      var out = List[String]()
-      for (name <- names) {
-        out = out :+ name.toString
-      }
-      out
-    }
   }
 }

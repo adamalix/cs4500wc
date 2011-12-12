@@ -13,27 +13,31 @@ package com.cpb.cs4500.rewriting {
   class Rewriter(specification: Spec) {
     val spec = specification
     val eqs = this.spec.equations.eqs
-    val termIdMap = Map[TermID, TypeLiteral]()
+
+    // infinite recursion counter
     var counter = 0
 
     // Rewrite this list of terms into a list of Rhs
     def rewriteTerms(terms: List[Term]): List[(Term, Rhs)] = {
       var rewrittenTerms = List[(Term, Rhs)]()
-      // Rewrite terms one-by-one and return this list of rewritten
-      // terms
+      // Rewrite terms one-by-one and return a tuple of term -> rewritten terms
       for (term <- terms) {
         try {
+          // reset infinite recursion counter
           counter = 0
           rewrittenTerms = rewrittenTerms :+ (term, rewriteTerm(term))
         } catch {
+          // We have a bad term, do nothing and continue
           case ex: IllegalArgumentException =>
+          // We began to rewrite in what looked like an infinite fashion,
+          // do nothing and continue
           case inf: InfiniteRewriteException =>
-            println("Rewrote infinitly for an expression")
         }
       }
       rewrittenTerms
     }
 
+    // Check to see if this term has an equation in the spec
     def hasEq(term: TermExpr): Boolean = {
       for (rule <- eqs) {
         rule.left match {
@@ -46,6 +50,7 @@ package com.cpb.cs4500.rewriting {
       false
     }
 
+    // Rewrite an individual term
     def rewriteTerm(term: Term): Rhs = {
       term match {
         case termid: TermID => new RhsID(termid.ident)
@@ -73,6 +78,7 @@ package com.cpb.cs4500.rewriting {
             // away the test value
             throw new IllegalArgumentException
           }
+          // This has no rewrite rule, return a RhsExpr with the original Op
           val noRuleExpr = RhsExpr(termExpr.op, rewrittenArgs)
           return noRuleExpr
         }
@@ -85,7 +91,7 @@ package com.cpb.cs4500.rewriting {
     // to values inside the rewrittenArgs
     // mutates the input map and then returns it.
     // TODO: Make this less retarded, AKA stop mutating and then returning, return a new map
-    // at each time.  This will need to be a change to mapIds and have a
+    // each time.  This will need to be a change to mapIds and have a
     // var map = scala.collection.immutable.HashMap
     def mapIds(ruleArg: Arg, rewrittenArgs: RhsArg, idMap: Map[TermID, Rhs]): Map[TermID, Rhs] = {
       ruleArg match {
@@ -119,7 +125,7 @@ package com.cpb.cs4500.rewriting {
                   mapIds(ruleArgsTermExpr.args, getRhsArgsRhsArgs(rewrittenArgsRhsArgs.rhs), idMap)
                   mapIds(ruleArgs.args, rewrittenArgsRhsArgs.args, idMap)
                 }
-                case _ => throw new RuntimeException("we might be retarded")
+                case _ => throw new RuntimeException("Improper rewrittenArgs")
               }
             }
           }
@@ -129,6 +135,7 @@ package com.cpb.cs4500.rewriting {
       }
     }
 
+    // shorthand so we don't need to nest so many match statements
     def getTermArgsTermArgs(term: Term): Arg = {
       term match {
         case termExpr: TermExpr => termExpr.args
@@ -155,6 +162,7 @@ package com.cpb.cs4500.rewriting {
       }
     }
 
+    // reduce this rhs to its rhs form
     def rewriteToRhs(rhsRule: Rhs, idMap: Map[TermID, Rhs]): Rhs = {
       if (counter < 100) {
         counter = counter + 1
@@ -177,10 +185,8 @@ package com.cpb.cs4500.rewriting {
           }
         }
       }
-
-      else {
+      else
         throw new InfiniteRewriteException
-      }
     }
 
     def resolveArgs(rhsArg: RhsArg, idMap: Map[TermID, Rhs]): RhsArg = {
@@ -255,27 +261,4 @@ package com.cpb.cs4500.rewriting {
     }
 
   }
-
-  object Rewriter {
-    def main(args: Array[String]): Unit = {
-      try {
-        import com.cpb.cs4500.parsing.ADTParser ;
-        import com.cpb.cs4500.parsing.Spec ;
-        import com.cpb.cs4500.io.ReadWriter ;
-        import com.cpb.cs4500.valueGeneration.ValueGenerator ;
-        val testFileName3 = "src/test/resources/test3" ;
-        val testFile3 = ReadWriter.inputFromFile(testFileName3) ;
-        val parser = new ADTParser() ;
-        val spec3 = parser.parseAll(parser.spec, testFile3).get ;
-        val gen = new ValueGenerator(spec3) ;
-        val rewriter = new Rewriter(spec3) ;
-        val terms1 = gen.createAllTests(3);
-        val rewrittenTuples1 = rewriter.rewriteTerms(terms1) ;
-        for ((left, right) <- rewrittenTuples1) { println(left); println(right) }
-      } catch {
-        case ex: RuntimeException => println(ex)
-      }
-    }
-  }
-
 }

@@ -39,6 +39,16 @@ package com.cpb.cs4500.parsing {
       signatures.getAllOpSpecs
     }
 
+    // Outputs a list of strings of the ADTs in this spec so we can write them
+    // to the output file when doing IO
+    def getAllADTNames(): List[String] = {
+      var adtNames = List[String]()
+      for (name <- getAllTypeNames) {
+        adtNames = adtNames :+ name.toString
+      }
+      adtNames
+    }
+
     def getAllConstructors(): HashMap[TypeName, ListSet[OperationSpec]] = {
       val allTypes: ListSet[TypeName] = getAllTypeNames()
       val allOpSpecs: ListSet[OperationSpec] = getAllOpSpecs()
@@ -314,10 +324,10 @@ package com.cpb.cs4500.parsing {
 
   case class TermExpr(op: Operation, args: Arg) extends Term {
     def toSexpr(): String = {
-      var char = ""
+      var space = ""
       if(args.length != 0)
-        char = " "
-      "(" + op + char + args.toSexpr + ")"
+        space = " "
+      "(" + op + space + args.toSexpr + ")"
     }
   }
 
@@ -332,10 +342,10 @@ package com.cpb.cs4500.parsing {
     def length(): Int = 1 + args.length()
 
     def toSexpr(): String = {
-      var char = ""
+      var space = ""
       if (args.length != 0)
-        char = " "
-      term.toSexpr + char + args.toSexpr
+        space = " "
+      term.toSexpr + space + args.toSexpr
     }
   }
 
@@ -374,19 +384,19 @@ package com.cpb.cs4500.parsing {
 
   case class RhsExpr(op: Operation, args: RhsArg) extends Rhs {
     def toSexpr(): String = {
-      var char = ""
+      var space = ""
       if (args.length != 0)
-        char = " "
-      "(" + op + char + args.toSexpr + ")"
+        space = " "
+      "(" + op + space + args.toSexpr + ")"
     }
   }
 
   case class RhsPrimExpr(prim: Primitive, args: RhsArg) extends Rhs {
     def toSexpr(): String = {
-      var char = ""
+      var space = ""
       if (args.length != 0)
-        char = " "
-      "(" + prim.toSexpr + char + args.toSexpr + ")"
+        space = " "
+      "(" + prim.toSexpr + space + args.toSexpr + ")"
     }
   }
 
@@ -400,10 +410,10 @@ package com.cpb.cs4500.parsing {
   case class RhsArgs(rhs: Rhs, args: RhsArg) extends RhsArg {
     def length(): Int = 1 + args.length()
     def toSexpr(): String = {
-      var char = ""
+      var space = ""
       if (args.length != 0)
-        char = " "
-      rhs.toSexpr + char + args.toSexpr
+        space = " "
+      rhs.toSexpr + space + args.toSexpr
     }
   }
 
