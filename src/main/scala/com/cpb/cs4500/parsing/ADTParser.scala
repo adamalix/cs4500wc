@@ -48,7 +48,7 @@ package com.cpb.cs4500.parsing {
       OperationSpec(op, args, returnType, isBasicCreator)
     }
 
-    def operation: Parser[Operation] = ident ^^ { case op => Operation(op) }
+    def operation: Parser[Operation] = schIdent ^^ { case op => Operation(op) }
 
     def argTypes: Parser[ArgTypes] = (
       repsep(typeLiteral, "*") ^^
@@ -63,7 +63,7 @@ package com.cpb.cs4500.parsing {
       | typeName
     )
 
-    def typeName: Parser[TypeName] = ident ^^
+    def typeName: Parser[TypeName] = schIdent ^^
       { case namedType => TypeName(namedType) }
 
     def equations: Parser[Equations] = (
@@ -76,7 +76,7 @@ package com.cpb.cs4500.parsing {
 
     def term: Parser[Term] = (
         "(" ~> operation ~ args <~ ")" ^^ { case op ~ args => TermExpr(op, args) }
-      | ident ^^ { case identifier => TermID(identifier) }
+      | schIdent ^^ { case identifier => TermID(identifier) }
     )
 
     def args: Parser[Arg] = (
@@ -93,8 +93,8 @@ package com.cpb.cs4500.parsing {
     def rhs: Parser[Rhs] = (
         "#t" ^^ { case itsTrue => RhsTrue() }
       | "#f" ^^ { case itsFalse => RhsFalse() }
-      | decimalNumber ^^ { case number => RhsUInt(number) }
-      | ident ^^ { case identifier => RhsID(identifier) }
+      | wholeNumber ^^ { case number => RhsUInt(number) }
+      | schIdent ^^ { case identifier => RhsID(identifier) }
       | "(" ~> operation ~ rhsArgs <~ ")" ^^
         { case op ~ rhsArgs => RhsExpr(op, rhsArgs) }
       | "(" ~> primOp ~ rhsArgs <~ ")" ^^
@@ -120,6 +120,13 @@ package com.cpb.cs4500.parsing {
       | "<" ^^ { case lt => LessThan() }
     )
 
-  }
+    // Modified version of Scala's JavaTokenParser.stringLiteral
+    // Removed requirement of enclosing in double quotes, and ability to
+    // read white space. now reads strings containing unicode characters
+    def schIdent : Parser[String] = (
+      """[a-zA-Z=*+/<>!\?\\u[a-fA-F0-9]{4}][a-zA-Z0-9=*+/<>!\?\\u[a-fA-F0-9]{4}]*""".r ^^
+      { case schemeIdent => schemeIdent }
+    )
 
+  }
 }

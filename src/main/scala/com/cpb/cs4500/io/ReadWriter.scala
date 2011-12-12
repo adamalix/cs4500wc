@@ -4,14 +4,15 @@
  */
 
 package com.cpb.cs4500.io {
-  import scala.io._
   import com.cpb.cs4500.parsing._
+
+  import scala.io._
 
   object ReadWriter {
 
     def inputFromFile(fileName: String): String = {
       var str = ""
-      for (line <- Source.fromFile(fileName).getLines)
+      for (line <- Source.fromFile(fileName, "utf-8").getLines)
         str+= " " + line + " "
       str
     }
