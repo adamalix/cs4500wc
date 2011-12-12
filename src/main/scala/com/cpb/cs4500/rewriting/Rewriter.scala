@@ -64,7 +64,7 @@ package com.cpb.cs4500.rewriting {
                     mapIds(ruleExpr.args, rewrittenArgs, Map[TermID, Rhs]())
 
                   case id: TermID =>
-                    throw new RuntimeException("YOU FUCKED UP AGAIN")
+                    throw new RuntimeException("Given an invalid statment")
                 }
                 return rewriteToRhs(rule.right, idMap)
               }

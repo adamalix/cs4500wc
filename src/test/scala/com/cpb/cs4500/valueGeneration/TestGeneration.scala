@@ -9,14 +9,13 @@ package com.cpb.cs4500.valueGeneration {
 
   class TestGeneration extends FunSuite {
     val parser = new ADTParser()
-    val testFileName = "src/test/resources/test5"
+    val testFileName = "src/test/resources/test7"
     val testFile = ReadWriter.inputFromFile(testFileName)
     val spec = parser.parseAll(parser.spec, testFile).get
 
     val valGen = new ValueGenerator(spec)
 
     val listTerms = valGen.createAllTests(3)
-
     /*
      Functions to test:
      x convertListToArgs
