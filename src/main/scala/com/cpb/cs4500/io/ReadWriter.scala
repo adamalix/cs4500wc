@@ -62,7 +62,7 @@ package com.cpb.cs4500.io {
 
       // this is where the tests are written to the file
       for (test <- tests) {
-        out.write(test + "\n")
+        out.write(test)
       }
 
       out.write("\n")
