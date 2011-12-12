@@ -43,8 +43,8 @@ package com.cpb.cs4500.util {
         }
         case primExpr: RhsPrimExpr => evaluatePrimExpr(primExpr)
         case int: RhsUInt => "(= " + int.toSexpr
-        case rhsTrue: RhsTrue => "("
-        case rhsFalse: RhsFalse => "(not "
+        case rhsTrue: RhsTrue => ""
+        case rhsFalse: RhsFalse => "(not"
         case rhsID: RhsID => "(= " + rhsID.toSexpr
       }
 
@@ -54,7 +54,13 @@ package com.cpb.cs4500.util {
         case term: TermExpr => wrapTerm(term, opspecs, leftReturnType)
       }
 
-      return start + eqRightSide + " " + eqLeftSide + "))\n"
+      var whiteSpace = ""
+      var otherParen = ""
+      if (!eqRightSide.equals("")){
+        whiteSpace = " "
+        otherParen = ")"
+      }
+      return start + eqRightSide + whiteSpace + eqLeftSide + otherParen + ")\n"
     }
 
     // determines the compare operator that should be in front of the primitive
