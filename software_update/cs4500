@@ -1,0 +1,9 @@
+#!/bin/bash
+
+INPUT_FILE=$1
+OUTPUT_FILE=$2
+COURSE_DIR="/course/cs4500wc"
+
+LIB_CLASSPATH=$COURSE_DIR/lib/scala-library.jar:$COURSE_DIR/lib/scala-compiler.jar
+
+java -cp $LIB_CLASSPATH -jar bin/cs4500.jar $INPUT_FILE $OUTPUT_FILE

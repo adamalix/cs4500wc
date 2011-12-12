@@ -15,3 +15,31 @@ new version of Scala using the script will be included. We appreciate your
 consideration in the matter and hope that the decreased development overhead,
 increased software quality, and easy installation will be incentive for you to
 update the target deployment environment.
+
+-------------------------------------------------------------------------------
+Aside:
+
+To perform the software update you can invoke the download-scala script in the
+software_update folder.  This is a shell script that will download, and unpack
+the latest release of scala to:
+
+/course/cs4500wc/bin
+
+It will also place the library and runtime in:
+
+/course/cs4500wc/lib
+
+To ensure that you can execute the download script, please perform the
+following at a terminal, from the project's root directory:
+
+$ chmod +x software_update/download-scala
+
+Despite having written this request, we have included the scala compiler and
+runtime in case you do not feel like running this.  To prove that it will work,
+if you do run this script, it will automatically delete the local bin and lib
+folders in this project's root so that you can be certain we are using the
+version downloaded from the internet.
+
+It will also delete `Makefile' in the project's root, and replace it with the
+one found in `.../project_root/software_update'.  You can then follow the
+instructions found in the project's README to build and run the software.
