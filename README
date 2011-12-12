@@ -1,49 +1,53 @@
-VERSION 0.2
-Date 11/4/11
+Group:   Cool Project, Bro!
+Version: 0.8
+Date:    12/11/11
 
-This is software written for the Fall seession of CS4500 taught by Will
-Clinger by:
+---- NOTES ----
+This is a software project written for the Fall session of CS4500 taught by
+Will Clinger by:
 
 Adam Alix <adam.alix@gmail.com>
 Paul Murray <pawl_murray@gmail.com
 Phil Quinn <pquinn@ccs.neu.edu>
+
+Clients please see included software_upgrade_request.txt.
 
 ---- BUILDING ----
 This software can be built by executing `make' in the project's base directory.
 
 EX:
 
-cd <project-base-dir>
-make
+$ cd <project-base-dir>
+$ make
 
----- TESTING ----
+---- UNIT TESTING ----
 Running unit tests is not available on the CCIS Linux machines as of now.  To
-test the software, you must install Scala Build Tools on a machine that has
-maven version 2 or later installed:
+run this package's unit tests, you must install Scala Build Tools on a machine
+that has maven version 2 or later installed:
 
 https://github.com/harrah/xsbt/wiki
 http://maven.apache.org/
 
-Once you have instaleld sbt, you can run unit tests by invoking the following
+Once you have installed sbt, you can run unit tests by invoking the following
 commands:
 
-sbt compile
-sbt test
+$ sbt compile
+$ sbt test
 
 ---- RUNNING ----
 To run the software, you must first build it (make) and then use the cs4500
 script in the project's base directory to invoke it:
 
-cd <project-base-dir>
-./cs4500 file1 file2
+$ cd <project-base-dir>
+$ ./cs4500 file1 file2
 
 `file1' is the name of the input text file containing the specification for an
-ADT written in the grammar specified by the homework assignment.  For grammar
-details, see Gramma section below.  URL:
+ADT written in the grammar specified by the Homework Assignment 8.  For grammar
+details, see Grammer section below.  URL:
 
-http://www.ccs.neu.edu/course/cs4500wc/assignment6.txt
+http://www.ccs.neu.edu/course/cs4500wc/assignment8.txt
 
-`file2' is the name of the output file to which R6RS scheme expressions will be
+`file2' is the name of the output file to which R6RS scheme tests will be
 written.  The file will be created within the directory it is called from so
 long as the caller has write permissions.
 
@@ -101,6 +105,20 @@ Grammar for input files (file1):
                    |  "="  |  "<"  |  ">"
 
 ---- CHANGELOG ----
+12/11/11:
+This is the final version of the software project.  The following are new
+features:
+ - Enhanced value generation
+ - Random value generation
+ - Expression rewriting according to equations
+ - Output executable scheme expressions
+ - Comprehensive tests
+ - Enhanced code documentation
+
+Clients, please see included software_upgrade_request.txt for additional
+information regarding the version of Scala used to build this application.
+
+Bump in Version (0.2 -> 0.8)
 
 11/4/11:
 Prototype 2 of the software.  This version correclty parses all Equations but
@@ -112,7 +130,7 @@ We have included the Scala library and compiler jars in order to run our
 software on CCIS machines.  Version .3 will be feature complete and a work
 around for the CCIS Scala version has been planned.
 
-Bump in Version (.1 -> .2)
+Bump in Version (0.1 -> 0.2)
 
 10/18/11:
 Initial software prototype for first homework assignment.
@@ -122,5 +140,5 @@ This software was built using tools included with the standard distribution of
 Scala 2.9.1:
 http://www.scala-lang.org/downloads
 
-Testing was made feasible by the ScalaTest library:
+Testing was made feasible (read: reasonable) by the ScalaTest library:
 http://www.scalatest.org/download

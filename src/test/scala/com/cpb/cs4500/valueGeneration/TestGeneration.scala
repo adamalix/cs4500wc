@@ -65,6 +65,6 @@ package com.cpb.cs4500.valueGeneration {
       expect(list12){ valGen.cart(List(list1, list2))}
       expect(list34){ valGen.cart(List(list3, list4))}
     }
+
   }
 }
-

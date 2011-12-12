@@ -1,0 +1,17 @@
+To   : William D. Clinger, Prof.
+From : Phil Quinn, Adam Alix, Paul Murray, developers
+Re   : Cool Project, Bro
+Date : 6 December 2011
+
+This memo is a formal request from the developers to the client to install an
+updated version of Scala, the programming language used to implement your
+software package. The version of Scala on the designated deployment environment
+is significantly less powerful than the current version. By using this updated
+version we, the developers, will be able to build a more robust product in a
+shorter amount of time. If you do agree that this and advantageous, we will
+package an installation script in our next submission. The script will be
+included in the root directory of the project and details on how to install the
+new version of Scala using the script will be included. We appreciate your
+consideration in the matter and hope that the decreased development overhead,
+increased software quality, and easy installation will be incentive for you to
+update the target deployment environment.

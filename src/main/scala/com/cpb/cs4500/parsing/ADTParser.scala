@@ -10,8 +10,6 @@ package com.cpb.cs4500.parsing {
   class ADTParser extends JavaTokenParsers {
     override def skipWhitespace = true
 
-    val argTypeLiterals = List[TypeLiteral]()
-
     def spec: Parser[Spec] = (
       "Signatures:" ~ adtSignatures ~ "Equations:" ~ equations ^^
       { case "Signatures:" ~ adtSigs ~ "Equations:" ~ eqs => Spec(adtSigs, eqs) }
