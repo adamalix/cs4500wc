@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COURSE_DIR=/home/aalix/temp/course/cs4500wc
+COURSE_DIR=/course/cs4500wc
 USER_SCRATCH=/scratch/$USER
 SCALA_VERSION="2.9.1.final"
 SCALA_DIR=$USER_SCRATCH/scala-2.9.1.final
@@ -21,3 +21,7 @@ chmod +x $SCALA && cp $SCALA $COURSE_DIR/bin/
 echo "Cleaning up user scratch"
 rm -rf $SCALA_DIR.tgz
 rm -rf $SCALA_DIR
+echo "Replacing old Makefile and cs4500 scripts..."
+rm ../Makefile && rm ../cs4500
+chmod +x cs4500 && cp cs4500 ..
+cp Makefile ..
