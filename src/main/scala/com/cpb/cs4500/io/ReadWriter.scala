@@ -79,7 +79,7 @@ package com.cpb.cs4500.io {
       out.write("\n")
       out.write("(if (not (= tests-run\n")
       out.write("            (+ tests-passed tests-failed)))\n")
-      out.write("    (begin (display \"Oops…\") (newline)))\n")
+      out.write("    (begin (display \"Oops...\") (newline)))")
       out.close
     }
 
