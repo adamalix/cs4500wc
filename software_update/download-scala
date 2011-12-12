@@ -4,6 +4,5 @@ USER_SCRATCH=/scratch/$USER
 SCALA_VERSION="2.9.1.final"
 SCALA_DIR=$USER_SCRATCH/scala-2.9.1.final
 
-cd $USER_SCRATCH && curl http://www.scala-lang.org/downloads/distrib/files/scala-2.9.1.final.tgz
-cd $USER_SCRATCH && tar -zxvf scala-2.9.1.final.tgz
-cd
+curl -o $SCALA_DIR.tgz http://www.scala-lang.org/downloads/distrib/files/scala-2.9.1.final.tgz
+cd $USER_SCRATCH && tar -zxvf $SCALA_DIR.tgz
