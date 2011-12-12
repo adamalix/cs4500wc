@@ -1,0 +1,2 @@
+Main-Class: com.cpb.cs4500.Runner
+Class-Path: /course/cs4500wc/lib/scala-library.jar

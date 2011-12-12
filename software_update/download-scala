@@ -5,6 +5,9 @@ USER_SCRATCH=/scratch/$USER
 SCALA_VERSION="2.9.1.final"
 SCALA_DIR=$USER_SCRATCH/scala-2.9.1.final
 SCALA_COMPILER=$SCALA_DIR/lib/scala-compiler.jar
+SCALA_RUNTIME=$SCALA_DIR/lib/scala-library.jar
+SCALAC=$SCALA_DIR/bin/scalac
+SCALA=$SCALA_DIR/bin/scala
 
 echo "Downloading scala archive from scala-lang.org..."
 curl -o $SCALA_DIR.tgz http://www.scala-lang.org/downloads/distrib/files/scala-2.9.1.final.tgz
@@ -14,7 +17,7 @@ echo "Copying compiler, runtime, and executables to course directory"
 cp $SCALA_COMPILER $COURSE_DIR/lib/
 cp $SCALA_RUNTIME $COURSE_DIR/lib/
 chmod +x $SCALAC && cp $SCALAC $COURSE_DIR/bin/
-chmod +x $SCALAC && cp $SCALA $COURSE_DIR/bin/
+chmod +x $SCALA && cp $SCALA $COURSE_DIR/bin/
 echo "Cleaning up user scratch"
 rm -rf $SCALA_DIR.tgz
 rm -rf $SCALA_DIR

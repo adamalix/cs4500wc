@@ -2,7 +2,7 @@
 
 INPUT_FILE=$1
 OUTPUT_FILE=$2
-COURSE_DIR="/course/cs4500wc"
+COURSE_DIR=/course/cs4500wc
 
 LIB_CLASSPATH=$COURSE_DIR/lib/scala-library.jar:$COURSE_DIR/lib/scala-compiler.jar
 
