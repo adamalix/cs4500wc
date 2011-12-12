@@ -23,5 +23,5 @@ rm -rf $SCALA_DIR.tgz
 rm -rf $SCALA_DIR
 echo "Replacing old Makefile and cs4500 scripts..."
 rm ../Makefile && rm ../cs4500
-chmod +x cs4500 && cp cs4500 ..
-cp Makefile ..
+chmod +x cs4500 && cp cs4500 ../
+cp Makefile ../
