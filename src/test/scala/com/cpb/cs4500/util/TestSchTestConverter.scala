@@ -33,7 +33,7 @@ package com.cpb.cs4500.util {
      * x evaluatePrimExpr
      * - wrapRhsExpr
      * - wrapTerm
-     * - getReturnType (term and rhs)
+     * x getReturnType (term and rhs)
      * - findRhsWrapper
      * - findTermWrapper
      * x getOpName
@@ -104,11 +104,6 @@ package com.cpb.cs4500.util {
       expect(op3ret) { SchTestConverter.getReturnType(term3, opSpecs) }
     }
 
-
-    test("test wrapRhsExpr") {
-      
-    }
-
     // this function is pretty simple so i'm not going to test it
     // too exhaustively
     test("test getOpName") {
@@ -122,51 +117,5 @@ package com.cpb.cs4500.util {
       expect("testOp") { SchTestConverter.getOpName(testTerm)   }
       expect("")       { SchTestConverter.getOpName(testTermID) }
     }
-
-    test("test findWrapperForOp") {
-      // takes and op and a listset of opspecs and returns a string
-    }
-
-    test("test findSchConverter") {
-      // takes a return type(terminal) and a listset of opSpecs
-      // returns a string that represents the proper scheme converter
-      val spec5 = parser.parseAll(parser.spec, testFile5).get
-      val opspecsListSet = spec5.getAllOpSpecs
-      val opspecs = opspecsListSet.toList
-      val zeroSpec = opspecs.last
-
-      // construct each literal
-      val boolRet = BooleanLiteral(true, "true")
-      val charRet = CharLiteral('c', "c")
-      val stringRet = StringLiteral("str")
-      val intRet = IntLiteral(1, "1")
-
-      val natType = TypeName("Nat")
-
-      expect("(asInt ") {
-       // SchTestConverter.findSchConverter(zeroSpec.returnType, opspecsListSet)
-      }
-
-      expect("(= ") {
-       // SchTestConverter.findSchConverter(intRet, opspecsListSet)
-      }
-
-      expect("bool") {
-       // SchTestConverter.findSchConverter(boolRet, opspecsListSet)
-      }
-
-      expect("(char=? ") {
-        // SchTestConverter.findSchConverter(charRet, opspecsListSet)
-      }
-
-      expect("(string=? ") {
-        // SchTestConverter.findSchConverter(stringRet, opspecsListSet)
-      }
-
-      expect("(asInt ") {
-        // SchTestConverter.findSchConverter(natType, opspecsListSet)
-      }
-    }
-
   }
 }
